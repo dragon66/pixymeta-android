@@ -1,3 +1,3 @@
 # pixymeta-android
 Standalone Android version of PixyMeta.
-Not tested on Android device yet!!!
+Tested on Android Nexus4 Virtual device only!!!
