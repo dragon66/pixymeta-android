@@ -57,10 +57,10 @@ public class TestPixyMetaAndroit {
 			fin = new FileInputStream("images/1.jpg");
 			fout = new FileOutputStream("1-xmp-inserted.jpg");
 			if(!xmp.hasExtendedXmp())
-				Metadata.insertXMP(fin, fout, XMLUtils.serializeToStringLS(xmpDoc, xmpDoc.getDocumentElement()));
+				Metadata.insertXMP(fin, fout, XMLUtils.serializeToString(xmpDoc.getDocumentElement(), "UTF-8"));
 			else {
 				Document extendedXmpDoc = xmp.getExtendedXmpDocument();
-				JPEGMeta.insertXMP(fin, fout, XMLUtils.serializeToStringLS(xmpDoc, xmpDoc.getDocumentElement()), XMLUtils.serializeToStringLS(extendedXmpDoc));
+				JPEGMeta.insertXMP(fin, fout, XMLUtils.serializeToString(xmpDoc.getDocumentElement(), "UTF-8"), XMLUtils.serializeToString(extendedXmpDoc));
 			}
 			fin.close();
 			fout.close();
