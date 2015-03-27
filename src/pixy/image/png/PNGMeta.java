@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.InflaterInputStream;
@@ -86,11 +87,30 @@ public class PNGMeta {
 		XMLUtils.insertTrailingPI(doc, "xpacket", "end='w'");
 		String newXmp = XMLUtils.serializeToString(doc); // DONOT use XMLUtils.serializeToStringLS()
   		// Adds XMP chunk
-		TextBuilder xmpBuilder = new TextBuilder(ChunkType.ITXT).keyword("XML:com.adobe.xmp");
+		TextBuilder xmpBuilder = new TextBuilder(ChunkType.ITXT);
+		xmpBuilder.keyword("XML:com.adobe.xmp");		
 		xmpBuilder.text(newXmp);
+		
 	    Chunk xmpChunk = xmpBuilder.build();
 	    
-	    insertChunk(xmpChunk, is, os);
+	    List<Chunk> chunks = readChunks(is);
+	    ListIterator<Chunk> itr = chunks.listIterator();
+	    
+	    // Remove old XMP chunk
+	    while(itr.hasNext()) {
+	    	Chunk chunk = itr.next();
+	    	if(chunk.getChunkType() == ChunkType.ITXT) {
+	    		TextReader reader = new TextReader(chunk);
+				if(reader.getKeyword().equals("XML:com.adobe.xmp")); // We found XMP data
+					itr.remove();
+	    	}
+	    }
+	    
+	    chunks.add(xmpChunk);
+	    
+	    IOUtils.writeLongMM(os, SIGNATURE);
+	    
+        serializeChunks(chunks, os);
     }
   	
    	public static byte[] readICCProfile(byte[] buf) throws IOException {
