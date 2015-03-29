@@ -1,5 +1,5 @@
 # pixymeta-android
-Standalone Android version of PixyMeta.
+Standalone Android version of PixyMeta - a pure Java image metadata manipulation tool.
 
 Image metadata manipulation:
 ----------------------------------------
