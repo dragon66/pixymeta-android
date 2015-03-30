@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  ==================================================
+ * WY    30Mar2015  Fixed bug with insertXMP() replacing '\0' with ' '
  * WY    13Mar2015  Initial creation
  */
 
@@ -74,7 +75,7 @@ public class GIFMeta {
  		buf[3] = 'X'; // Application Identifier (8 bytes)
  		buf[4] = 'M';
  		buf[5] = 'P';
- 		buf[6] = '\0';
+ 		buf[6] = ' ';
  		buf[7] = 'D';
  		buf[8] = 'a';
  		buf[9] = 't';
@@ -168,7 +169,7 @@ public class GIFMeta {
 							// Frame disposal method: RESTORE_TO_PREVIOUS
 							break;
 						default:
-							throw new RuntimeException("Invalid GIF frame disposal method: " + disposalMethod);
+							//throw new RuntimeException("Invalid GIF frame disposal method: " + disposalMethod);
 					}
 					// Check for transparent color flag
 					if((packedFields&0x01) == 0x01) {
@@ -183,7 +184,7 @@ public class GIFMeta {
 					// <<End of graphic control block>>
 				} else if(func == 0xff) { // Application block
 					// Application block
-					byte[] xmp_id = {'X', 'M', 'P', '\0', 'D', 'a', 't', 'a', 'X', 'M', 'P' };
+					byte[] xmp_id = {'X', 'M', 'P', ' ', 'D', 'a', 't', 'a', 'X', 'M', 'P' };
 					byte[] temp = new byte[0x0B];
 					IOUtils.readFully(is, temp);
 					// If we have XMP data
