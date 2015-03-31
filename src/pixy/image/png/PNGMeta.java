@@ -58,13 +58,11 @@ public class PNGMeta {
 	/** PNG signature constant */
     private static final long SIGNATURE = 0x89504E470D0A1A0AL;
 	
-   	public static void insertChunk(Chunk customChunk, InputStream is, OutputStream os) throws IOException
-  	{
+   	public static void insertChunk(Chunk customChunk, InputStream is, OutputStream os) throws IOException {
   		insertChunks(new Chunk[]{customChunk}, is, os);
   	}
   	
-  	public static void insertChunks(Chunk[] chunks, InputStream is, OutputStream os) throws IOException
-  	{
+  	public static void insertChunks(Chunk[] chunks, InputStream is, OutputStream os) throws IOException {
   		List<Chunk> list = readChunks(is);  		
         Collections.addAll(list, chunks);
     	
@@ -73,8 +71,7 @@ public class PNGMeta {
         serializeChunks(list, os);
   	}
   	
-  	public static void insertChunks(List<Chunk> chunks, InputStream is, OutputStream os) throws IOException
-  	{
+  	public static void insertChunks(List<Chunk> chunks, InputStream is, OutputStream os) throws IOException {
   		List<Chunk> list = readChunks(is);  		
         list.addAll(chunks);
     	
@@ -122,21 +119,7 @@ public class PNGMeta {
         serializeChunks(chunks, os);
     }
   	
-   	public static byte[] readICCProfile(byte[] buf) throws IOException {
-  		 int profileName_len = 0;
-		 while(buf[profileName_len] != 0) profileName_len++;
- 		 String profileName = new String(buf, 0, profileName_len,"UTF-8");
- 		
- 		 InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
- 		 System.out.println("ICCProfile name: " + profileName);
- 		 
- 		 byte[] icc_profile = IOUtils.readFully(ii, 4096);
- 		 System.out.println("ICCProfile length: " + icc_profile.length);
- 	 		 
- 		 return icc_profile;
-  	}
-  	
-  	public static List<Chunk> readChunks(InputStream is) throws IOException {  		
+   	public static List<Chunk> readChunks(InputStream is) throws IOException {  		
   		List<Chunk> list = new ArrayList<Chunk>();
  		 //Local variables for reading chunks
         int data_len = 0;
@@ -145,15 +128,13 @@ public class PNGMeta {
      
         long signature = IOUtils.readLongMM(is);
 
-        if (signature != SIGNATURE)
-        {
+        if (signature != SIGNATURE) {
        	 	throw new RuntimeException("--- NOT A PNG IMAGE ---");
         }   
 
         /** Read header */
         /** We are expecting IHDR */
-        if ((IOUtils.readIntMM(is)!=13)||(IOUtils.readIntMM(is) != ChunkType.IHDR.getValue()))
-        {
+        if ((IOUtils.readIntMM(is)!=13)||(IOUtils.readIntMM(is) != ChunkType.IHDR.getValue())) {
             throw new RuntimeException("Not a valid IHDR chunk.");
         }     
         
@@ -162,8 +143,7 @@ public class PNGMeta {
   
         list.add(new Chunk(ChunkType.IHDR, 13, buf, IOUtils.readUnsignedIntMM(is)));         
       
-        while (true)
-        {
+        while (true) {
         	data_len = IOUtils.readIntMM(is);
 	       	chunk_type = IOUtils.readIntMM(is);
 	   
@@ -183,6 +163,20 @@ public class PNGMeta {
         
         return list;
   	}
+   	
+  	private static byte[] readICCProfile(byte[] buf) throws IOException {
+  		int profileName_len = 0;
+  		while(buf[profileName_len] != 0) profileName_len++;
+  		String profileName = new String(buf, 0, profileName_len,"UTF-8");
+		
+  		InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
+  		System.out.println("ICCProfile name: " + profileName);
+		 
+  		byte[] icc_profile = IOUtils.readFully(ii, 4096);
+  		System.out.println("ICCProfile length: " + icc_profile.length);
+		 
+  		return icc_profile;
+ 	}
   	
 	public static Map<MetadataType, Metadata> readMetadata(InputStream is) throws IOException {
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
