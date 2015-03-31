@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =======    =================================================
+ * WY    31Mar2015  Fixed bug with getImageIFD() etc
  * WY    13Mar2015  Initial creation
  */
 
@@ -118,11 +119,13 @@ public abstract class Exif extends Metadata {
 		if(imageIFD != null) {
 			return imageIFD;
 		} else {
-			if (reader != null && !reader.isDataLoaded()) {
-				try {
-					reader.read();
-				} catch (IOException e) {
-					e.printStackTrace();
+			if (reader != null) {
+				if(!reader.isDataLoaded()) {
+					try {
+						reader.read();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				imageIFD = reader.getImageIFD();
 			}
@@ -135,13 +138,15 @@ public abstract class Exif extends Metadata {
 		if(exifSubIFD != null) {
 			return exifSubIFD;
 		} else {
-			if (reader != null && !reader.isDataLoaded()) {
-				try {
-					reader.read();
-				} catch (IOException e) {
-					e.printStackTrace();
+			if (reader != null) {
+				if(!reader.isDataLoaded()) {
+					try {
+						reader.read();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-				exifSubIFD = reader.getImageIFD();
+				exifSubIFD = reader.getExifIFD();
 			}
 			
 			return exifSubIFD;
@@ -152,13 +157,15 @@ public abstract class Exif extends Metadata {
 		if(gpsSubIFD != null) {
 			return gpsSubIFD;
 		} else {
-			if (reader != null && !reader.isDataLoaded()) {
-				try {
-					reader.read();
-				} catch (IOException e) {
-					e.printStackTrace();
+			if (reader != null) {
+				if(!reader.isDataLoaded()) {
+					try {
+						reader.read();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-				gpsSubIFD = reader.getImageIFD();
+				gpsSubIFD = reader.getGPSIFD();
 			}
 			
 			return gpsSubIFD;
@@ -172,11 +179,13 @@ public abstract class Exif extends Metadata {
 	public ExifThumbnail getThumbnail() {
 		if(thumbnail != null)
 			return thumbnail;
-		if(reader != null && !reader.isDataLoaded()) {
-			try {
-				reader.read();
-			} catch (IOException e) {
-				e.printStackTrace();
+		if(reader != null) {
+			if(!reader.isDataLoaded()) {
+				try {
+					reader.read();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			return reader.getThumbnail();
 		}
