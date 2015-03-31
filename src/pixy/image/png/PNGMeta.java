@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    30Mar2015  Added insertICCProfile()
  * WY    13Mar2015  Initial creation
  */
 
@@ -34,6 +35,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.w3c.dom.Document;
 
+import pixy.image.png.ICCPBuilder;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.XMP;
@@ -79,6 +81,13 @@ public class PNGMeta {
   		IOUtils.writeLongMM(os, SIGNATURE);
 	
         serializeChunks(list, os);
+  	}
+  	
+  	public static void insertICCProfile(String profile_name, byte[] icc_profile, InputStream is, OutputStream os) throws IOException {
+  		ICCPBuilder builder = new ICCPBuilder();
+  		builder.name(profile_name);
+  		builder.data(icc_profile);
+  		insertChunk(builder.build(), is, os);
   	}
   	
   	public static void insertXMP(InputStream is, OutputStream os, String xmp) throws IOException {
