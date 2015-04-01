@@ -12,7 +12,8 @@
  * JPEGMeta.java
  *
  * Who   Date       Description
- * ====  =======    ==================================================
+ * ====  =======    =====================================================
+ * WY    01Apr2015  Extract IPTC as stand-alone meta data from IRB if any
  * WY    18Mar2015  Revised readAPP13(), insertIPTC() and insertIRB()
  * 				    to work with multiple APP13 segments
  * WY    18Mar2015  Removed a few unused readAPPn methods
@@ -1337,6 +1338,11 @@ public class JPEGMeta {
 		if(eightBIMStream != null) {
 			IRB irb = new IRB(eightBIMStream.toByteArray());	
 			metadataMap.put(MetadataType.PHOTOSHOP, irb);
+			_8BIM iptc = irb.get8BIM(ImageResourceID.IPTC_NAA.getValue());
+			// Extract IPTC as stand-alone meta
+			if(iptc != null) {
+				metadataMap.put(MetadataType.IPTC, new IPTC(iptc.getData()));
+			}
 		}
 		
 		if(extendedXMP != null) {
