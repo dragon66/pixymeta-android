@@ -12,13 +12,14 @@
  * TIFFMeta.java
  *
  * Who   Date       Description
- * ====  =========  =================================================
+ * ====  =========  =====================================================
+ * WY    07Apr2015  Removed insertICCProfile() AWT related code
+ * WY    07Apr2015  Merge Adobe IRB IPTC and TIFF IPTC data if both exist
  * WY    13Mar2015  Initial creation
  */
 
 package pixy.image.tiff;
 
-import java.awt.color.ICC_Profile;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.FileOutputStream;
@@ -699,6 +700,10 @@ public class TIFFMeta {
 		writeToStream(rout, firstIFDOffset);
 	}
 	
+	public static void insertICCProfile(byte[] icc_profile, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
+		insertICCProfile(icc_profile, 0, rin, rout);
+	}
+	
 	/**
 	 * Insert ICC_Profile into TIFF page
 	 * 
@@ -724,23 +729,6 @@ public class TIFFMeta {
 		int firstIFDOffset = ifds.get(0).getStartOffset();	
 
 		writeToStream(rout, firstIFDOffset);	
-	}
-	
-	public static void insertICCProfile(ICC_Profile icc_profile, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
-		insertICCProfile(icc_profile.getData(), 0, rin, rout);
-	}
-	
-	/**
-	 * Insert ICC_Profile into TIFF page
-	 * 
-	 * @param icc_profile ICC_Profile
-	 * @param pageNumber page number to insert the ICC_Profile
-	 * @param rin RandomAccessInputStream for the input image
-	 * @param rout RandomAccessOutputStream for the output image
-	 * @throws Exception
-	 */
-	public static void insertICCProfile(ICC_Profile icc_profile, int pageNumber, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
-		insertICCProfile(icc_profile.getData(), pageNumber, rin, rout);
 	}
 	
 	public static void insertIPTC(RandomAccessInputStream rin, RandomAccessOutputStream rout, List<IPTCDataSet> iptcs, boolean update) throws IOException {
@@ -1029,8 +1017,8 @@ public class TIFFMeta {
 		rin.seek(offset);
 		short tiff_id = rin.readShort();
 		offset +=2;
-		if(tiff_id!=0x2a)//"*" 42 decimal
-		{
+		
+		if(tiff_id!=0x2a) { //"*" 42 decimal
 			rin.close();
 			throw new RuntimeException("Invalid TIFF identifier");
 		}
@@ -1304,7 +1292,7 @@ public class TIFFMeta {
 	
 	public static Map<MetadataType, Metadata> readMetadata(RandomAccessInputStream rin, int pageNumber) throws IOException	{
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
-		System.out.println("*** TIFF snooping starts ***");
+
 		int offset = readHeader(rin);
 		List<IFD> ifds = new ArrayList<IFD>();
 		readIFDs(null, null, TiffTag.class, ifds, offset, rin);
@@ -1333,18 +1321,21 @@ public class TIFFMeta {
 		}
 		field = currIFD.getField(TiffTag.IPTC);
 		if(field != null) { // We have found IPTC data
+			IPTC iptc = (IPTC)(metadataMap.get(MetadataType.IPTC));
+			byte[] iptcData = null;
 			FieldType type = field.getType();
 			if(type == FieldType.LONG)
-				metadataMap.put(MetadataType.IPTC, new IPTC(ArrayUtils.toByteArray(field.getDataAsLong(), rin.getEndian() == IOUtils.BIG_ENDIAN)));
+				iptcData = ArrayUtils.toByteArray(field.getDataAsLong(), rin.getEndian() == IOUtils.BIG_ENDIAN);
 			else
-				metadataMap.put(MetadataType.IPTC, new IPTC((byte[])field.getData()));
-		}
+				iptcData = (byte[])field.getData();
+			if(iptc != null) // If we have IPTC data from IRB, consolidate it with the current data
+				iptcData = ArrayUtils.concat(iptcData, iptc.getData());
+			metadataMap.put(MetadataType.IPTC, new IPTC(iptcData));
+		}		
 		field = currIFD.getField(TiffTag.EXIF_SUB_IFD);
 		if(field != null) { // We have found EXIF SubIFD
 			metadataMap.put(MetadataType.EXIF, new TiffExif(currIFD));
 		}
-		
-		System.out.println("*** TIFF snooping ends ***");
 		
 		return metadataMap;
 	}
