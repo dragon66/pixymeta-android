@@ -1333,19 +1333,11 @@ public class TIFFMeta {
 		}
 		field = currIFD.getField(TiffTag.IPTC);
 		if(field != null) { // We have found IPTC data
-			// See if we already have IPTC data from IRB
-			IPTC iptc = (IPTC)(metadataMap.get(MetadataType.IPTC));
-			byte[] iptcData = null;
 			FieldType type = field.getType();
 			if(type == FieldType.LONG)
-				iptcData = ArrayUtils.toByteArray(field.getDataAsLong(), rin.getEndian() == IOUtils.BIG_ENDIAN);		
+				metadataMap.put(MetadataType.IPTC, new IPTC(ArrayUtils.toByteArray(field.getDataAsLong(), rin.getEndian() == IOUtils.BIG_ENDIAN)));
 			else
-				iptcData = (byte[])field.getData();
-			// If we have IPTC data from IRB, consolidate it with the current data
-			if(iptc != null) {
-				iptcData = ArrayUtils.concat(iptcData, iptc.getData());
-			}
-			metadataMap.put(MetadataType.IPTC, new IPTC(iptcData));
+				metadataMap.put(MetadataType.IPTC, new IPTC((byte[])field.getData()));
 		}
 		field = currIFD.getField(TiffTag.EXIF_SUB_IFD);
 		if(field != null) { // We have found EXIF SubIFD
