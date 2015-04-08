@@ -6,6 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Any modifications to this file must keep this entire header intact.
+ * 
+ * Change History - most recent changes go on top of previous changes
+ *
+ * FileCacheRandomAccessOutputStream.java
+ *
+ * Who   Date       Description
+ * ====  =======    =================================================
+ * WY    06Apr2015  Added empty flush() to control flush timing
  */
 
 package pixy.io;
@@ -67,6 +75,11 @@ public class FileCacheRandomAccessOutputStream extends RandomAccessOutputStream 
 	@Override
 	public void disposeBefore(long pos) { 
 		throw new UnsupportedOperationException("This method is not implemented");
+	}
+	
+	public void flush() {
+		// We want to hold the flush process so we could have more control over the
+		// timing of writing to the underlying stream		
 	}
 	
 	@Override
