@@ -133,7 +133,7 @@ public class ExifThumbnail extends Thumbnail {
 			try {
 				thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, randOS);
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new RuntimeException("Unable to compress thumbnail as JPEG");
 			}
 			long finishOffset = randOS.getStreamPointer();			
 			int totalOut = (int)(finishOffset - startOffset);
