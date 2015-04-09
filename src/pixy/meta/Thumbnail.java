@@ -1,3 +1,21 @@
+/**
+ * Copyright (c) 2014-2015 by Wen Yu.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Any modifications to this file must keep this entire header intact.
+ * 
+ * Change History - most recent changes go on top of previous changes
+ *
+ * ExifThumbnail.java
+ *
+ * Who   Date          Description
+ * ====  ==========    ===============================================
+ * WY    09Apr2015     Added setWriteQuality()
+ */ 
+
 package pixy.meta;
 
 import android.graphics.*;
@@ -12,6 +30,8 @@ public class Thumbnail {
 	
 	private Bitmap thumbnail;
 	private byte[] compressedThumbnail;
+	
+	protected int writeQuality = 100; // Default JPEG write quality
 	
 	private int width;
 	private int height;
@@ -81,5 +101,9 @@ public class Thumbnail {
 			this.compressedThumbnail = compressedThumbnail;
 			this.dataType = dataType;
 		}
+	}
+	
+	public void setWriteQuality(int quality) {
+		this.writeQuality = quality;
 	}
 }

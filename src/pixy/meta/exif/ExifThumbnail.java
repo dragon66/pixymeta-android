@@ -46,8 +46,8 @@ import pixy.io.RandomAccessOutputStream;
 public class ExifThumbnail extends Thumbnail {
 	// Comprised of an IFD and an associated image
 	// Create thumbnail IFD (IFD1 in the case of JPEG EXIF segment)
-	private IFD thumbnailIFD = new IFD(); 
-	
+	private IFD thumbnailIFD = new IFD();
+		
 	public ExifThumbnail() { }
 	
 	public ExifThumbnail(Bitmap thumbnail) {
@@ -57,9 +57,6 @@ public class ExifThumbnail extends Thumbnail {
 	public ExifThumbnail(int width, int height, int dataType, byte[] compressedThumbnail, IFD thumbnailIFD) {
 		super(width, height, dataType, compressedThumbnail);
 		this.thumbnailIFD = thumbnailIFD;
-	}
-	
-	public void setWriteQuality(int quality) {
 	}
 	
 	public void write(RandomAccessOutputStream randOS, int offset) throws IOException {
@@ -131,7 +128,7 @@ public class ExifThumbnail extends Thumbnail {
 			// the underlying stream
 			long startOffset = randOS.getStreamPointer();
 			try {
-				thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, randOS);
+				thumbnail.compress(Bitmap.CompressFormat.JPEG, writeQuality, randOS);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to compress thumbnail as JPEG");
 			}
