@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =======    =================================================
+ * WY    10Apr2015  Moved data loaded checking to ExifReader
  * WY    31Mar2015  Fixed bug with getImageIFD() etc
  * WY    13Mar2015  Initial creation
  */
