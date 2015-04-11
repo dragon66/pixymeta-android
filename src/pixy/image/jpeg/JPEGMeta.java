@@ -74,7 +74,6 @@ import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
 import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.IRBReader;
-import pixy.meta.adobe.IRBThumbnail;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
@@ -298,7 +297,7 @@ public class JPEGMeta {
 		short marker;
 		Marker emarker;
 				
-		// The very first marker should be the start_of_image marker!	
+		// The very first marker should be the start_of_image marker!
 		if(Marker.fromShort(IOUtils.readShortMM(is)) != Marker.SOI)
 			throw new IOException("Invalid JPEG image, expected SOI marker not found!");
 		
@@ -365,15 +364,14 @@ public class JPEGMeta {
 						if (Arrays.equals(exif_buf, EXIF_ID)) {
 							exif_buf = new byte[length - 8];
 						    IOUtils.readFully(is, exif_buf);
-						    ExifReader reader = new ExifReader(exif_buf);
-						    reader.read();
-						    if(reader.containsThumbnail()) {
+						    Exif exif = new JpegExif(exif_buf);
+						    if(exif.containsThumbnail()) {
 						    	String outpath = "";
 								if(pathToThumbnail.endsWith("\\") || pathToThumbnail.endsWith("/"))
 									outpath = pathToThumbnail + "exif_thumbnail";
 								else
 									outpath = pathToThumbnail.replaceFirst("[.][^.]+$", "") + "_exif_t";
-						    	ExifThumbnail thumbnail = reader.getThumbnail();
+						    	Thumbnail thumbnail = exif.getThumbnail();
 						    	OutputStream fout = null;
 						    	if(thumbnail.getDataType() == ExifThumbnail.DATA_TYPE_KJpegRGB) {// JPEG format, save as JPEG
 						    		 fout = new FileOutputStream(outpath + ".jpg");						    	
@@ -397,10 +395,9 @@ public class JPEGMeta {
 						while(data[i] != 0) i++;
 						
 						if(new String(data, 0, i++).equals("Photoshop 3.0")) {
-							IRBReader reader = new IRBReader(ArrayUtils.subArray(data, i, data.length - i));
-							reader.read();
-							if(reader.containsThumbnail()) {
-								IRBThumbnail thumbnail = reader.getThumbnail();
+							IRB irb = new IRB(ArrayUtils.subArray(data, i, data.length - i));
+							if(irb.containsThumbnail()) {
+								Thumbnail thumbnail = irb.getThumbnail();
 								// Create output path
 								String outpath = "";
 								if(pathToThumbnail.endsWith("\\") || pathToThumbnail.endsWith("/"))
@@ -408,7 +405,7 @@ public class JPEGMeta {
 								else
 									outpath = pathToThumbnail.replaceFirst("[.][^.]+$", "") + "_photoshop_t.jpg";
 								FileOutputStream fout = new FileOutputStream(outpath);
-								if(thumbnail.getDataType() == IRBThumbnail.DATA_TYPE_KJpegRGB) {
+								if(thumbnail.getDataType() == Thumbnail.DATA_TYPE_KJpegRGB) {
 									fout.write(thumbnail.getCompressedImage());
 								} else {
 									Bitmap bmp = thumbnail.getRawImage();
@@ -450,7 +447,7 @@ public class JPEGMeta {
 	 */
 	public static void insertExif(InputStream is, OutputStream os, Exif exif, boolean update) throws IOException {
 		// We need thumbnail image but don't have one, create one from the current image input stream
-		if(exif.isThumbnailRequired() && !exif.containsImage()) {
+		if(exif.isThumbnailRequired() && !exif.containsThumbnail()) {
 			is = new FileCacheRandomAccessInputStream(is);
 			// Insert thumbnail into EXIF wrapper
 			exif.setThumbnailImage(MetadataUtils.createThumbnail(is));

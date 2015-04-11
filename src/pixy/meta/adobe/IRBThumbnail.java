@@ -13,11 +13,14 @@
  *
  * Who   Date       Description
  * ====  =========  ===========================================================
+ * WY    10Apr2015  Implemented base class Thumbnail abstract method write()
  * WY    13Mar2015  Initial creation for IRBReader to encapsulate IRB thumbnail
  */
 
 package pixy.meta.adobe;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import android.graphics.Bitmap;
 import pixy.meta.Thumbnail;
 import pixy.meta.adobe.ImageResourceID;
@@ -56,7 +59,8 @@ public class IRBThumbnail extends Thumbnail {
 			// kRawRGB - NOT tested yet!
 			int[] colors = MetadataUtils.toARGB(data);
 			setImage(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
-		}
+		} else
+			throw new UnsupportedOperationException("Unsupported IRB thumbnail data type: " + dataType);
 	}
 	
 	public int getBitsPerPixel() {
@@ -81,5 +85,20 @@ public class IRBThumbnail extends Thumbnail {
 	
 	public int getTotalSize() {
 		return totalSize;		
+	}
+
+	@Override
+	public void write(OutputStream os) throws IOException {
+		if(getDataType() == Thumbnail.DATA_TYPE_KJpegRGB) { // Compressed old-style JPEG format
+			os.write(getCompressedImage());
+		} else if(getDataType() == Thumbnail.DATA_TYPE_KRawRGB) {
+			Bitmap thumbnail = getRawImage();
+			if(thumbnail == null) throw new IllegalArgumentException("Expected raw data thumbnail does not exist!");
+			try {
+				thumbnail.compress(Bitmap.CompressFormat.JPEG, writeQuality, os);
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to compress thumbnail as JPEG");
+			}			
+		}
 	}
  }

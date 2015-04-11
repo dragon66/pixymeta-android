@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pixy.meta.MetadataReader;
+import pixy.meta.Thumbnail;
 import pixy.meta.adobe.IRBThumbnail;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe.JPEGQuality;
@@ -43,6 +44,13 @@ public class IRBReader implements MetadataReader {
 	}
 	
 	public boolean containsThumbnail() {
+		if(!loaded) {
+			try {
+				read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return containsThumbnail;
 	}
 	
@@ -57,7 +65,14 @@ public class IRBReader implements MetadataReader {
 		return Collections.unmodifiableMap(_8bims);
 	}
 	
-	public IRBThumbnail getThumbnail()  {
+	public IRBThumbnail getThumbnail() {
+		if(!loaded) {
+			try {
+				read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return thumbnail;
 	}
 	
@@ -120,9 +135,9 @@ public class IRBReader implements MetadataReader {
 					short bitsPerPixel = IOUtils.readShortMM(data, i + 24); // Bits per pixel. = 24
 					short numOfPlanes = IOUtils.readShortMM(data, i + 26); // Number of planes. = 1
 					byte[] thumbnailData = null;
-					if(thumbnailFormat == IRBThumbnail.DATA_TYPE_KJpegRGB)
+					if(thumbnailFormat == Thumbnail.DATA_TYPE_KJpegRGB)
 						thumbnailData = ArrayUtils.subArray(data, i + 28, sizeAfterCompression);
-					else if(thumbnailFormat == IRBThumbnail.DATA_TYPE_KRawRGB)
+					else if(thumbnailFormat == Thumbnail.DATA_TYPE_KRawRGB)
 						thumbnailData = ArrayUtils.subArray(data, i + 28, totalSize);
 					// JFIF data in RGB format. For resource ID 1033 (0x0409) the data is in BGR format.
 					thumbnail = new IRBThumbnail(eId, thumbnailFormat, width, height, widthBytes, totalSize, sizeAfterCompression, bitsPerPixel, numOfPlanes, thumbnailData);

@@ -1,5 +1,6 @@
 ***************************
-Last modified on 04/07/2015
+Last modified on 04/10/2015
 ***************************
+10Apr2015  Meta data related changes
 07Apr2015  Merge Adobe IRB IPTC and TIFF IPTC if both exist 
 23Mar2015  Initial creation

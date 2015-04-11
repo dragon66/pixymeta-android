@@ -13,6 +13,7 @@
  *
  * Who   Date          Description
  * ====  ==========    =================================================
+ * WY    10Apr2015     Added new constructor, changed write()
  * WY    13Mar2015     initial creation
  */
 
@@ -20,6 +21,7 @@ package pixy.meta.exif;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import pixy.image.tiff.TiffField;
 import pixy.image.tiff.TiffFieldEnum;
 import pixy.image.tiff.TiffTag;
 import pixy.io.FileCacheRandomAccessInputStream;
+import pixy.io.MemoryCacheRandomAccessOutputStream;
 import pixy.io.RandomAccessInputStream;
 import pixy.io.RandomAccessOutputStream;
 
@@ -54,14 +57,25 @@ public class ExifThumbnail extends Thumbnail {
 		super(thumbnail);
 	}
 	
+	public ExifThumbnail(int width, int height, int dataType, byte[] compressedThumbnail) {
+		super(width, height, dataType, compressedThumbnail);
+	}
+	
 	public ExifThumbnail(int width, int height, int dataType, byte[] compressedThumbnail, IFD thumbnailIFD) {
 		super(width, height, dataType, compressedThumbnail);
 		this.thumbnailIFD = thumbnailIFD;
 	}
 	
-	public void write(RandomAccessOutputStream randOS, int offset) throws IOException {
+	public void write(OutputStream os) throws IOException {
+		RandomAccessOutputStream randOS = null;
+		if(os instanceof RandomAccessOutputStream) randOS = (RandomAccessOutputStream)os;
+		else randOS = new MemoryCacheRandomAccessOutputStream(os);
+		int offset = (int)randOS.getStreamPointer(); // Get current write position
 		if(getDataType() == Thumbnail.DATA_TYPE_KJpegRGB) { // Compressed old-style JPEG format
+			byte[] compressedImage = getCompressedImage();
+			if(compressedImage == null) throw new IllegalArgumentException("Expected compressed thumbnail data does not exist!");
 			thumbnailIFD.addField(new LongField(TiffTag.JPEG_INTERCHANGE_FORMAT.getValue(), new int[] {0})); // Placeholder
+			thumbnailIFD.addField(new LongField(TiffTag.JPEG_INTERCHANGE_FORMAT_LENGTH.getValue(), new int[] {compressedImage.length}));
 			offset = thumbnailIFD.write(randOS, offset);
 			// This line is very important!!!
 			randOS.seek(offset);
@@ -140,5 +154,7 @@ public class ExifThumbnail extends Thumbnail {
 			randOS.seek(thumbnailIFD.getField(TiffTag.JPEG_INTERCHANGE_FORMAT_LENGTH).getDataOffset());
 			randOS.writeInt(totalOut);
 		}
+		// Close the RandomAccessOutputStream instance if we created it locally
+		if(!(os instanceof RandomAccessOutputStream)) randOS.close();
 	}
 }
