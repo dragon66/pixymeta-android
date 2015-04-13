@@ -28,8 +28,6 @@ import java.util.Map;
 
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
-import pixy.meta.iptc.IPTCDataSet;
-import pixy.meta.iptc.IPTCReader;
 import pixy.io.IOUtils;
 
 public class IPTC extends Metadata {
