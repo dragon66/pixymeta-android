@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2014-2015 by Wen Yu.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Any modifications to this file must keep this entire header intact.
+ * 
+ * Change History - most recent changes go on top of previous changes
+ *
+ * PhotoshopIPTC.java
+ *
+ * Who   Date       Description
+ * ====  =========  ==================================================
+ * WY    13Apr2015  Changed write() to use ITPC.write()
+ * WY    12Apr2015  Removed unnecessary read()
+ */
+
 package pixy.meta.adobe;
 
 import java.io.ByteArrayOutputStream;
@@ -27,7 +46,6 @@ public class PhotoshopIPTC extends _8BIM {
 	public PhotoshopIPTC(String name, byte[] data) {
 		super(ImageResourceID.IPTC_NAA, name, data);
 		iptc = new IPTC(data);
-		read();
 	}
 	
 	public void addDataSet(IPTCDataSet dataSet) {
@@ -53,14 +71,6 @@ public class PhotoshopIPTC extends _8BIM {
 		return iptc.getDataSet(key);
 	}
 	
-	private void read() {
-		try {
-			iptc.getReader().read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void print() {
 		super.print();
 		// Print multiple entry IPTCDataSet
@@ -72,9 +82,7 @@ public class PhotoshopIPTC extends _8BIM {
 	public void write(OutputStream os) throws IOException {
 		if(data == null) {			
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			for(List<IPTCDataSet> datasets : iptc.getDataSet().values())
-				for(IPTCDataSet dataset : datasets)
-					dataset.write(bout);
+			iptc.write(bout);
 			data = bout.toByteArray();
 			size = data.length;
 		}

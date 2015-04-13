@@ -1,7 +1,26 @@
+/**
+ * Copyright (c) 2014-2015 by Wen Yu.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Any modifications to this file must keep this entire header intact.
+ * 
+ * Change History - most recent changes go on top of previous changes
+ *
+ * IPTC.java
+ *
+ * Who   Date       Description
+ * ====  =========  =================================================
+ * WY    13Apr2015  Added write()
+ */
+
 package pixy.meta.iptc;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,5 +139,11 @@ public class IPTC extends Metadata {
 			}
 		} else
 			super.showMetadata();
+	}
+	
+	public void write(OutputStream os) throws IOException {
+		for(List<IPTCDataSet> datasets : getDataSet().values())
+			for(IPTCDataSet dataset : datasets)
+				dataset.write(os);
 	}
 }
