@@ -18,7 +18,7 @@ import android.graphics.Bitmap;
 import pixy.image.jpeg.JPEGMeta;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
-import pixy.meta.adobe.PhotoshopIPTC;
+import pixy.meta.adobe.IPTC_NAA;
 import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
@@ -148,7 +148,7 @@ public class TestPixyMetaAndroit {
 	}
 	
 	private static List<_8BIM> createPhotoshopIPTC() {
-		PhotoshopIPTC iptc = new PhotoshopIPTC();
+		IPTC_NAA iptc = new IPTC_NAA();
 		iptc.addDataSet(new IPTCDataSet(IPTCRecord.APPLICATION, IPTCApplicationTag.COPYRIGHT_NOTICE.getTag(), "Copyright 2014-2015, yuwen_66@yahoo.com"));
 		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.KEY_WORDS.getTag(), "Welcome 'icafe' user!"));
 		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.CATEGORY.getTag(), "ICAFE"));
