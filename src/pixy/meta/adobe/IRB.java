@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    14Apr2015  Added getThumbnailResource()
  * WY    10Apr2015  Added containsThumbnail() and getThumbnail()
  * WY    13Mar2015  Initial creation
  */
@@ -75,5 +76,9 @@ public class IRB extends Metadata {
 	
 	public IRBThumbnail getThumbnail()  {
 		return reader.getThumbnail();
+	}
+	
+	public ThumbnailResource getThumbnailResource() {
+		return reader.getThumbnailResource();
 	}
 }
