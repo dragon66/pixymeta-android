@@ -15,6 +15,7 @@
  *
  * Who   Date       Description
  * ====  =========  ==================================================
+ * WY    14Apr2015  Added new constructor
  * WY    13Apr2015  Initial creation
  */
 
@@ -56,12 +57,25 @@ public class ThumbnailResource extends _8BIM {
 		try {
 			this.thumbnail = createThumbnail(thumbnail);
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to create IRBThumbnail from BufferedImage");
+			throw new RuntimeException("Unable to create IRBThumbnail from Bitmap");
 		}
 	}
 	
+	// id is either ImageResourceID.THUMBNAIL_RESOURCE_PS4 or ImageResourceID.THUMBNAIL_RESOURCE_PS5
+	public ThumbnailResource(ImageResourceID id, int dataType, int width, int height, byte[] data) {
+		// paddedRowBytes = (width * bits per pixel + 31) / 32 * 4.
+		// totalSize = paddedRowBytes * height * planes
+		// bitsPerPixel = 24
+		// numOfPlanes = 1
+		this(id, dataType, width, height, (width*24 + 31)/32*4, (width*24 + 31)/32*4*height*1, data.length, 24, 1, data);
+	}
+	
+	// id is either ImageResourceID.THUMBNAIL_RESOURCE_PS4 or ImageResourceID.THUMBNAIL_RESOURCE_PS5
 	public ThumbnailResource(ImageResourceID id, int dataType, int width, int height, int paddedRowBytes, int totalSize, int compressedSize, int bitsPerPixel, int numOfPlanes, byte[] data) {
 		super(id, "HUMBNAIL_RESOURCE", data);
+		// Sanity check
+		if(id != ImageResourceID.THUMBNAIL_RESOURCE_PS4 && id != ImageResourceID.THUMBNAIL_RESOURCE_PS5)
+			throw new IllegalArgumentException("Unsupported thumbnail ImageResourceID: " + id);
 		// Initialize fields
 		this.id = id;
 		this.width = width;
@@ -77,12 +91,16 @@ public class ThumbnailResource extends _8BIM {
 			thumbnail.setImage(width, height, dataType, data);
 		} else if(dataType == Thumbnail.DATA_TYPE_KRawRGB) {
 			// kRawRGB - NOT tested yet!
-			int[] colors = MetadataUtils.toARGB(data);
+			int[] colors = null;
+			if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS4)
+				colors = MetadataUtils.bgr2ARGB(data);
+			else if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS5)
+				colors = MetadataUtils.toARGB(data);
 			thumbnail.setImage(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
 		} else
 			throw new UnsupportedOperationException("Unsupported IRB thumbnail data type: " + dataType);
 	}
-		
+	
 	private IRBThumbnail createThumbnail(Bitmap thumbnail) throws IOException {
 		// Create memory buffer to write data
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
