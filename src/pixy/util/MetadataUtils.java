@@ -174,8 +174,9 @@ public class MetadataUtils {
 	
 	public static int[] toARGB(byte[] rgb) {
 		int[] argb = new int[rgb.length / 3];
+		int index = 0;
 		for(int i = 0; i < argb.length; i++) {
-			argb[i] = 0xFF << 24 | (rgb[0] & 0xFF) << 16 | (rgb[1] & 0xFF) << 8 | (rgb[2] & 0xFF);
+			argb[i] = 0xFF << 24 | (rgb[index++] & 0xFF) << 16 | (rgb[index++] & 0xFF) << 8 | (rgb[index++] & 0xFF);
 		}
 		
 		return argb;
@@ -183,8 +184,9 @@ public class MetadataUtils {
 	
 	public static int[] bgr2ARGB(byte[] bgr) {
 		int[] argb = new int[bgr.length / 3];
+		int index = 0;
 		for(int i = 0; i < argb.length; i++) {
-			argb[i] = 0xFF << 24 | (bgr[2] & 0xFF) << 16 | (bgr[1] & 0xFF) << 8 | (bgr[0] & 0xFF);
+			argb[i] = 0xFF << 24 | (bgr[index++] & 0xFF) |  (bgr[index++] & 0xFF) << 8 | (bgr[index++] & 0xFF) << 16;
 		}
 		
 		return argb;
