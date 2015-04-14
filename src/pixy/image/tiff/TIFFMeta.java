@@ -41,6 +41,7 @@ import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.IRBThumbnail;
+import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
@@ -52,7 +53,6 @@ import pixy.meta.exif.TiffExif;
 import pixy.meta.icc.ICCProfile;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
-import pixy.util.MetadataUtils;
 import pixy.image.jpeg.Marker;
 import pixy.image.tiff.ASCIIField;
 import pixy.image.tiff.ByteField;
@@ -81,7 +81,6 @@ import pixy.io.WriteStrategyMM;
 import pixy.string.StringUtils;
 import pixy.string.XMLUtils;
 import pixy.util.ArrayUtils;
-
 import android.graphics.*;
 
 public class TIFFMeta {
@@ -874,7 +873,8 @@ public class TIFFMeta {
 	public static void insertThumbnail(RandomAccessInputStream rin, RandomAccessOutputStream rout, Bitmap thumbnail) throws IOException {
 		// Sanity check
 		if(thumbnail == null) throw new IllegalArgumentException("Input thumbnail is null");
-		insertIRB(rin, rout, Arrays.asList(MetadataUtils.createThumbnail8BIM(thumbnail)), true);
+		_8BIM[] bims = {new ThumbnailResource(thumbnail)};
+		insertIRB(rin, rout, Arrays.asList(bims), true);
 	}
 	
 	public static void insertXMP(byte[] xmp, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {

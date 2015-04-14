@@ -69,6 +69,7 @@ import org.w3c.dom.NodeList;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
@@ -80,6 +81,7 @@ import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifReader;
 import pixy.meta.exif.ExifThumbnail;
+import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.exif.JpegExif;
 import pixy.meta.icc.ICCProfile;
 import pixy.meta.image.Comment;
@@ -875,7 +877,8 @@ public class JPEGMeta {
 	public static void insertIRBThumbnail(InputStream is, OutputStream os, Bitmap thumbnail) throws IOException {
 		// Sanity check
 		if(thumbnail == null) throw new IllegalArgumentException("Input thumbnail is null");
-		insertIRB(is, os, Arrays.asList(MetadataUtils.createThumbnail8BIM(thumbnail)), true); // Set true to keep other IRB blocks
+		_8BIM[] bims = {new ThumbnailResource(thumbnail)};
+		insertIRB(is, os, Arrays.asList(bims), true); // Set true to keep other IRB blocks
 	}
 	
 	/*
