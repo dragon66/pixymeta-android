@@ -12,7 +12,8 @@
  * TIFFMeta.java
  *
  * Who   Date       Description
- * ====  =========  =====================================================
+ * ====  =========  ==========================================================
+ * WY    15Apr2015  Changed the argument type for insertIPTC() and insertIRB()
  * WY    07Apr2015  Removed insertICCProfile() AWT related code
  * WY    07Apr2015  Merge Adobe IRB IPTC and TIFF IPTC data if both exist
  * WY    13Mar2015  Initial creation
@@ -124,7 +125,7 @@ public class TIFFMeta {
 		return rin.readInt();
 	}
 	
-	private static List<IPTCDataSet> copyIPTCDataSet(List<IPTCDataSet> iptcs, byte[] data) throws IOException {
+	private static Collection<IPTCDataSet> copyIPTCDataSet(Collection<IPTCDataSet> iptcs, byte[] data) throws IOException {
 		IPTC iptc = new IPTC(data);
 		// Shallow copy the map
 		Map<String, List<IPTCDataSet>> dataSetMap = new HashMap<String, List<IPTCDataSet>>(iptc.getDataSet());
@@ -728,7 +729,7 @@ public class TIFFMeta {
 		writeToStream(rout, firstIFDOffset);	
 	}
 	
-	public static void insertIPTC(RandomAccessInputStream rin, RandomAccessOutputStream rout, List<IPTCDataSet> iptcs, boolean update) throws IOException {
+	public static void insertIPTC(RandomAccessInputStream rin, RandomAccessOutputStream rout, Collection<IPTCDataSet> iptcs, boolean update) throws IOException {
 		insertIPTC(rin, rout, 0, iptcs, update);
 	}
 	
@@ -753,7 +754,7 @@ public class TIFFMeta {
 	 * @param update whether we want to keep the original image or create a completely new IPTC data set
 	 * @throws IOException
 	 */
-	public static void insertIPTC(RandomAccessInputStream rin, RandomAccessOutputStream rout, int pageNumber, List<IPTCDataSet> iptcs, boolean update) throws IOException {
+	public static void insertIPTC(RandomAccessInputStream rin, RandomAccessOutputStream rout, int pageNumber, Collection<IPTCDataSet> iptcs, boolean update) throws IOException {
 		int offset = copyHeader(rin, rout);
 		// Read the IFDs into a list first
 		List<IFD> ifds = new ArrayList<IFD>();
@@ -822,11 +823,11 @@ public class TIFFMeta {
 		writeToStream(rout, firstIFDOffset);	
 	}
 	
-	public static void insertIRB(RandomAccessInputStream rin, RandomAccessOutputStream rout, List<_8BIM> bims, boolean update) throws IOException {
+	public static void insertIRB(RandomAccessInputStream rin, RandomAccessOutputStream rout, Collection<_8BIM> bims, boolean update) throws IOException {
 		insertIRB(rin, rout, 0, bims, update);
 	}
 	
-	public static void insertIRB(RandomAccessInputStream rin, RandomAccessOutputStream rout, int pageNumber, List<_8BIM> bims, boolean update) throws IOException {
+	public static void insertIRB(RandomAccessInputStream rin, RandomAccessOutputStream rout, int pageNumber, Collection<_8BIM> bims, boolean update) throws IOException {
 		int offset = copyHeader(rin, rout);
 		// Read the IFDs into a list first
 		List<IFD> ifds = new ArrayList<IFD>();
@@ -843,11 +844,15 @@ public class TIFFMeta {
 			TiffField<?> f_irb = workingPage.getField(TiffTag.PHOTOSHOP);
 			if(f_irb != null) {
 				IRB irb = new IRB((byte[])f_irb.getData());
-				// Shallow copy the map
-				Map<Short, _8BIM> bimMap = new HashMap<Short, _8BIM>(irb.get8BIM());
-				for(_8BIM bim : bims)
-					bimMap.remove(bim.getID());
-				bims.addAll(bimMap.values());
+				// Shallow copy the map.
+	    		Map<Short, _8BIM> bimMap = new HashMap<Short, _8BIM>(irb.get8BIM());
+				for(_8BIM bim : bims) // Replace the original data
+					bimMap.put(bim.getID(), bim);
+				// In case we have two ThumbnailResource IRB, remove the Photoshop4.0 one
+				if(bimMap.containsKey(ImageResourceID.THUMBNAIL_RESOURCE_PS4.getValue()) 
+						&& bimMap.containsKey(ImageResourceID.THUMBNAIL_RESOURCE_PS5.getValue()))
+					bimMap.remove(ImageResourceID.THUMBNAIL_RESOURCE_PS4.getValue());
+				bims = bimMap.values();
 			}
 		}
 		
