@@ -27,4 +27,4 @@ Image metadata manipulation:
 
 Tested on Android Nexus4 virtual device only!!!
 
-[Project using pixymeta-andord](https://hosunghwang.wordpress.com/2015/03/18/ccl-license-tagging-java-implementation-for-image/)
+[Project using pixymeta-android](https://hosunghwang.wordpress.com/2015/03/18/ccl-license-tagging-java-implementation-for-image/)
