@@ -873,8 +873,8 @@ public class TIFFMeta {
 	public static void insertThumbnail(RandomAccessInputStream rin, RandomAccessOutputStream rout, Bitmap thumbnail) throws IOException {
 		// Sanity check
 		if(thumbnail == null) throw new IllegalArgumentException("Input thumbnail is null");
-		_8BIM[] bims = {new ThumbnailResource(thumbnail)};
-		insertIRB(rin, rout, Arrays.asList(bims), true);
+		_8BIM bim = new ThumbnailResource(thumbnail);
+		insertIRB(rin, rout, Arrays.asList(bim), true);
 	}
 	
 	public static void insertXMP(byte[] xmp, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
