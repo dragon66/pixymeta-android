@@ -13,12 +13,12 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    16Apr2015  Removed ICC_Profile related code
  * WY    13Mar2015  initial creation
  */
 
 package pixy.meta;
 
-import java.awt.color.ICC_Profile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -137,10 +137,6 @@ public abstract class Metadata {
 				pushbackStream.close();
 				throw new IllegalArgumentException("EXIF data inserting is not supported for " + imageType + " image");				
 		}		
-	}
-	
-	public static void insertICCProfile(InputStream is, OutputStream out, ICC_Profile icc_profile) throws IOException {
-		insertICCProfile(is, out, icc_profile.getData());
 	}
 	
 	public static void insertICCProfile(InputStream is, OutputStream out, byte[] icc_profile) throws IOException {
