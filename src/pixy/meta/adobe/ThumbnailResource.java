@@ -87,7 +87,7 @@ public class ThumbnailResource extends _8BIM {
 	
 	// id is either ImageResourceID.THUMBNAIL_RESOURCE_PS4 or ImageResourceID.THUMBNAIL_RESOURCE_PS5
 	public ThumbnailResource(ImageResourceID id, int dataType, int width, int height, int paddedRowBytes, int totalSize, int compressedSize, int bitsPerPixel, int numOfPlanes, byte[] data) {
-		super(id, "THUMBNAIL_RESOURCE", null);
+		super(validateID(id), "THUMBNAIL_RESOURCE", null);
 		init(id, dataType, width, height, paddedRowBytes, totalSize, compressedSize, bitsPerPixel, numOfPlanes, data);
 	}
 	
