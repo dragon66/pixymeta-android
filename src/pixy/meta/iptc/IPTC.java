@@ -13,6 +13,8 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    25Apr2015  Renamed getDataSet() to getDataSets()
+ * WY    25Apr2015  Added addDataSets()
  * WY    13Apr2015  Added write()
  */
 
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +69,20 @@ public class IPTC extends Metadata {
 	}
 	
 	public void addDataSet(IPTCDataSet dataSet) {
+		addDataSets(Arrays.asList(dataSet));
+	}
+	
+	public void addDataSets(Collection<? extends IPTCDataSet> dataSets) {
 		if(datasetMap != null) {
-			String name = dataSet.getName();
-			if(datasetMap.get(name) == null) {
-				List<IPTCDataSet> list = new ArrayList<IPTCDataSet>();
-				list.add(dataSet);
-				datasetMap.put(name, list);
-			} else if(dataSet.allowMultiple()) {
-				datasetMap.get(name).add(dataSet);
+			for(IPTCDataSet dataSet: dataSets) {
+				String name = dataSet.getName();
+				if(datasetMap.get(name) == null) {
+					List<IPTCDataSet> list = new ArrayList<IPTCDataSet>();
+					list.add(dataSet);
+					datasetMap.put(name, list);
+				} else if(dataSet.allowMultiple()) {
+					datasetMap.get(name).add(dataSet);
+				}
 			}
 		}
 	}
@@ -104,24 +114,24 @@ public class IPTC extends Metadata {
 	}
 	
 	/**
-	 * Get all the IPTCDataSet as a map for this IPTC data
-	 * 
-	 * @return a map with the key for the IPTCDataSet name and a list of IPTCDataSet as the value
-	 */
-	public Map<String, List<IPTCDataSet>> getDataSet() {
-		if(datasetMap != null)
-			return datasetMap;
-		return reader.getDataSet();
-	}
-	
-	/**
 	 * Get a list of IPTCDataSet associated with a key
 	 * 
 	 * @param key name of the data set
 	 * @return a list of IPTCDataSet associated with the key
 	 */
 	public List<IPTCDataSet> getDataSet(String key) {
-		return getDataSet().get(key);
+		return getDataSets().get(key);
+	}
+	
+	/**
+	 * Get all the IPTCDataSet as a map for this IPTC data
+	 * 
+	 * @return a map with the key for the IPTCDataSet name and a list of IPTCDataSet as the value
+	 */
+	public Map<String, List<IPTCDataSet>> getDataSets() {
+		if(datasetMap != null)
+			return datasetMap;
+		return reader.getDataSets();
 	}
 	
 	public IPTCReader getReader() {
@@ -140,7 +150,7 @@ public class IPTC extends Metadata {
 	}
 	
 	public void write(OutputStream os) throws IOException {
-		for(List<IPTCDataSet> datasets : getDataSet().values())
+		for(List<IPTCDataSet> datasets : getDataSets().values())
 			for(IPTCDataSet dataset : datasets)
 				dataset.write(os);
 	}
