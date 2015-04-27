@@ -74,7 +74,7 @@ public class IRB extends Metadata {
 		return reader;
 	}
 	
-	public IRBThumbnail getThumbnail()  {
+	public IRBThumbnail getThumbnail() {
 		return reader.getThumbnail();
 	}
 	

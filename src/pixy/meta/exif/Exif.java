@@ -144,7 +144,7 @@ public abstract class Exif extends Metadata {
 	
 	public ExifThumbnail getThumbnail() {
 		if(thumbnail != null)
-			return thumbnail;
+			return new ExifThumbnail(thumbnail);
 		if(reader != null) {
 			return reader.getThumbnail();
 		}		

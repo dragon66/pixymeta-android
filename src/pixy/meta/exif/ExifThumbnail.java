@@ -11,10 +11,11 @@
  *
  * ExifThumbnail.java
  *
- * Who   Date          Description
- * ====  ==========    =================================================
- * WY    10Apr2015     Added new constructor, changed write()
- * WY    13Mar2015     initial creation
+ * Who   Date         Description
+ * ====  ==========   ===============================================
+ * WY    27Apr2015    Added copy constructor
+ * WY    10Apr2015    Added new constructor, changed write()
+ * WY    13Mar2015    initial creation
  */
 
 package pixy.meta.exif;
@@ -55,6 +56,15 @@ public class ExifThumbnail extends Thumbnail {
 	
 	public ExifThumbnail(Bitmap thumbnail) {
 		super(thumbnail);
+	}
+	
+	public ExifThumbnail(ExifThumbnail other) { // Copy constructor
+		this.dataType = other.dataType;
+		this.height = other.height;
+		this.width = other.width;
+		this.thumbnail = other.thumbnail;
+		this.compressedThumbnail = other.compressedThumbnail;
+		this.thumbnailIFD = other.thumbnailIFD;
 	}
 	
 	public ExifThumbnail(int width, int height, int dataType, byte[] compressedThumbnail) {
