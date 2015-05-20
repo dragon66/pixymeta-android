@@ -26,3 +26,5 @@ Image metadata manipulation:
    * In case of JPEG, handle normal XMP and extendedXMP which cannot fit into one APP1 segment 
 
 Tested on Android Nexus4 virtual device only!!!
+
+[Project using pixymeta-android](https://github.com/CreativeCommons-Seneca/cc-xmp-tag)
