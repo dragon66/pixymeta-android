@@ -22,6 +22,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * A common language utility class
  * 
@@ -29,6 +32,9 @@ import java.net.URL;
  * @version 1.0 09/19/2012
  */
 public class LangUtils {
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(LangUtils.class);
+	
 	private LangUtils(){} // Prevents instantiation
 	
 	// TODO: need to rewrite this method (may have to create and return a new class Rational)
@@ -131,8 +137,8 @@ public class LangUtils {
 				 return pt.getActualTypeArguments();
 			 }
 		 } catch(Exception e) {
-			 System.out.println("Error probing generic type arguments!");
-	     }
+			 LOGGER.error("Error probing generic type arguments!", e);
+		 }
 		 
 		 return new Type[]{};
 	}
@@ -192,7 +198,7 @@ public class LangUtils {
 			Class<String[]> argTypes = String[].class;
 			Method main = c.getDeclaredMethod("main", argTypes);
 	  	    Object mainArgs = Arrays.copyOfRange(args, 1, args.length);
-		    System.out.format("invoking %s.main()%n", c.getName());
+		    LOGGER.info("invoking {}.main()\n", c.getName());
 		    main.invoke(null, mainArgs);
 		} catch (Exception ex) {
 			ex.printStackTrace();

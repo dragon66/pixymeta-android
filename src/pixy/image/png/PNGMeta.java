@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.InflaterInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import pixy.image.png.ICCPBuilder;
@@ -57,6 +59,9 @@ public class PNGMeta {
 	
 	/** PNG signature constant */
     private static final long SIGNATURE = 0x89504E470D0A1A0AL;
+    
+    // Obtain a logger instance
+ 	private static final Logger LOGGER = LoggerFactory.getLogger(PNGMeta.class);
 	
    	public static void insertChunk(Chunk customChunk, InputStream is, OutputStream os) throws IOException {
   		insertChunks(new Chunk[]{customChunk}, is, os);
@@ -164,18 +169,18 @@ public class PNGMeta {
         return list;
   	}
    	
-  	private static byte[] readICCProfile(byte[] buf) throws IOException {
-  		int profileName_len = 0;
-  		while(buf[profileName_len] != 0) profileName_len++;
-  		String profileName = new String(buf, 0, profileName_len,"UTF-8");
+	private static byte[] readICCProfile(byte[] buf) throws IOException {
+		int profileName_len = 0;
+		while(buf[profileName_len] != 0) profileName_len++;
+		String profileName = new String(buf, 0, profileName_len,"UTF-8");
 		
-  		InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
-  		System.out.println("ICCProfile name: " + profileName);
+		InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
+		LOGGER.info("ICCProfile name: {}", profileName);
 		 
-  		byte[] icc_profile = IOUtils.readFully(ii, 4096);
-  		System.out.println("ICCProfile length: " + icc_profile.length);
-		 
-  		return icc_profile;
+		byte[] icc_profile = IOUtils.readFully(ii, 4096);
+		LOGGER.info("ICCProfile length: {}", icc_profile.length);
+	 		 
+		return icc_profile;
  	}
   	
 	public static Map<MetadataType, Metadata> readMetadata(InputStream is) throws IOException {
@@ -194,9 +199,7 @@ public class PNGMeta {
 				if(reader.getKeyword().equals("XML:com.adobe.xmp")); // We found XMP data
 	   				metadataMap.put(MetadataType.XMP, new XMP(reader.getText()));
 	   		}
-			System.out.print(type.getName() + " (" + type.getAttribute() + ")");
-			System.out.print(" | " + length + " bytes");
-			System.out.println(" | " + "0x" + Long.toHexString(chunk.getCRC()) + " (CRC)");
+			LOGGER.info("{} ({}) | {} bytes | 0x{} (CRC)", type.getName(), type.getAttribute(), length, Long.toHexString(chunk.getCRC()));
 		}
 		
 		is.close();

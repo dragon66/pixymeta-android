@@ -64,6 +64,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -128,6 +130,9 @@ public class JPEGMeta {
 	public static final int GUID_LEN = 32;
 	
 	public static final EnumSet<Marker> APPnMarkers = EnumSet.range(Marker.APP0, Marker.APP15);
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPEGMeta.class);
 	
 	/** Copy a single SOS segment */	
 	@SuppressWarnings("unused")
@@ -1028,11 +1033,15 @@ public class JPEGMeta {
 	
 	public static void printHTables(List<HTable> tables) {
 		final String[] HT_class_table = {"DC Component", "AC Component"};
-		System.out.println("Huffman table information =>:");
+		
+		StringBuilder hufTable = new StringBuilder();
+		
+		hufTable.append("Huffman table information =>:\n");
+		
 		for(HTable table : tables )
 		{
-			System.out.println("Class: " + table.getComponentClass() + " (" + HT_class_table[table.getComponentClass()] + ")");
-			System.out.println("Destination ID: " + table.getDestinationID());
+			hufTable.append("Class: " + table.getComponentClass() + " (" + HT_class_table[table.getComponentClass()] + ")\n");
+			hufTable.append("Destination ID: " + table.getDestinationID() + "\n");
 			
 			byte[] bits = table.getBits();
 			byte[] values = table.getValues();
@@ -1044,11 +1053,11 @@ public class JPEGMeta {
 				count += (bits[i]&0xff);
 			}
 			
-            System.out.println("Number of codes: " + count);
+            hufTable.append("Number of codes: " + count + "\n");
 			
             if (count > 256)
 			{
-				System.out.println("invalid huffman code count!");			
+				LOGGER.warn("invalid huffman code count! - {}", count);			
 				return;
 			}
 	        
@@ -1056,78 +1065,83 @@ public class JPEGMeta {
             
 			for (int i = 0; i < 16; i++) {
 			
-				System.out.print("Codes of length " + (i+1) + " (" + (bits[i]&0xff) +  " total): [ ");
+				hufTable.append("Codes of length " + (i+1) + " (" + (bits[i]&0xff) +  " total): [ ");
 				
 				for (int k = 0; k < (bits[i]&0xff); k++) {
-					System.out.print((values[j++]&0xff) + " ");
+					hufTable.append((values[j++]&0xff) + " ");
 				}
 				
-				System.out.println("]");
+				hufTable.append("]\n");
 			}
 			
-			System.out.println("<<End of Huffman table information>>");
+			hufTable.append("<<End of Huffman table information>>\n");
 		}
+		
+		LOGGER.info("\n{}", hufTable);
 	}
 	
 	public static void printQTables(List<QTable> qTables) {
-		System.out.println("Quantization table information =>:");
+		StringBuilder qtTable = new StringBuilder();
+				
+		qtTable.append("Quantization table information =>:\n");
 		
 		int count = 0;
 		
 		for(QTable table : qTables) {
 			int QT_precision = table.getPrecision();
 			short[] qTable = table.getTable();
-			System.out.println("precision of QT is " + QT_precision);
-			System.out.println("Quantization table #" + table.getIndex() + ":");
+			qtTable.append("precision of QT is " + QT_precision + "\n");
+			qtTable.append("Quantization table #" + table.getIndex() + ":\n");
 			
 		   	if(QT_precision == 0) {
 				for (int j = 0; j < 64; j++)
 			    {
 					if (j != 0 && j%8 == 0) {
-						System.out.println();
+						qtTable.append("\n");
 					}
-					
-					System.out.print((qTable[j]&0xff) + " ");			
+					qtTable.append((qTable[j]&0xff) + " ");			
 			    }
 			} else { // 16 bit big-endian
 								
 				for (int j = 0; j < 64; j++) {
 					if (j != 0 && j%8 == 0) {
-						System.out.println();
+						qtTable.append("\n");
 					}
-					System.out.print((qTable[j]&0xffff) + " ");	
+					qtTable.append((qTable[j]&0xffff) + " ");	
 				}				
 			}
 		   	
 		   	count++;
 		
-			System.out.println();
-			System.out.println("***************************");
+			qtTable.append("\n");
+			qtTable.append("***************************\n");
 		}
 		
-		System.out.println("Total number of Quantation tables: " + count);
-		System.out.println("End of quantization table information");
+		qtTable.append("Total number of Quantation tables: " + count + "\n");
+		qtTable.append("End of quantization table information\n");
+		
+		LOGGER.info("\n{}", qtTable);
 	}
-	
+		
 	public static void printSOF(SOFReader reader) {
-		System.out.println("SOF informtion =>");
-		System.out.println("Precision: " + reader.getPrecision());
-		System.out.println("Image height: " + reader.getFrameHeight());
-		System.out.println("Image width: " + reader.getFrameWidth());
-		System.out.println("# of Components: " + reader.getNumOfComponents());
-		System.out.println(" (1 = grey scaled, 3 = color YCbCr or YIQ, 4 = color CMYK)");		
+		LOGGER.info("SOF informtion =>");
+		LOGGER.info("Precision: {}", reader.getPrecision());
+		LOGGER.info("Image height: {}", reader.getFrameHeight());
+		LOGGER.info("Image width: {}", reader.getFrameWidth());
+		LOGGER.info("# of Components: {}", reader.getNumOfComponents());
+		LOGGER.info("(1 = grey scaled, 3 = color YCbCr or YIQ, 4 = color CMYK)");		
 		    
 		for(Component component : reader.getComponents()) {
-			System.out.println();
-			System.out.println("Component ID: " + component.getId());
-			System.out.println("Herizontal sampling factor: " + component.getHSampleFactor());
-			System.out.println("Vertical sampling factor: " + component.getVSampleFactor());
-			System.out.println("Quantization table #: " + component.getQTableNumber());
-			System.out.println("DC table number: " + component.getDCTableNumber());
-			System.out.println("AC table number: " + component.getACTableNumber());
+			LOGGER.info("\n");
+			LOGGER.info("Component ID: {}", component.getId());
+			LOGGER.info("Herizontal sampling factor: {}", component.getHSampleFactor());
+			LOGGER.info("Vertical sampling factor: {}", component.getVSampleFactor());
+			LOGGER.info("Quantization table #: {}", component.getQTableNumber());
+			LOGGER.info("DC table number: {}", component.getDCTableNumber());
+			LOGGER.info("AC table number: {}", component.getACTableNumber());
 		}
 		
-		System.out.println("End of SOF information");
+		LOGGER.info("End of SOF information");
 	}
 	
 	private static void readAPP13(InputStream is, OutputStream os) throws IOException {

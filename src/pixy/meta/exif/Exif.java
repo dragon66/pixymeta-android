@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.graphics.Bitmap;
 import pixy.image.tiff.TIFFMeta;
 import pixy.meta.Metadata;
@@ -56,6 +59,9 @@ public abstract class Exif extends Metadata {
 	
 	private boolean isThumbnailRequired;
 	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(Exif.class);
+		
 	public Exif() {
 		super(MetadataType.EXIF, null);
 	}
@@ -194,9 +200,9 @@ public abstract class Exif extends Metadata {
 	@Override
 	public void showMetadata() {
 		if(imageIFD != null) {
-			System.out.println("<<Image IFD starts>>");
+			LOGGER.info("<<Image IFD starts>>");
 			TIFFMeta.printIFD(imageIFD, TiffTag.class, "");
-			System.out.println("<<Image IFD ends>>");
+			LOGGER.info("<<Image IFD ends>>");
 		} else
 			super.showMetadata();
 	}

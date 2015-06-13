@@ -30,8 +30,10 @@ import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.image.ImageMetadata;
 import pixy.io.IOUtils;
-import pixy.image.bmp.BmpCompression;
 import static pixy.string.XMLUtils.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BMP image tweaking tool
@@ -39,7 +41,10 @@ import static pixy.string.XMLUtils.*;
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 12/29/2014
  */
-public class BMPMeta {	
+public class BMPMeta {
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(BMPMeta.class);
+
 	// Data transfer object for multiple thread support
 	private static class DataTransferObject {
 		private byte[] fileHeader; // 14
@@ -62,12 +67,13 @@ public class BMPMeta {
 		DataTransferObject DTO = new DataTransferObject();
 		readHeader(is, DTO);
 		
-		System.out.println("... BMP snoop starts...");
-		System.out.println("Image signature: " + new String(DTO.fileHeader, 0, 2));
-		System.out.println("File size: " + IOUtils.readInt(DTO.fileHeader, 2) + " bytes");
-		System.out.println("Reserved1 (2 bytes): " + IOUtils.readShort(DTO.fileHeader, 6));
-		System.out.println("Reserved2 (2 bytes): " + IOUtils.readShort(DTO.fileHeader, 8));
-		System.out.println("Data offset: " + IOUtils.readInt(DTO.fileHeader, 10));
+		LOGGER.info("... BMP snoop starts...");
+		LOGGER.info("Image signature: {}", new String(DTO.fileHeader, 0, 2));
+		LOGGER.info("File size: {} bytes", IOUtils.readInt(DTO.fileHeader, 2));
+		LOGGER.info("Reserved1 (2 bytes): {}", IOUtils.readShort(DTO.fileHeader, 6));
+		LOGGER.info("Reserved2 (2 bytes): {}", IOUtils.readShort(DTO.fileHeader, 8));
+		LOGGER.info("Data offset: {}", IOUtils.readInt(DTO.fileHeader, 10));
+		
 		Node root = createElement(doc, "bitmap");
 		Node header = createElement(doc, "header");
 		Node fileHeader = createElement(doc, "file-header");
@@ -89,9 +95,9 @@ public class BMPMeta {
 		addChild(fileHeader, dataOffset);
 		
 		// TODO add more ImageMetadata elements to doc
-		System.out.println("Info header length: " + IOUtils.readInt(DTO.infoHeader, 0));
-		System.out.println("Image width: " + IOUtils.readInt(DTO.infoHeader, 4));
-		System.out.println("Image heigth: " + IOUtils.readInt(DTO.infoHeader, 8));	
+		LOGGER.info("Info header length: {}", IOUtils.readInt(DTO.infoHeader, 0));
+		LOGGER.info("Image width: {}", IOUtils.readInt(DTO.infoHeader, 4));
+		LOGGER.info("Image heigth: {}", IOUtils.readInt(DTO.infoHeader, 8));	
 		
 		String alignment = "";
 		if(IOUtils.readInt(DTO.infoHeader, 8) > 0)
@@ -99,15 +105,15 @@ public class BMPMeta {
 		else
 			alignment = "TOP_DOWN";
 		
-		System.out.println("Image alignment: " + alignment);
-		System.out.println("Number of planes: " + IOUtils.readShort(DTO.infoHeader, 12));
-		System.out.println("BitCount (bits per pixel): " + IOUtils.readShort(DTO.infoHeader, 14));
-		System.out.println("Compression: " + BmpCompression.fromInt(IOUtils.readInt(DTO.infoHeader, 16)));
-		System.out.println("Image size (compressed size of image): " + IOUtils.readInt(DTO.infoHeader, 20) + " bytes");
-		System.out.println("Horizontal resolution (Pixels/meter): " + IOUtils.readInt(DTO.infoHeader, 24));
-		System.out.println("Vertical resolution (Pixels/meter): " + IOUtils.readInt(DTO.infoHeader, 28));
-		System.out.println("Colors used (number of actually used colors): " + IOUtils.readInt(DTO.infoHeader, 32));
-		System.out.println("Important colors (number of important colors): " + IOUtils.readInt(DTO.infoHeader, 36));
+		LOGGER.info("Image alignment: {}", alignment);
+		LOGGER.info("Number of planes: {}", IOUtils.readShort(DTO.infoHeader, 12));
+		LOGGER.info("BitCount (bits per pixel): {}", IOUtils.readShort(DTO.infoHeader, 14));
+		LOGGER.info("Compression: {}", BmpCompression.fromInt(IOUtils.readInt(DTO.infoHeader, 16)));
+		LOGGER.info("Image size (compressed size of image): {} bytes", IOUtils.readInt(DTO.infoHeader, 20));
+		LOGGER.info("Horizontal resolution (Pixels/meter): {}", IOUtils.readInt(DTO.infoHeader, 24));
+		LOGGER.info("Vertical resolution (Pixels/meter): {}", IOUtils.readInt(DTO.infoHeader, 28));
+		LOGGER.info("Colors used (number of actually used colors): {}", IOUtils.readInt(DTO.infoHeader, 32));
+		LOGGER.info("Important colors (number of important colors): {}", IOUtils.readInt(DTO.infoHeader, 36));
 		
 		Node infoHeader = createElement(doc, "info-header");
 		Node infoHeaderLen = createElement(doc, "info-header-length");
@@ -152,7 +158,7 @@ public class BMPMeta {
 		
 		if(bitsPerPixel <= 8) {
 			readPalette(is, DTO);
-			System.out.println("Color map follows");
+			LOGGER.info("Color map follows");
 		}
 		
 		metadataMap.put(MetadataType.IMAGE, new ImageMetadata(doc));

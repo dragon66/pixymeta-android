@@ -12,6 +12,9 @@ package pixy.image.png;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pixy.util.Reader;
 
 /**
@@ -23,6 +26,9 @@ import pixy.util.Reader;
 public class IENDReader implements Reader {
 
 	private Chunk chunk;
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(IENDReader.class);
 	
 	public IENDReader(Chunk chunk) {
 		//
@@ -36,7 +42,7 @@ public class IENDReader implements Reader {
 	@Override
 	public void read() throws IOException {
 		if(chunk.getData().length != 0) {
-			System.out.println("Warning: IEND data field is not empty!");
+			LOGGER.warn("Warning: IEND data field is not empty!");
 		}
 	}
 }

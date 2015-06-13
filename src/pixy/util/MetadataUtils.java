@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pixy.io.RandomAccessInputStream;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,7 +55,10 @@ public class MetadataUtils {
 	private static byte[] JPG2000 = {0x00, 0x00, 0x00, 0x0C};
 	
 	public static final int IMAGE_MAGIC_NUMBER_LEN = 4; 
-		
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataUtils.class);
+
 	public static ImageType guessImageType(PushbackInputStream is) throws IOException {
 		// Read the first ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes
 		byte[] magicNumber = new byte[IMAGE_MAGIC_NUMBER_LEN];
@@ -94,7 +100,7 @@ public class MetadataUtils {
 					imageType = ImageType.TGA;					
 			}
 		} else {
-			System.out.println("Unknown format!");		
+			LOGGER.error("Unknown format!");		
 		}
 		
 		return imageType;

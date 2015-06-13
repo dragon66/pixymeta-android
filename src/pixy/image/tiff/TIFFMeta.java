@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import pixy.meta.Metadata;
@@ -89,6 +91,9 @@ public class TIFFMeta {
 	public static final int OFFSET_TO_WRITE_FIRST_IFD_OFFSET = 0x04;
 	public static final int FIRST_WRITE_OFFSET = 0x08;
 	public static final int STREAM_HEAD = 0x00;
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(TIFFMeta.class);
 	
 	private static int copyHeader(RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {		
 		rin.seek(STREAM_HEAD);
@@ -170,8 +175,7 @@ public class TIFFMeta {
 		return new LongField(TiffTag.JPEG_DC_TABLES.getValue(), tmp);
 	}
 	
-	private static void copyJPEGIFByteCount(RandomAccessInputStream rin, RandomAccessOutputStream rout, int offset, int outOffset) throws IOException 
-	{		
+	private static void copyJPEGIFByteCount(RandomAccessInputStream rin, RandomAccessOutputStream rout, int offset, int outOffset) throws IOException {		
 		boolean finished = false;
 		int length = 0;	
 		short marker;
@@ -180,29 +184,20 @@ public class TIFFMeta {
 		rin.seek(offset);
 		rout.seek(outOffset);
 		// The very first marker should be the start_of_image marker!	
-		if(Marker.fromShort(IOUtils.readShortMM(rin)) != Marker.SOI)
-		{
-			System.out.println("Invalid JPEG image, expected SOI marker not found!");
+		if(Marker.fromShort(IOUtils.readShortMM(rin)) != Marker.SOI) {
 			return;
 		}
 		
-		System.out.println(Marker.SOI);
 		IOUtils.writeShortMM(rout, Marker.SOI.getValue());
 		
 		marker = IOUtils.readShortMM(rin);
 			
-		while (!finished)
-	    {	        
-			if (Marker.fromShort(marker) == Marker.EOI)
-			{
-				System.out.println(Marker.EOI);
+		while (!finished) {	        
+			if (Marker.fromShort(marker) == Marker.EOI) {
 				IOUtils.writeShortMM(rout, marker);
 				finished = true;
-			}
-		   	else // Read markers
-			{
-		   		emarker = Marker.fromShort(marker);
-				System.out.println(emarker); 
+			} else { // Read markers
+		  		emarker = Marker.fromShort(marker);
 				
 				switch (emarker) {
 					case JPG: // JPG and JPGn shouldn't appear in the image.
@@ -249,8 +244,7 @@ public class TIFFMeta {
 		return new LongField(TiffTag.JPEG_Q_TABLES.getValue(), tmp);
 	}
 	
-	private static short copyJPEGSOS(RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException 
-	{
+	private static short copyJPEGSOS(RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException	{
 		int len = IOUtils.readUnsignedShortMM(rin);
 		byte buf[] = new byte[len - 2];
 		IOUtils.readFully(rin, buf);
@@ -261,8 +255,7 @@ public class TIFFMeta {
 		int nextByte = 0;
 		short marker = 0;	
 		
-		while((nextByte = IOUtils.read(rin)) != -1)
-		{
+		while((nextByte = IOUtils.read(rin)) != -1)	{
 			rout.write(nextByte);
 			
 			if(nextByte == 0xff)
@@ -274,8 +267,7 @@ public class TIFFMeta {
 					throw new IOException("Premature end of SOS segment!");					
 				}								
 				
-				if (nextByte != 0x00)
-				{
+				if (nextByte != 0x00) {
 					marker = (short)((0xff<<8)|nextByte);
 					
 					switch (Marker.fromShort(marker)) {										
@@ -287,7 +279,6 @@ public class TIFFMeta {
 						case RST5:
 						case RST6:
 						case RST7:
-							System.out.println(Marker.fromShort(marker));
 							continue;
 						default:
 					}
@@ -922,15 +913,22 @@ public class TIFFMeta {
 	
 	public static void printIFDs(Collection<IFD> list, String indent) {
 		int id = 0;
-		System.out.print(indent);
+		LOGGER.info("Printing IFDs ... ");
+		
 		for(IFD currIFD : list) {
-			System.out.println("IFD #" + id);
+			LOGGER.info("IFD #{}", id);
 			printIFD(currIFD, TiffTag.class, indent);
 			id++;
 		}
 	}
 	
 	public static void printIFD(IFD currIFD, Class<? extends Tag> tagClass, String indent) {
+		StringBuilder ifd = new StringBuilder();
+		print(currIFD, tagClass, indent, ifd);
+		LOGGER.info("\n{}", ifd);
+	}
+	
+	private static void print(IFD currIFD, Class<? extends Tag> tagClass, String indent, StringBuilder ifds) {
 		// Use reflection to invoke fromShort(short) method
 		Method method = null;
 		try {
@@ -942,33 +940,34 @@ public class TIFFMeta {
 		}
 		Collection<TiffField<?>> fields = currIFD.getFields();
 		int i = 0;
+		
 		for(TiffField<?> field : fields) {
-			System.out.print(indent);
-			System.out.println("Field #" + i);
-			System.out.print(indent);
+			ifds.append(indent);
+			ifds.append("Field #" + i + "\n");
+			ifds.append(indent);
 			short tag = field.getTag();
 			Tag ftag = TiffTag.UNKNOWN;
 			try {
 				ftag = (Tag)method.invoke(null, tag);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOGGER.error("IllegalAcessException", e);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				LOGGER.error("IllegalArgumentException", e);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				LOGGER.error("InvocationTargetException", e);
 			}
 			if (ftag == TiffTag.UNKNOWN) {
-				System.out.println("Tag: " + ftag + " [Value: 0x"+ Integer.toHexString(tag&0xffff) + "]" + " (Unknown)");
+				LOGGER.warn("Tag: {} {}{}{} {}", ftag, "[Value: 0x", Integer.toHexString(tag&0xffff), "]", "(Unknown)");
 			} else {
-				System.out.println("Tag: " + ftag);
+				ifds.append("Tag: " + ftag + "\n");
 			}
 			FieldType ftype = field.getType();				
-			System.out.print(indent);
-			System.out.println("Field type: " + ftype);
+			ifds.append(indent);
+			ifds.append("Field type: " + ftype + "\n");
 			int field_length = field.getLength();
-			System.out.print(indent);
-			System.out.println("Field length: " + field_length);
-			System.out.print(indent);			
+			ifds.append(indent);
+			ifds.append("Field length: " + field_length + "\n");
+			ifds.append(indent);			
 			
 			String suffix = null;
 			if(ftype == FieldType.SHORT || ftype == FieldType.SSHORT)
@@ -976,7 +975,7 @@ public class TIFFMeta {
 			else
 				suffix = ftag.getFieldAsString(field.getData());			
 			
-			System.out.println("Field value: " + field.getDataAsString() + (StringUtils.isNullOrEmpty(suffix)?"":" => " + suffix));
+			ifds.append("Field value: " + field.getDataAsString() + (StringUtils.isNullOrEmpty(suffix)?"":" => " + suffix) + "\n");
 			
 			i++;
 		}
@@ -984,19 +983,19 @@ public class TIFFMeta {
 		Map<Tag, IFD> children = currIFD.getChildren();
 		
 		if(children.get(TiffTag.EXIF_SUB_IFD) != null) {
-			System.out.print(indent + "--------- ");
-			System.out.println("<<Exif SubIFD starts>>");
-			printIFD(children.get(TiffTag.EXIF_SUB_IFD), ExifTag.class, indent + "--------- ");
-			System.out.print(indent + "--------- ");
-			System.out.println("<<Exif SubIFD ends>>");
+			ifds.append(indent + "--------- ");
+			ifds.append("<<Exif SubIFD starts>>\n");
+			print(children.get(TiffTag.EXIF_SUB_IFD), ExifTag.class, indent + "--------- ", ifds);
+			ifds.append(indent + "--------- ");
+			ifds.append("<<Exif SubIFD ends>>\n");
 		}
 		
 		if(children.get(TiffTag.GPS_SUB_IFD) != null) {
-			System.out.print(indent + "--------- ");
-			System.out.println("<<GPS SubIFD starts>>");
-			printIFD(children.get(TiffTag.GPS_SUB_IFD), GPSTag.class, indent + "--------- ");
-			System.out.print(indent + "--------- ");
-			System.out.println("<<GPS SubIFD ends>>");
+			ifds.append(indent + "--------- ");
+			ifds.append("<<GPS SubIFD starts>>\n");
+			print(children.get(TiffTag.GPS_SUB_IFD), GPSTag.class, indent + "--------- ", ifds);
+			ifds.append(indent + "--------- ");
+			ifds.append("<<GPS SubIFD ends>>\n");
 		}		
 	}
 	

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project name= "pixymeta-android" default="compile" basedir=".">
+	<description>
+		Ant build.xml file for building the pixymeta-android library.
+	</description>
+	<path id="pixymeta-android.classpath">
+	    <fileset dir="lib">
+	    	<include name="*.jar"/>
+	    	<exclude name="pixymeta.jar"/>
+	    </fileset>
+    </path>
+    <fileset id="pixymeta-android.source.path" dir="src" defaultexcludes="yes">
+        <include name="**/*.java"/>
+	</fileset>
+	<target name="init" depends="clean">
+		<mkdir dir="build/classes"/>
+		<mkdir dir="dist"/>
+		<mkdir dir="build/doc"/>
+		<copy includeemptydirs="false" todir="build/classes">
+            <fileset dir="src">
+                <include name="*"/>
+            </fileset>
+        </copy>
+	</target>
+	<target name="clean">
+		<delete dir="build"/>
+		<delete dir="dist"/>
+	</target>
+	<target name="doc" depends="init" >
+		<javadoc destdir="build/doc" classpathref="pixymeta-android.classpath" additionalparam="-notimestamp" packagenames="pixy.*">
+		    <fileset refid="pixymeta-android.source.path"/>		 	    
+		</javadoc>
+	</target>
+	<target name="compile" depends="init">
+		<echo message="${ant.project.name}: ${ant.file}"/>
+        <javac includeantruntime="false" srcdir="src" destdir="build/classes" 
+            encoding="UTF-8" classpathref="pixymeta-android.classpath">
+        </javac>
+	</target>
+	<target name="package" depends="compile,doc">
+		<jar destfile="dist/pixymeta.jar">
+		    <fileset dir="build/classes"/>
+		    <fileset dir="build">	
+		    	<include name="doc/**/*"/>
+		    </fileset>
+	    </jar>
+		<delete file="lib/pixymeta.jar"/>
+		<copy file="dist/pixymeta.jar" todir="lib"/>
+	</target>
+</project>

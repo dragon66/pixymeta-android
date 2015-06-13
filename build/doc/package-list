@@ -1,0 +1,17 @@
+pixy.image
+pixy.image.bmp
+pixy.image.gif
+pixy.image.jpeg
+pixy.image.png
+pixy.image.tiff
+pixy.io
+pixy.meta
+pixy.meta.adobe
+pixy.meta.exif
+pixy.meta.icc
+pixy.meta.image
+pixy.meta.iptc
+pixy.string
+pixy.test
+pixy.util
+pixy.util.zip

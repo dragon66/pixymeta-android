@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import pixy.meta.MetadataReader;
@@ -33,6 +35,9 @@ public class ImageMetadataReader implements MetadataReader {
 	private boolean loaded;
 	private Document document;
 	private Map<String, Thumbnail> thumbnails;
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageMetadataReader.class);
 		
 	public ImageMetadataReader(Document document) {
 		this.document = document;
@@ -72,15 +77,15 @@ public class ImageMetadataReader implements MetadataReader {
 		// Thumbnail information
 		if(containsThumbnail()) { // We have thumbnail
 			Iterator<Map.Entry<String, Thumbnail>> entries = thumbnails.entrySet().iterator();
-			System.out.println("Total number of thumbnails: " + thumbnails.size());
+			LOGGER.info("Total number of thumbnails: {}", thumbnails.size());
 			int i = 0;
 			while (entries.hasNext()) {
 			    Map.Entry<String, Thumbnail> entry = entries.next();
-			    System.out.println("Thumbnail #" + i + ": " + entry.getKey() + " thumbnail:");
+			    LOGGER.info("Thumbnail #{}: {} thumbnail:", i, entry.getKey());
 			    Thumbnail thumbnail = entry.getValue();
-			    System.out.println("Thumbnail width: " + ((thumbnail.getWidth() < 0)? " Unavailable": thumbnail.getWidth()));
-				System.out.println("Thumbanil height: " + ((thumbnail.getHeight() < 0)? " Unavailable": thumbnail.getHeight()));
-				System.out.println("Thumbnail data type: " + thumbnail.getDataTypeAsString());
+			    LOGGER.info("Thumbnail width: {}", ((thumbnail.getWidth() < 0)? " Unavailable": thumbnail.getWidth()));
+				LOGGER.info("Thumbanil height: {}", ((thumbnail.getHeight() < 0)? " Unavailable": thumbnail.getHeight()));
+				LOGGER.info("Thumbnail data type: {}", thumbnail.getDataTypeAsString());
 				i++;
 			}
 		}		

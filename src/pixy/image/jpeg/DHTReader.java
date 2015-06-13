@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pixy.util.Reader;
 
 /**
@@ -23,7 +26,9 @@ import pixy.util.Reader;
  * @version 1.0 10/12/2013
  */
 public class DHTReader implements Reader {
-	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(DHTReader.class);
+		
 	private Segment segment;
 	private List<HTable> dcTables = new ArrayList<HTable>(3);
 	private List<HTable> acTables = new ArrayList<HTable>(3);
@@ -74,7 +79,7 @@ public class DHTReader implements Reader {
 						
             if (count > 256)
 			{
-				System.out.println("invalid huffman code count!");			
+				LOGGER.error("invalid huffman code count!");			
 				return;
 			}
             
@@ -99,7 +104,7 @@ public class DHTReader implements Reader {
 				acTables.add(table);
 			}
 			else {
-				System.out.println("Invalid component class value: " + HT_class);
+				LOGGER.error("Invalid component class value: " + HT_class);
 				return;
 			}			
 		}

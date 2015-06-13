@@ -21,6 +21,9 @@ package pixy.meta.adobe;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pixy.meta.adobe.ImageResourceID;
 import pixy.io.IOUtils;
 import pixy.string.StringUtils;
@@ -30,6 +33,9 @@ public class _8BIM {
 	private String name;
 	protected int size;
 	protected byte[] data;
+	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(_8BIM.class);
 	
 	public _8BIM(short id, String name, byte[] data) {
 		this(id, name, (data == null)?0:data.length, data);
@@ -66,21 +72,21 @@ public class _8BIM {
 		ImageResourceID eId  = ImageResourceID.fromShort(id);
 		
 		if((id >= ImageResourceID.PATH_INFO0.getValue()) && (id <= ImageResourceID.PATH_INFO998.getValue())) {
-			System.out.println("PATH_INFO" + " [Value: " + StringUtils.shortToHexStringMM(id) +"]" + " - Path Information (saved paths).");
+			LOGGER.info("PATH_INFO [Value: {}] - Path Information (saved paths).", StringUtils.shortToHexStringMM(id));
 		}
 		else if((id >= ImageResourceID.PLUGIN_RESOURCE0.getValue()) && (id <= ImageResourceID.PLUGIN_RESOURCE999.getValue())) {
-			System.out.println("PLUGIN_RESOURCE" + " [Value: " + StringUtils.shortToHexStringMM(id) +"]" + " - Plug-In resource.");
+			LOGGER.info("PLUGIN_RESOURCE [Value: {}] - Plug-In resource.", StringUtils.shortToHexStringMM(id));
 		}
 		else if (eId == ImageResourceID.UNKNOWN) {
-			System.out.println(eId + " [Value: " + StringUtils.shortToHexStringMM(id) +"]");
+			LOGGER.info("{} [Value: {}]", eId, StringUtils.shortToHexStringMM(id));
 		}
 		else {
-			System.out.println(eId);
+			LOGGER.info("{}", eId);
 		}
 		
-		System.out.println("Type: 8BIM");
-		System.out.println("Name: " + name);
-		System.out.println("Size: " + size);	
+		LOGGER.info("Type: 8BIM");
+		LOGGER.info("Name: {}", name);
+		LOGGER.info("Size: {}", size);	
 	}
 	
 	public void write(OutputStream os) throws IOException {

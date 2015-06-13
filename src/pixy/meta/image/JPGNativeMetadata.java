@@ -1,8 +1,28 @@
+/**
+ * Copyright (c) 2014-2015 by Wen Yu.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Any modifications to this file must keep this entire header intact.
+ * 
+ * Change History - most recent changes go on top of previous changes
+ *
+ * JPGNativeMetadata.java
+ *
+ * Who   Date         Description
+ * ====  =========    ===============================================
+ */
+
 package pixy.meta.image;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pixy.meta.NativeMetadata;
 import pixy.image.jpeg.JPEGMeta;
@@ -17,7 +37,9 @@ import pixy.util.ArrayUtils;
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 03/13/2015
  */
-public class JPGNativeMetadata extends NativeMetadata<Segment> {
+public class JPGNativeMetadata extends NativeMetadata<Segment> {	
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPGNativeMetadata.class);
 	
 	public JPGNativeMetadata() {
 		;
@@ -64,9 +86,9 @@ public class JPGNativeMetadata extends NativeMetadata<Segment> {
 			
 			if(Arrays.equals(buf, JPEGMeta.ADOBE_ID)) {
 				for (int i = 0, j = 5; i < 3; i++, j += 2) {
-					System.out.println(app14Info[i] + StringUtils.shortToHexStringMM(IOUtils.readShortMM(data, j)));
+					LOGGER.info("{}{}", app14Info[i], StringUtils.shortToHexStringMM(IOUtils.readShortMM(data, j)));
 				}
-				System.out.println(app14Info[3] + (((data[11]&0xff) == 0)? "Unknown (RGB or CMYK)":
+				LOGGER.info("{}{}", app14Info[3], (((data[11]&0xff) == 0)? "Unknown (RGB or CMYK)":
 					((data[11]&0xff) == 1)? "YCbCr":"YCCK" ));
 			}
 		}
@@ -76,30 +98,28 @@ public class JPGNativeMetadata extends NativeMetadata<Segment> {
 		int i = JPEGMeta.JFIF_ID.length;
 	    // JFIF segment
 	    if(Arrays.equals(ArrayUtils.subArray(data, 0, i), JPEGMeta.JFIF_ID) || Arrays.equals(ArrayUtils.subArray(data, 0, i), JPEGMeta.JFXX_ID)) {
-	    	System.out.print(new String(data, 0, i).trim());
-	    	System.out.println(" - version " + (data[i++]&0xff) + "." + (data[i++]&0xff));
-	    	System.out.print("Density unit: ");
+	    	LOGGER.info("{} - version {}.{}", new String(data, 0, i).trim(), (data[i++]&0xff), (data[i++]&0xff));
 	    	
 	    	switch(data[i++]&0xff) {
 	    		case 0:
-	    			System.out.println("No units, aspect ratio only specified");
+	    			LOGGER.info("Density unit: No units, aspect ratio only specified");
 	    			break;
 	    		case 1:
-	    			System.out.println("Dots per inch");
+	    			LOGGER.info("Density unit: Dots per inch");
 	    			break;
 	    		case 2:
-	    			System.out.println("Dots per centimeter");
+	    			LOGGER.info("Density unit: Dots per centimeter");
 	    			break;
 	    		default:
 	    	}
 	    	
-	    	System.out.println("X density: " + IOUtils.readUnsignedShortMM(data, i));
+	    	LOGGER.info("X density: {}", IOUtils.readUnsignedShortMM(data, i));
 	    	i += 2;
-	    	System.out.println("Y density: " + IOUtils.readUnsignedShortMM(data, i));
+	    	LOGGER.info("Y density: {}", IOUtils.readUnsignedShortMM(data, i));
 	    	i += 2;
 	    	int thumbnailWidth = data[i++]&0xff;
 	    	int thumbnailHeight = data[i++]&0xff;
-	    	System.out.println("Thumbnail dimension: " + thumbnailWidth + "X" + thumbnailHeight);	   
+	    	LOGGER.info("Thumbnail dimension: {}X{}", thumbnailWidth, thumbnailHeight);	   
 	    }
 	}
 	
@@ -112,31 +132,28 @@ public class JPGNativeMetadata extends NativeMetadata<Segment> {
 		currPos += JPEGMeta.DUCKY_ID.length;
 		
 		if(Arrays.equals(JPEGMeta.DUCKY_ID, buf)) {
-			System.out.println("=>" + duckyInfo[0]);
+			LOGGER.info("=>{}", duckyInfo[0]);
 			short tag = IOUtils.readShortMM(data, currPos);
 			currPos += 2;
 			
 			while (tag != 0x0000) {
-				System.out.println("Tag value: " + StringUtils.shortToHexStringMM(tag));
+				LOGGER.info("Tag value: {}", StringUtils.shortToHexStringMM(tag));
 				
 				int len = IOUtils.readUnsignedShortMM(data, currPos);
 				currPos += 2;
-				System.out.println("Tag length: " + len);
+				LOGGER.info("Tag length: {}", len);
 				
 				switch (tag) {
 					case 0x0001: // Image quality
-						System.out.print(duckyInfo[1]);
-						System.out.println(IOUtils.readUnsignedIntMM(data, currPos));
+						LOGGER.info("{}{}", duckyInfo[1], IOUtils.readUnsignedIntMM(data, currPos));
 						currPos += 4;
 						break;
 					case 0x0002: // Comment
-						System.out.print(duckyInfo[2]);
-						System.out.println(new String(data, currPos, currPos + len).trim());
+						LOGGER.info("{}{}", duckyInfo[2], new String(data, currPos, currPos + len).trim());
 						currPos += len;
 						break;
 					case 0x0003: // Copyright
-						System.out.print(duckyInfo[3]);
-						System.out.println(new String(data, currPos, currPos + len).trim());
+						LOGGER.info("{}{}", duckyInfo[3], new String(data, currPos, currPos + len).trim());
 						currPos += len;
 						break;
 					default: // Do nothing!					
