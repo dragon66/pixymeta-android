@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  ======================================================================
+ * WY    14Jun2015  Bug fix for toNBits() to use long data type internally
  * WY    04Jun2015  Rewrote all concatenation related methods
  * WY    02Jun2015  Bug fix for generic concatenate methods
  * WY    06Apr2015  Added reverse(byte[]) to reverse byte array elements
@@ -727,7 +728,7 @@ public class ArrayUtils
 		
 		return array;
 	}
-	
+
 	// Reverse the array
 	public static <T> void reverse(T[] data) {
 	    for (int left = 0, right = data.length - 1; left < right; left++, right--) {
@@ -801,7 +802,7 @@ public class ArrayUtils
 	   array[b] = temp;
     }
     
-    private static final <T extends Comparable<? super T>> void swap(T[] array, int a, int b) {
+    private static final <T> void swap(T[] array, int a, int b) {
 	   T temp = array[a];
 	   array[a] = array[b];
 	   array[b] = temp;
@@ -1085,7 +1086,7 @@ public class ArrayUtils
    		int[] intOutput = null;
    		Object output = null;
    		
-   		int outLen = (input.length*8 + nBits - 1)/nBits;
+   		int outLen = (int)((input.length*8L + nBits - 1)/nBits);
    		
    		if(nBits <= 8) {
    			byteOutput = new byte[outLen];
