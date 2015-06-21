@@ -367,13 +367,9 @@ public class TIFFMeta {
 			ifd.addField(stripOffSets);		
 		}
 		
-		// add copyright and software fields.
-		String copyRight = "Copyright (c) Wen Yu, 2014 (yuwen_66@yahoo.com)\0";
-		ifd.addField(new ASCIIField(TiffTag.COPYRIGHT.getValue(), copyRight));
-		
-		String softWare = "TIFFMeta 1.0\0";
+		// Add software field.
+		String softWare = "Created by PIXYMETA-ANDROID - https://github.com/dragon66/pixymeta-android\0";
 		ifd.addField(new ASCIIField(TiffTag.SOFTWARE.getValue(), softWare));
-		// End of copyright and software field.
 	
 		/* The following are added to work with old-style JPEG compression (type 6) */		
 		/* One of the flavors (found in JPEG EXIF thumbnail IFD - IFD1) of the old JPEG compression contains this field */
