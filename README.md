@@ -23,7 +23,21 @@ Image metadata manipulation:
 - JPEG, GIF, PNG, TIFF XMP metadata support
    * Insert XMP metada into JPEG, GIF, PNG, and TIFF image
    * Extract XMP metadata from JPEG, GIF, PNG, and TIFF image
-   * In case of JPEG, handle normal XMP and extendedXMP which cannot fit into one APP1 segment 
+   * In case of JPEG, handle normal XMP and extendedXMP which cannot fit into one APP1 segment
+
+Where can I get the latest release?
+-----------------------------------
+There is currently no stable release of PIXYMETA-ANDROID. However you can pull the latest SNAPSHOT from the Maven snapshot repository by adding the following dependency to your pom.xml:
+
+```xml
+<dependency>
+  <groupId>com.github.dragon66</groupId>
+  <artifactId>pixymeta-android</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+``` 
+
+Suggestions? custom requirements? email me: yuwen_66@yahoo.com
 
 Tested on Android Nexus4 virtual device only!!!
 
