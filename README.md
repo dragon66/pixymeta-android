@@ -53,12 +53,12 @@ Then you can use the SNAPSHOT version of ICAFE in your pom.xml:
 </dependency>
 ``` 
 
-[Project using pixymeta-android](https://github.com/CreativeCommons-Seneca/cc-xmp-tag)
-
 Go to the [wiki] page to see this library in action or grab the "pixymeta-android.jar" from the lib folder and try it yourself!
 
 [wiki]:https://github.com/dragon66/pixymeta-android/wiki
 
 Tested on Android Nexus4 virtual device only!!!
+
+[Project using pixymeta-android](https://github.com/CreativeCommons-Seneca/cc-xmp-tag)
 
 Suggestions? custom requirements? email me: yuwen_66@yahoo.com
