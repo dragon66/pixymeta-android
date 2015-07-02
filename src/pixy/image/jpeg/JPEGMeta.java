@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =======    ==========================================================
+ * WY    02Jul2015  Added support for APP12 segment reading
  * WY    01Jul2015  Added support for non-standard XMP identifier
  * WY    15Apr2015  Changed the argument type for insertIPTC() and insertIRB()
  * WY    07Apr2015  Revised insertExif()
@@ -91,6 +92,7 @@ import pixy.meta.image.Comment;
 import pixy.meta.image.ImageMetadata;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.jpeg.APP12Segment;
 import pixy.util.MetadataUtils;
 
 /**
@@ -1161,7 +1163,7 @@ public class JPEGMeta {
 		}
 	}
 	
-	private static void readAPP2(InputStream is, OutputStream bo) throws IOException {
+	private static void readAPP2(InputStream is, OutputStream os) throws IOException {
 		byte[] icc_profile_buf = new byte[12];
 		int length = IOUtils.readUnsignedShortMM(is);
 		IOUtils.readFully(is, icc_profile_buf);
@@ -1169,7 +1171,7 @@ public class JPEGMeta {
 		if (Arrays.equals(icc_profile_buf, ICC_PROFILE_ID)) {
 			icc_profile_buf = new byte[length - 14];
 		    IOUtils.readFully(is, icc_profile_buf);
-		    bo.write(icc_profile_buf, 2, length - 16);
+		    os.write(icc_profile_buf, 2, length - 16);
 		} else {
   			IOUtils.skipFully(is, length - 14);
   		}
@@ -1354,6 +1356,10 @@ public class JPEGMeta {
 					if(iccProfileStream == null)
 						iccProfileStream = new ByteArrayOutputStream();
 					iccProfileStream.write(ArrayUtils.subArray(data, ICC_PROFILE_ID.length + 2, length - ICC_PROFILE_ID.length - 4));
+				}
+			} else if(segment.getMarker() == Marker.APP12) {
+				if (Arrays.equals(ArrayUtils.subArray(data, 0, DUCKY_ID.length), DUCKY_ID)) {
+					metadataMap.put(MetadataType.JPG_APP12, new APP12Segment(ArrayUtils.subArray(data, DUCKY_ID.length, length - DUCKY_ID.length - 2)));
 				}
 			} else if(segment.getMarker() == Marker.APP13) {
 				if (Arrays.equals(ArrayUtils.subArray(data, 0, PHOTOSHOP_IRB_ID.length), PHOTOSHOP_IRB_ID)) {
@@ -1636,13 +1642,32 @@ public class JPEGMeta {
 							byte[] temp = new byte[ICC_PROFILE_ID.length];
 							IOUtils.readFully(is, temp);	
 							// ICC_Profile segment
-							if (Arrays.equals(temp, ICC_PROFILE_ID) && metadataTypes.contains(MetadataType.ICC_PROFILE)) {
+							if (Arrays.equals(temp, ICC_PROFILE_ID)) {
 								IOUtils.skipFully(is, length - ICC_PROFILE_ID.length  - 2);
 							} else {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
 								IOUtils.write(os, temp); // Write the already read bytes
 								temp = new byte[length - ICC_PROFILE_ID.length - 2];
+								IOUtils.readFully(is, temp);
+								IOUtils.write(os, temp);
+							}
+							marker = IOUtils.readShortMM(is);
+							break;
+						} // Otherwise go to default
+					case APP12:
+						if(metadataTypes.contains(MetadataType.JPG_APP12)) {
+							length = IOUtils.readUnsignedShortMM(is);
+							byte[] temp = new byte[DUCKY_ID.length];
+							IOUtils.readFully(is, temp);	
+							// Ducky segment
+							if (Arrays.equals(temp, DUCKY_ID)) {
+								IOUtils.skipFully(is, length - DUCKY_ID.length  - 2);
+							} else {
+								IOUtils.writeShortMM(os, marker);
+								IOUtils.writeShortMM(os, (short) length);
+								IOUtils.write(os, temp); // Write the already read bytes
+								temp = new byte[length - DUCKY_ID.length - 2];
 								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}

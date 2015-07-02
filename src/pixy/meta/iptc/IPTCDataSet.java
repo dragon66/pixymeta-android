@@ -150,11 +150,7 @@ public class IPTCDataSet {
 	public String getName() {
 		return name;
 	}
-	
-	public int getOffset() {
-		return offset;
-	}	
-	
+
 	public int getRecordNumber() {
 		return recordNumber;
 	}

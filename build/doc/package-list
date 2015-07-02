@@ -11,6 +11,7 @@ pixy.meta.exif
 pixy.meta.icc
 pixy.meta.image
 pixy.meta.iptc
+pixy.meta.jpeg
 pixy.string
 pixy.test
 pixy.util
