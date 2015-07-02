@@ -1,6 +1,7 @@
 ***************************
-Last modified on 06/12/2015
+Last modified on 07/01/2015
 ***************************
+01Jul2015  Added support for non-standard XMP identifier
 12Jun2015  Added slf4j logging and ant buildfile
 29Apr2015  Renamed XMLUtils findAttribute() to getAttribute()
 10Apr2015  Meta data related changes
