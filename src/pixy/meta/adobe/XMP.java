@@ -13,10 +13,13 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    03Jul2015  Added override method getData()
  * WY    13Mar2015  Initial creation
  */
 
 package pixy.meta.adobe;
+
+import java.io.IOException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,6 +48,14 @@ public class XMP extends Metadata {
 	public XMP(String xmp) {
 		super(MetadataType.XMP, null);
 		reader = new XMPReader(xmp);
+	}
+	
+	public byte[] getData() {
+		try {
+			return XMLUtils.serializeToByteArray(getMergedDocument());
+		} catch (IOException e) {
+			return super.getData();
+		}
 	}
 	
 	public byte[] getExtendedXmpData() {
