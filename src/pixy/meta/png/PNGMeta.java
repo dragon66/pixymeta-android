@@ -17,7 +17,7 @@
  * WY    13Mar2015  Initial creation
  */
 
-package pixy.image.png;
+package pixy.meta.png;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -185,7 +185,7 @@ public class PNGMeta {
   	
 	public static Map<MetadataType, Metadata> readMetadata(InputStream is) throws IOException {
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
-		List<Chunk> chunks = PNGMeta.readChunks(is);
+		List<Chunk> chunks = readChunks(is);
 		Iterator<Chunk> iter = chunks.iterator();
 		
 		while (iter.hasNext()) {
@@ -194,11 +194,15 @@ public class PNGMeta {
 			long length = chunk.getLength();
 			if(type == ChunkType.ICCP)
 				metadataMap.put(MetadataType.ICC_PROFILE, new ICCProfile(readICCProfile(chunk.getData())));
-			if(type == ChunkType.ITXT) {// We may find XMP data inside here
-				TextReader reader = new TextReader(chunk);
-				if(reader.getKeyword().equals("XML:com.adobe.xmp")); // We found XMP data
-	   				metadataMap.put(MetadataType.XMP, new XMP(reader.getText()));
-	   		}
+			else if(type == ChunkType.TEXT || type == ChunkType.ITXT || type == ChunkType.ZTXT) {
+				TextualChunk textualChunk = new TextualChunk(chunk);
+				metadataMap.put(MetadataType.PNG_TEXTUAL, textualChunk);
+				if(type == ChunkType.ITXT) {// We may find XMP data inside here
+					if(textualChunk.getKeyword().equals("XML:com.adobe.xmp")); // We found XMP data
+		   				metadataMap.put(MetadataType.XMP, new XMP(textualChunk.getText()));
+		   		}
+			}
+			
 			LOGGER.info("{} ({}) | {} bytes | 0x{} (CRC)", type.getName(), type.getAttribute(), length, Long.toHexString(chunk.getCRC()));
 		}
 		
