@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  ==================================================
+ * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    30Mar2015  Fixed bug with insertXMP() replacing '\0' with ' '
  * WY    13Mar2015  Initial creation
  */
@@ -65,6 +66,10 @@ public class GIFMeta {
 		private byte[] globalPalette;
 		private byte[] imageDescriptor;
 		private Map<MetadataType, Metadata> metadataMap;
+	}
+	
+	public static void insertXMPApplicationBlock(InputStream is, OutputStream os, XMP xmp) throws IOException {
+		insertXMPApplicationBlock(is, os, xmp.getData());
 	}
 	
 	public static void insertXMPApplicationBlock(InputStream is, OutputStream os, byte[] xmp) throws IOException {

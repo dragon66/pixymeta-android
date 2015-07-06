@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    16Apr2015  Changed insertIRB() parameter List to Collection
  * WY    16Apr2015  Removed ICC_Profile related code
  * WY    13Mar2015  initial creation
@@ -36,15 +37,16 @@ import org.slf4j.LoggerFactory;
 import android.graphics.Bitmap;
 import pixy.image.bmp.BMPMeta;
 import pixy.image.gif.GIFMeta;
-import pixy.image.jpeg.JPEGMeta;
 import pixy.image.tiff.TIFFMeta;
 import pixy.meta.Metadata;
 import pixy.util.MetadataUtils;
 import pixy.meta.MetadataReader;
 import pixy.meta.MetadataType;
+import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.jpeg.JPEGMeta;
 import pixy.meta.png.PNGMeta;
 import pixy.image.ImageType;
 import pixy.io.FileCacheRandomAccessInputStream;
@@ -269,6 +271,39 @@ public abstract class Metadata {
 		}		
 	}
 	
+	public static void insertXMP(InputStream is, OutputStream out, XMP xmp) throws IOException {
+		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
+		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		// Delegate XMP inserting to corresponding image tweaker.
+		switch(imageType) {
+			case JPG:
+				JPEGMeta.insertXMP(pushbackStream, out, xmp); // No ExtendedXMP
+				break;
+			case TIFF:
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
+				TIFFMeta.insertXMP(xmp, randIS, randOS);
+				randIS.close();
+				randOS.close();
+				break;
+			case PNG:
+				PNGMeta.insertXMP(pushbackStream, out, xmp);
+				break;
+			case GIF:
+				GIFMeta.insertXMPApplicationBlock(pushbackStream, out, xmp);
+				break;
+			case PCX:
+			case TGA:
+			case BMP:
+				LOGGER.info("{} image format does not support XMP data", imageType);
+				break;
+			default:
+				pushbackStream.close();
+				throw new IllegalArgumentException("XMP inserting is not supported for " + imageType + " image");				
+		}		
+	}
+	
 	public static void insertXMP(InputStream is, OutputStream out, String xmp) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
 		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
@@ -418,6 +453,6 @@ public abstract class Metadata {
 	 * @throws IOException
 	 */
 	public void write(OutputStream out) throws IOException {
-		out.write(data);
+		out.write(getData());
 	}	
 }

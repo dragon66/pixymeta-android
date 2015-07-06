@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import android.graphics.Bitmap;
-import pixy.image.jpeg.JPEGMeta;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.IPTC_NAA;
@@ -30,6 +29,7 @@ import pixy.meta.exif.TiffExif;
 import pixy.meta.iptc.IPTCApplicationTag;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.meta.iptc.IPTCRecord;
+import pixy.meta.jpeg.JPEGMeta;
 import pixy.image.tiff.FieldType;
 import pixy.image.tiff.TiffTag;
 import pixy.string.XMLUtils;
@@ -62,7 +62,8 @@ public class TestPixyMetaAndroid {
 			fin = new FileInputStream("images/1.jpg");
 			fout = new FileOutputStream("1-xmp-inserted.jpg");
 			if(!xmp.hasExtendedXmp())
-				Metadata.insertXMP(fin, fout, XMLUtils.serializeToString(xmpDoc.getDocumentElement(), "UTF-8"));
+				Metadata.insertXMP(fin, fout, xmp);
+				//Metadata.insertXMP(fin, fout, XMLUtils.serializeToString(xmpDoc.getDocumentElement(), "UTF-8"));
 			else {
 				Document extendedXmpDoc = xmp.getExtendedXmpDocument();
 				JPEGMeta.insertXMP(fin, fout, XMLUtils.serializeToString(xmpDoc.getDocumentElement(), "UTF-8"), XMLUtils.serializeToString(extendedXmpDoc));
