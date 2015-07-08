@@ -34,7 +34,7 @@
 <div class="subNav">
 <ul class="navList">
 <li>Prev Class</li>
-<li><a href="../../../pixy/meta/exif/ExifReader.html" title="class in pixy.meta.exif"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/exif/ExifTag.html" title="enum in pixy.meta.exif"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?pixy/meta/exif/Exif.html" target="_top">Frames</a></li>
@@ -97,6 +97,10 @@
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../pixy/meta/MetadataReader.html" title="interface in pixy.meta">MetadataReader</a>, <a href="../../../pixy/util/Reader.html" title="interface in pixy.util">Reader</a></dd>
+</dl>
+<dl>
 <dt>Direct Known Subclasses:</dt>
 <dd><a href="../../../pixy/meta/exif/JpegExif.html" title="class in pixy.meta.exif">JpegExif</a>, <a href="../../../pixy/meta/exif/TiffExif.html" title="class in pixy.meta.exif">TiffExif</a></dd>
 </dl>
@@ -153,7 +157,7 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;pixy.meta.<a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></h3>
-<code><a href="../../../pixy/meta/Metadata.html#IMAGE_MAGIC_NUMBER_LEN">IMAGE_MAGIC_NUMBER_LEN</a></code></li>
+<code><a href="../../../pixy/meta/Metadata.html#data">data</a>, <a href="../../../pixy/meta/Metadata.html#IMAGE_MAGIC_NUMBER_LEN">IMAGE_MAGIC_NUMBER_LEN</a>, <a href="../../../pixy/meta/Metadata.html#isDataRead">isDataRead</a></code></li>
 </ul>
 </li>
 </ul>
@@ -230,16 +234,16 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <td class="colLast"><code><strong><a href="../../../pixy/meta/exif/Exif.html#getImageIFD()">getImageIFD</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../pixy/meta/exif/ExifReader.html" title="class in pixy.meta.exif">ExifReader</a></code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/exif/Exif.html#getReader()">getReader</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code><a href="../../../pixy/meta/exif/ExifThumbnail.html" title="class in pixy.meta.exif">ExifThumbnail</a></code></td>
 <td class="colLast"><code><strong><a href="../../../pixy/meta/exif/Exif.html#getThumbnail()">getThumbnail</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../pixy/meta/exif/Exif.html#isThumbnailRequired()">isThumbnailRequired</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/exif/Exif.html#read()">read</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -281,7 +285,7 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;pixy.meta.<a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></h3>
-<code><a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.io.File,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.io.InputStream,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.lang.String,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#getData()">getData</a>, <a href="../../../pixy/meta/Metadata.html#getType()">getType</a>, <a href="../../../pixy/meta/Metadata.html#insertExif(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.exif.Exif)">insertExif</a>, <a href="../../../pixy/meta/Metadata.html#insertExif(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.exif.Exif,%20boolean)">insertExif</a>, <a href="../../../pixy/meta/Metadata.html#insertICCProfile(java.io.InputStream,%20java.io.OutputStream,%20byte[])">insertICCProfile</a>, <a href="../../../pixy/meta/Metadata.html#insertIPTC(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection)">insertIPTC</a>, <a href="../../../pixy/meta/Metadata.html#insertIPTC(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection,%20boolean)">insertIPTC</a>, <a href="../../../pixy/meta/Metadata.html#insertIRB(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection)">insertIRB</a>, <a href="../../../pixy/meta/Metadata.html#insertIRB(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection,%20boolean)">insertIRB</a>, <a href="../../../pixy/meta/Metadata.html#insertIRBThumbnail(java.io.InputStream,%20java.io.OutputStream,%20android.graphics.Bitmap)">insertIRBThumbnail</a>, <a href="../../../pixy/meta/Metadata.html#insertXMP(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertXMP</a>, <a href="../../../pixy/meta/Metadata.html#insertXMP(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.adobe.XMP)">insertXMP</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.io.File)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.io.InputStream)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.lang.String)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#removeMetadata(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.MetadataType...)">removeMetadata</a></code></li>
+<code><a href="../../../pixy/meta/Metadata.html#ensureDataRead()">ensureDataRead</a>, <a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.io.File,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.io.InputStream,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#extractThumbnails(java.lang.String,%20java.lang.String)">extractThumbnails</a>, <a href="../../../pixy/meta/Metadata.html#getData()">getData</a>, <a href="../../../pixy/meta/Metadata.html#getType()">getType</a>, <a href="../../../pixy/meta/Metadata.html#insertExif(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.exif.Exif)">insertExif</a>, <a href="../../../pixy/meta/Metadata.html#insertExif(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.exif.Exif,%20boolean)">insertExif</a>, <a href="../../../pixy/meta/Metadata.html#insertICCProfile(java.io.InputStream,%20java.io.OutputStream,%20byte[])">insertICCProfile</a>, <a href="../../../pixy/meta/Metadata.html#insertIPTC(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection)">insertIPTC</a>, <a href="../../../pixy/meta/Metadata.html#insertIPTC(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection,%20boolean)">insertIPTC</a>, <a href="../../../pixy/meta/Metadata.html#insertIRB(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection)">insertIRB</a>, <a href="../../../pixy/meta/Metadata.html#insertIRB(java.io.InputStream,%20java.io.OutputStream,%20java.util.Collection,%20boolean)">insertIRB</a>, <a href="../../../pixy/meta/Metadata.html#insertIRBThumbnail(java.io.InputStream,%20java.io.OutputStream,%20android.graphics.Bitmap)">insertIRBThumbnail</a>, <a href="../../../pixy/meta/Metadata.html#insertXMP(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertXMP</a>, <a href="../../../pixy/meta/Metadata.html#insertXMP(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.adobe.XMP)">insertXMP</a>, <a href="../../../pixy/meta/Metadata.html#isDataRead()">isDataRead</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.io.File)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.io.InputStream)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#readMetadata(java.lang.String)">readMetadata</a>, <a href="../../../pixy/meta/Metadata.html#removeMetadata(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.MetadataType...)">removeMetadata</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -376,25 +380,25 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <pre>public&nbsp;Exif(byte[]&nbsp;data)</pre>
 </li>
 </ul>
-<a name="Exif(java.io.InputStream)">
+<a name="Exif(pixy.image.tiff.IFD)">
 <!--   -->
 </a>
 <ul class="blockList">
+<li class="blockList">
+<h4>Exif</h4>
+<pre>public&nbsp;Exif(<a href="../../../pixy/image/tiff/IFD.html" title="class in pixy.image.tiff">IFD</a>&nbsp;imageIFD)</pre>
+</li>
+</ul>
+<a name="Exif(java.io.InputStream)">
+<!--   -->
+</a>
+<ul class="blockListLast">
 <li class="blockList">
 <h4>Exif</h4>
 <pre>public&nbsp;Exif(java.io.InputStream&nbsp;is)
      throws java.io.IOException</pre>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd></dl>
-</li>
-</ul>
-<a name="Exif(pixy.image.tiff.IFD)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>Exif</h4>
-<pre>public&nbsp;Exif(<a href="../../../pixy/image/tiff/IFD.html" title="class in pixy.image.tiff">IFD</a>&nbsp;imageIFD)</pre>
 </li>
 </ul>
 </li>
@@ -447,15 +451,6 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <pre>public&nbsp;boolean&nbsp;containsThumbnail()</pre>
 </li>
 </ul>
-<a name="getImageIFD()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getImageIFD</h4>
-<pre>public&nbsp;<a href="../../../pixy/image/tiff/IFD.html" title="class in pixy.image.tiff">IFD</a>&nbsp;getImageIFD()</pre>
-</li>
-</ul>
 <a name="getExifIFD()">
 <!--   -->
 </a>
@@ -474,17 +469,13 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <pre>public&nbsp;<a href="../../../pixy/image/tiff/IFD.html" title="class in pixy.image.tiff">IFD</a>&nbsp;getGPSIFD()</pre>
 </li>
 </ul>
-<a name="getReader()">
+<a name="getImageIFD()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getReader</h4>
-<pre>public&nbsp;<a href="../../../pixy/meta/exif/ExifReader.html" title="class in pixy.meta.exif">ExifReader</a>&nbsp;getReader()</pre>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../pixy/meta/Metadata.html#getReader()">getReader</a></code>&nbsp;in class&nbsp;<code><a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></code></dd>
-</dl>
+<h4>getImageIFD</h4>
+<pre>public&nbsp;<a href="../../../pixy/image/tiff/IFD.html" title="class in pixy.image.tiff">IFD</a>&nbsp;getImageIFD()</pre>
 </li>
 </ul>
 <a name="getThumbnail()">
@@ -503,6 +494,18 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <li class="blockList">
 <h4>isThumbnailRequired</h4>
 <pre>public&nbsp;boolean&nbsp;isThumbnailRequired()</pre>
+</li>
+</ul>
+<a name="read()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>read</h4>
+<pre>public&nbsp;void&nbsp;read()
+          throws java.io.IOException</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd></dl>
 </li>
 </ul>
 <a name="setExifIFD(pixy.image.tiff.IFD)">
@@ -569,7 +572,9 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <h4>showMetadata</h4>
 <pre>public&nbsp;void&nbsp;showMetadata()</pre>
 <dl>
-<dt><strong>Overrides:</strong></dt>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../pixy/meta/MetadataReader.html#showMetadata()">showMetadata</a></code>&nbsp;in interface&nbsp;<code><a href="../../../pixy/meta/MetadataReader.html" title="interface in pixy.meta">MetadataReader</a></code></dd>
+<dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../pixy/meta/Metadata.html#showMetadata()">showMetadata</a></code>&nbsp;in class&nbsp;<code><a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></code></dd>
 </dl>
 </li>
@@ -618,7 +623,7 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <div class="subNav">
 <ul class="navList">
 <li>Prev Class</li>
-<li><a href="../../../pixy/meta/exif/ExifReader.html" title="class in pixy.meta.exif"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/exif/ExifTag.html" title="enum in pixy.meta.exif"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?pixy/meta/exif/Exif.html" target="_top">Frames</a></li>

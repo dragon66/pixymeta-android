@@ -49,9 +49,9 @@ public class JpegExif extends Exif {
 	private void createImageIFD() {
 		// Create Image IFD (IFD0)
 		imageIFD = new IFD();
-		TiffField<?> tiffField = new ASCIIField(TiffTag.IMAGE_DESCRIPTION.getValue(), "Exif created by JPEGMeta");
+		TiffField<?> tiffField = new ASCIIField(TiffTag.IMAGE_DESCRIPTION.getValue(), "Exif created by JPEGTweaker");
 		imageIFD.addField(tiffField);
-		String softWare = "JPEGMeta 1.0";
+		String softWare = "JPEGTweaker 1.0";
 		tiffField = new ASCIIField(TiffTag.SOFTWARE.getValue(), softWare);
 		imageIFD.addField(tiffField);
 		DateFormat formatter = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
@@ -67,6 +67,7 @@ public class JpegExif extends Exif {
 	 */
 	@Override
 	public void write(OutputStream os) throws IOException {
+		ensureDataRead();
 		// Wraps output stream with a RandomAccessOutputStream
 		RandomAccessOutputStream randOS = new MemoryCacheRandomAccessOutputStream(os);
 		// Write JPEG the EXIF data

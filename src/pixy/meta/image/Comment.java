@@ -1,12 +1,12 @@
 package pixy.meta.image;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.meta.Metadata;
-import pixy.meta.MetadataReader;
 import pixy.meta.MetadataType;
 
 public class Comment extends Metadata {
@@ -17,10 +17,18 @@ public class Comment extends Metadata {
 	
 	public Comment(byte[] data) {
 		super(MetadataType.COMMENT, data);
-		try {
-			this.comment = new String(data, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		ensureDataRead();
+	}
+	
+	@Override
+	public void read() throws IOException {
+		if(!isDataRead) {
+			try {
+				this.comment = new String(data, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			isDataRead = true;
 		}
 	}
 	
@@ -29,11 +37,7 @@ public class Comment extends Metadata {
 	}
 	
 	public void showMetadata() {
+		ensureDataRead();
 		LOGGER.info("Comment: {}", comment);
-	}
-
-	@Override
-	public MetadataReader getReader() {
-		return null;
 	}
 }

@@ -22,15 +22,20 @@ package pixy.meta.png;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import pixy.meta.png.TextualChunkReader;
-import pixy.image.png.TextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
+import pixy.image.png.TextBuilder;
+import pixy.image.png.TextReader;
 
 public class TextualChunk extends Metadata {
-	//
+	// Obtain a logger instance
+	private static final Logger LOGGER = LoggerFactory.getLogger(TextualChunk.class);
+		
 	private static MetadataType validate(ChunkType chunkType) {
 		if(chunkType == null) throw new IllegalArgumentException("ChunkType is null");
 		if(chunkType == ChunkType.TEXT || chunkType == ChunkType.ITXT || chunkType == ChunkType.ZTXT)
@@ -42,7 +47,6 @@ public class TextualChunk extends Metadata {
 
 	private ChunkType chunkType;
 	private Chunk chunk;
-	private TextualChunkReader reader;
 	private String keyword;	
 	private String text;
 	
@@ -50,13 +54,6 @@ public class TextualChunk extends Metadata {
 		super(validate(chunk.getChunkType()), chunk.getData());
 		this.chunkType = chunk.getChunkType();
 		this.chunk = chunk;
-		try {
-			this.reader = new TextualChunkReader(chunk);
-		} catch (IOException e) {
-			throw new RuntimeException("Error: TextualChunkReader failed to read textual chunk");
-		}
-		this.keyword = reader.getKeyword();
-		this.text = reader.getText();
 	}
 	
 	public TextualChunk(ChunkType chunkType, String keyword, String text) {
@@ -64,12 +61,15 @@ public class TextualChunk extends Metadata {
 		if(keyword == null || text == null)
 			throw new IllegalArgumentException("keyword or text is null");
 		this.chunkType = chunkType;
-		this.chunk = new TextBuilder(chunkType).keyword(keyword.trim().replaceAll("\\s+", " ")).text(text).build();
-		this.keyword = keyword;
+		this.keyword = keyword.trim().replaceAll("\\s+", " ");
 		this.text = text;
+		isDataRead = true;
 	}
 	
 	public Chunk getChunk() {
+		if(chunk == null)
+			chunk = new TextBuilder(chunkType).keyword(keyword).text(text).build();
+	
 		return chunk;
 	}
 
@@ -78,23 +78,38 @@ public class TextualChunk extends Metadata {
 	}
 	
 	public byte[] getData() {
-		return chunk.getData();
+		return getChunk().getData();
 	}
 	
 	public String getKeyword() {
+		ensureDataRead();
 		return keyword;
 	}
 	
-	@Override
-	public TextualChunkReader getReader() {
-		return reader;
-	}
-	
 	public String getText() {
+		ensureDataRead();
 		return text;		
 	}
 	
+	@Override
+	public void read() throws IOException {
+		if(!isDataRead) {
+			TextReader reader = new TextReader(chunk);
+			this.keyword = reader.getKeyword();
+			this.text = reader.getText();
+			isDataRead = true;
+		}
+	}
+	
+	@Override
+	public void showMetadata() {
+		LOGGER.info("PNG textual chunk starts =>");
+		LOGGER.info("Key word: {}", getKeyword());
+		LOGGER.info("Text: {}", getKeyword().equals("XML:com.adobe.xmp")?"<XMP data not shown>":getText());
+		LOGGER.info("PNG textual chunk ends <=");
+	}
+
 	public void write(OutputStream os) throws IOException {
-		chunk.write(os);
+		getChunk().write(os);
 	}
 }

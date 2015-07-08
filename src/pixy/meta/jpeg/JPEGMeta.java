@@ -80,12 +80,10 @@ import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
 import pixy.meta.adobe.IRB;
-import pixy.meta.adobe.IRBReader;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
-import pixy.meta.exif.ExifReader;
 import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.exif.JpegExif;
@@ -1415,22 +1413,20 @@ public class JPEGMeta {
 		Metadata meta = metadataMap.get(MetadataType.EXIF);
 		if(meta != null) {
 			Exif exif = (Exif)meta;
-			ExifReader reader = exif.getReader();
-			if(!reader.isDataLoaded())
-				reader.read();
-			if(reader.containsThumbnail()) {
-				thumbnails.put("EXIF", reader.getThumbnail());
+			if(!exif.isDataRead())
+				exif.read();
+			if(exif.containsThumbnail()) {
+				thumbnails.put("EXIF", exif.getThumbnail());
 			}
 		}
 		
 		meta = metadataMap.get(MetadataType.PHOTOSHOP);
 		if(meta != null) {
 			IRB irb = (IRB)meta;
-			IRBReader reader = irb.getReader();
-			if(!reader.isDataLoaded())
-				reader.read();
-			if(reader.containsThumbnail()) {
-				thumbnails.put("PHOTOSHOP", reader.getThumbnail());
+			if(!irb.isDataRead())
+				irb.read();
+			if(irb.containsThumbnail()) {
+				thumbnails.put("PHOTOSHOP", irb.getThumbnail());
 			}
 		}
 		
