@@ -45,6 +45,7 @@ import pixy.meta.adobe.XMP;
 import pixy.meta.icc.ICCProfile;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
+import pixy.image.png.TextBuilder;
 import pixy.image.png.TextReader;
 import pixy.image.png.UnknownChunk;
 import pixy.io.IOUtils;
@@ -92,16 +93,22 @@ public class PNGMeta {
   		insertChunk(builder.build(), is, os);
   	}
   	
-  	public static void insertXMP(InputStream is, OutputStream os, XMP xmp) throws IOException {
-  		TextualChunk xmpChunk = new TextualChunk(ChunkType.ITXT, "XML:com.adobe.xmp", XMLUtils.serializeToString(xmp.getMergedDocument()));
-  		insertXMP(is, os, xmpChunk);
+	public static void insertXMP(InputStream is, OutputStream os, XMP xmp) throws IOException {
+  		insert(is, os, XMLUtils.serializeToString(xmp.getMergedDocument()));
   	}
   	
-  	public static void insertXMP(InputStream is, OutputStream os, TextualChunk xmp) throws IOException {
-  		if(!xmp.getKeyword().equals("XML:com.adobe.xmp")) throw new IllegalArgumentException("Input TextualChunk contains no XMP data!");
-  		Chunk xmpChunk = xmp.getChunk();
-	    
-	    List<Chunk> chunks = readChunks(is);
+  	// Add leading and trailing PI
+  	public static void insertXMP(InputStream is, OutputStream os, String xmp) throws IOException {
+  		Document doc = XMLUtils.createXML(xmp);
+		XMLUtils.insertLeadingPI(doc, "xpacket", "begin='' id='W5M0MpCehiHzreSzNTczkc9d'");
+		XMLUtils.insertTrailingPI(doc, "xpacket", "end='w'");
+		String newXmp = XMLUtils.serializeToString(doc); // DONOT use XMLUtils.serializeToStringLS()
+  		insert(is, os, newXmp);
+    }
+  	
+  	private static void insert(InputStream is, OutputStream os, String xmp) throws IOException {
+  		// Read all the chunks first
+  		List<Chunk> chunks = readChunks(is);
 	    ListIterator<Chunk> itr = chunks.listIterator();
 	    
 	    // Remove old XMP chunk
@@ -114,22 +121,14 @@ public class PNGMeta {
 	    	}
 	    }
 	    
+	    // Create XMP textual chunk
+		Chunk xmpChunk = new TextBuilder(ChunkType.ITXT).keyword("XML:com.adobe.xmp").text(xmp).build();
+		// Insert XMP textual chunk into image
 	    chunks.add(xmpChunk);
 	    
 	    IOUtils.writeLongMM(os, SIGNATURE);
 	    
         serializeChunks(chunks, os);
-    }
-  	
-  	public static void insertXMP(InputStream is, OutputStream os, String xmp) throws IOException {
-  		Document doc = XMLUtils.createXML(xmp);
-		XMLUtils.insertLeadingPI(doc, "xpacket", "begin='' id='W5M0MpCehiHzreSzNTczkc9d'");
-		XMLUtils.insertTrailingPI(doc, "xpacket", "end='w'");
-		String newXmp = XMLUtils.serializeToString(doc); // DONOT use XMLUtils.serializeToStringLS()
-  		// Create XMP textual chunk
-		TextualChunk xmpChunk = new TextualChunk(ChunkType.ITXT, "XML:com.adobe.xmp", newXmp);
-	    // Insert XMP textual chunk into image
-		insertXMP(is, os, xmpChunk);
     }
   	
    	public static List<Chunk> readChunks(InputStream is) throws IOException {  		
@@ -195,7 +194,7 @@ public class PNGMeta {
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
 		List<Chunk> chunks = readChunks(is);
 		Iterator<Chunk> iter = chunks.iterator();
-		
+		TextualChunks textualChunk = null;
 		while (iter.hasNext()) {
 			Chunk chunk = iter.next();
 			ChunkType type = chunk.getChunkType();
@@ -203,17 +202,28 @@ public class PNGMeta {
 			if(type == ChunkType.ICCP)
 				metadataMap.put(MetadataType.ICC_PROFILE, new ICCProfile(readICCProfile(chunk.getData())));
 			else if(type == ChunkType.TEXT || type == ChunkType.ITXT || type == ChunkType.ZTXT) {
-				TextualChunk textualChunk = new TextualChunk(chunk);
-				metadataMap.put(MetadataType.PNG_TEXTUAL, textualChunk);
-				if(type == ChunkType.ITXT) {// We may find XMP data inside here
-					if(textualChunk.getKeyword().equals("XML:com.adobe.xmp")); // We found XMP data
-		   				metadataMap.put(MetadataType.XMP, new XMP(textualChunk.getText()));
-		   		}
+				if(textualChunk == null)
+					textualChunk = new TextualChunks();
+				textualChunk.addChunk(chunk);			
+			} else if(type == ChunkType.TIME) {
+				metadataMap.put(MetadataType.PNG_TIME, new TIMEChunk(chunk));
 			}
 			
 			LOGGER.info("{} ({}) | {} bytes | 0x{} (CRC)", type.getName(), type.getAttribute(), length, Long.toHexString(chunk.getCRC()));
 		}
 		
+		if(textualChunk != null) {
+			metadataMap.put(MetadataType.PNG_TEXTUAL, textualChunk);
+			
+			// We may find XMP data inside iTXT
+			Map<String, String> keyValMap = textualChunk.getKeyValMap();
+			
+			for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
+				if(entry.getKey().equals("XML:com.adobe.xmp"))
+					metadataMap.put(MetadataType.XMP, new XMP(entry.getValue()));
+			}
+		}
+			
 		is.close();
 		
 		return metadataMap;

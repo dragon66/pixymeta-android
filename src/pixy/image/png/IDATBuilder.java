@@ -24,7 +24,7 @@ import pixy.util.Builder;
 public class IDATBuilder extends ChunkBuilder implements Builder<Chunk> {
 
 	private ByteArrayOutputStream bout = new ByteArrayOutputStream(4096);
-	private Deflater deflater = new Deflater(5);;
+	private Deflater deflater = new Deflater(5);
 		
 	public IDATBuilder() {
 		super(ChunkType.IDAT);		
