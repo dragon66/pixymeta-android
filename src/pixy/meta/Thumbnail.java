@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import android.graphics.*;
 
 public abstract class Thumbnail {
-	// Internal data type for thumbnail represented by a BufferedImage
+	// Internal data type for thumbnail represented by a Bitmap
 	public static final int DATA_TYPE_KRawRGB = 0; // For ExifThumbnail and IRBThumbnail
 	// Represented by a byte array of JPEG
 	public static final int DATA_TYPE_KJpegRGB = 1; // For ExifThumbnail and IRBThumbnail

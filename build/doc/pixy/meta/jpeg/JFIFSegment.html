@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>APP12Segment</title>
+<title>JFIFSegment</title>
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="APP12Segment";
+        parent.document.title="JFIFSegment";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../pixy/meta/jpeg/APP12Tag.html" title="enum in pixy.meta.jpeg"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/jpeg/DuckyTag.html" title="enum in pixy.meta.jpeg"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../index.html?pixy/meta/jpeg/APP12Segment.html" target="_top">Frames</a></li>
-<li><a href="APP12Segment.html" target="_top">No Frames</a></li>
+<li><a href="../../../index.html?pixy/meta/jpeg/JFIFSegment.html" target="_top">Frames</a></li>
+<li><a href="JFIFSegment.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,7 +77,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">pixy.meta.jpeg</div>
-<h2 title="Class APP12Segment" class="title">Class APP12Segment</h2>
+<h2 title="Class JFIFSegment" class="title">Class JFIFSegment</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -87,7 +87,7 @@
 <li><a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">pixy.meta.Metadata</a></li>
 <li>
 <ul class="inheritance">
-<li>pixy.meta.jpeg.APP12Segment</li>
+<li>pixy.meta.jpeg.JFIFSegment</li>
 </ul>
 </li>
 </ul>
@@ -102,7 +102,7 @@
 </dl>
 <hr>
 <br>
-<pre>public class <span class="strong">APP12Segment</span>
+<pre>public class <span class="strong">JFIFSegment</span>
 extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></pre>
 </li>
 </ul>
@@ -137,10 +137,22 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#APP12Segment()">APP12Segment</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#JFIFSegment(byte[])">JFIFSegment</a></strong>(byte[]&nbsp;data)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#APP12Segment(byte[])">APP12Segment</a></strong>(byte[]&nbsp;data)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#JFIFSegment(int,%20int,%20int,%20int,%20int)">JFIFSegment</a></strong>(int&nbsp;majorVersion,
+           int&nbsp;minorVersion,
+           int&nbsp;densityUnit,
+           int&nbsp;xDensity,
+           int&nbsp;yDensity)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#JFIFSegment(int,%20int,%20int,%20int,%20int,%20pixy.meta.jpeg.JFIFThumbnail)">JFIFSegment</a></strong>(int&nbsp;majorVersion,
+           int&nbsp;minorVersion,
+           int&nbsp;densityUnit,
+           int&nbsp;xDensity,
+           int&nbsp;yDensity,
+           <a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg">JFIFThumbnail</a>&nbsp;thumbnail)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -158,28 +170,52 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#addDataSet(pixy.meta.jpeg.APP12DataSet)">addDataSet</a></strong>(<a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&nbsp;dataSet)</code>&nbsp;</td>
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#containsThumbnail()">containsThumbnail</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#addDataSets(java.util.Collection)">addDataSets</a></strong>(java.util.Collection&lt;? extends <a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&gt;&nbsp;dataSets)</code>&nbsp;</td>
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getDensityUnit()">getDensityUnit</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;<a href="../../../pixy/meta/jpeg/APP12Tag.html" title="enum in pixy.meta.jpeg">APP12Tag</a>,<a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#getDataSets()">getDataSets</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getMajorVersion()">getMajorVersion</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getMinorVersion()">getMinorVersion</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg">JFIFThumbnail</a></code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getThumbnail()">getThumbnail</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getThumbnailHeight()">getThumbnailHeight</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getThumbnailWidth()">getThumbnailWidth</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getXDensity()">getXDensity</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#getYDensity()">getYDensity</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#read()">read</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#read()">read</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#showMetadata()">showMetadata</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#showMetadata()">showMetadata</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/APP12Segment.html#write(java.io.OutputStream)">write</a></strong>(java.io.OutputStream&nbsp;os)</code>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/jpeg/JFIFSegment.html#write(java.io.OutputStream)">write</a></strong>(java.io.OutputStream&nbsp;os)</code>
 <div class="block">Writes the metadata out to the output stream</div>
 </td>
 </tr>
@@ -212,22 +248,40 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="APP12Segment()">
+<a name="JFIFSegment(byte[])">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>APP12Segment</h4>
-<pre>public&nbsp;APP12Segment()</pre>
+<h4>JFIFSegment</h4>
+<pre>public&nbsp;JFIFSegment(byte[]&nbsp;data)</pre>
 </li>
 </ul>
-<a name="APP12Segment(byte[])">
+<a name="JFIFSegment(int, int, int, int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>JFIFSegment</h4>
+<pre>public&nbsp;JFIFSegment(int&nbsp;majorVersion,
+           int&nbsp;minorVersion,
+           int&nbsp;densityUnit,
+           int&nbsp;xDensity,
+           int&nbsp;yDensity)</pre>
+</li>
+</ul>
+<a name="JFIFSegment(int, int, int, int, int, pixy.meta.jpeg.JFIFThumbnail)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>APP12Segment</h4>
-<pre>public&nbsp;APP12Segment(byte[]&nbsp;data)</pre>
+<h4>JFIFSegment</h4>
+<pre>public&nbsp;JFIFSegment(int&nbsp;majorVersion,
+           int&nbsp;minorVersion,
+           int&nbsp;densityUnit,
+           int&nbsp;xDensity,
+           int&nbsp;yDensity,
+           <a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg">JFIFThumbnail</a>&nbsp;thumbnail)</pre>
 </li>
 </ul>
 </li>
@@ -238,31 +292,85 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="addDataSet(pixy.meta.jpeg.APP12DataSet)">
+<a name="containsThumbnail()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addDataSet</h4>
-<pre>public&nbsp;void&nbsp;addDataSet(<a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&nbsp;dataSet)</pre>
+<h4>containsThumbnail</h4>
+<pre>public&nbsp;boolean&nbsp;containsThumbnail()</pre>
 </li>
 </ul>
-<a name="addDataSets(java.util.Collection)">
+<a name="getDensityUnit()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addDataSets</h4>
-<pre>public&nbsp;void&nbsp;addDataSets(java.util.Collection&lt;? extends <a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&gt;&nbsp;dataSets)</pre>
+<h4>getDensityUnit</h4>
+<pre>public&nbsp;int&nbsp;getDensityUnit()</pre>
 </li>
 </ul>
-<a name="getDataSets()">
+<a name="getMajorVersion()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getDataSets</h4>
-<pre>public&nbsp;java.util.Map&lt;<a href="../../../pixy/meta/jpeg/APP12Tag.html" title="enum in pixy.meta.jpeg">APP12Tag</a>,<a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg">APP12DataSet</a>&gt;&nbsp;getDataSets()</pre>
+<h4>getMajorVersion</h4>
+<pre>public&nbsp;int&nbsp;getMajorVersion()</pre>
+</li>
+</ul>
+<a name="getMinorVersion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMinorVersion</h4>
+<pre>public&nbsp;int&nbsp;getMinorVersion()</pre>
+</li>
+</ul>
+<a name="getThumbnail()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getThumbnail</h4>
+<pre>public&nbsp;<a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg">JFIFThumbnail</a>&nbsp;getThumbnail()</pre>
+</li>
+</ul>
+<a name="getThumbnailHeight()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getThumbnailHeight</h4>
+<pre>public&nbsp;int&nbsp;getThumbnailHeight()</pre>
+</li>
+</ul>
+<a name="getThumbnailWidth()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getThumbnailWidth</h4>
+<pre>public&nbsp;int&nbsp;getThumbnailWidth()</pre>
+</li>
+</ul>
+<a name="getXDensity()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getXDensity</h4>
+<pre>public&nbsp;int&nbsp;getXDensity()</pre>
+</li>
+</ul>
+<a name="getYDensity()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getYDensity</h4>
+<pre>public&nbsp;int&nbsp;getYDensity()</pre>
 </li>
 </ul>
 <a name="read()">
@@ -335,12 +443,12 @@ extends <a href="../../../pixy/meta/Metadata.html" title="class in pixy.meta">Me
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../pixy/meta/jpeg/APP12DataSet.html" title="class in pixy.meta.jpeg"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../pixy/meta/jpeg/APP12Tag.html" title="enum in pixy.meta.jpeg"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/jpeg/DuckyTag.html" title="enum in pixy.meta.jpeg"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../pixy/meta/jpeg/JFIFThumbnail.html" title="class in pixy.meta.jpeg"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../index.html?pixy/meta/jpeg/APP12Segment.html" target="_top">Frames</a></li>
-<li><a href="APP12Segment.html" target="_top">No Frames</a></li>
+<li><a href="../../../index.html?pixy/meta/jpeg/JFIFSegment.html" target="_top">Frames</a></li>
+<li><a href="JFIFSegment.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../allclasses-noframe.html">All Classes</a></li>
