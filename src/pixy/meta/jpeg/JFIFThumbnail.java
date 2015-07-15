@@ -48,7 +48,7 @@ public class JFIFThumbnail extends Thumbnail {
 		int[] pixels = new int[thumbnailWidth*thumbnailHeight];
 		thumbnail.getPixels(pixels, 0, thumbnailWidth, 0, 0, thumbnailWidth, thumbnailHeight);
 		for(int pixel : pixels) {
-			os.write(pixel >> 24); // Red
+			os.write(pixel >> 16); // Red
 			os.write(pixel >> 8); // Green
 			os.write(pixel); // Blue
 		}
