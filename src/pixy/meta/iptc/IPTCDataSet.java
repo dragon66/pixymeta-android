@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    16Jul2015  Added two new constructors for IPTCApplicationTag
  * WY    13Mar2015  Initial creation
  */
 
@@ -77,6 +78,14 @@ public class IPTCDataSet {
 		this(tag, value.getBytes());
 	}
 	
+	public IPTCDataSet(IPTCApplicationTag appTag, byte[] data) {
+		this(appTag.getTag(), data);
+	}
+	
+	public IPTCDataSet(IPTCApplicationTag appTag, String value) {
+		this(appTag.getTag(), value);
+	}
+	
 	public IPTCDataSet(IPTCRecord record, int tag, byte[] data) {
 		this(record.getRecordNumber(), tag, data.length, data, 0);
 	}
@@ -109,6 +118,34 @@ public class IPTCDataSet {
 		return true;
 	}
 	
+	public byte[] getData() {
+		return ArrayUtils.subArray(data, offset, size);
+	}
+	
+	public String getDataAsString() {
+		return tagEnum.getDataAsString(getData());
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public int getRecordNumber() {
+		return recordNumber;
+	}
+
+	public int getSize() {
+		return size;
+	}
+	
+	public int getTag() {
+		return tag;
+	}
+	
+	public IPTCTag getTagEnum() {
+		return tagEnum;
+	}
+	
 	private String getTagName() {
 		switch(IPTCRecord.fromRecordNumber(recordNumber)) {
 			case APPLICATION:
@@ -137,34 +174,6 @@ public class IPTCDataSet {
 		}
 		
 		return tagEnum.getName();
-	}
-	
-	public String getDataAsString() {
-		return tagEnum.getDataAsString(getData());
-	}
-	
-	public byte[] getData() {
-		return ArrayUtils.subArray(data, offset, size);
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public int getRecordNumber() {
-		return recordNumber;
-	}
-	
-	public int getSize() {
-		return size;
-	}
-	
-	public int getTag() {
-		return tag;
-	}
-	
-	public IPTCTag getTagEnum() {
-		return tagEnum;
 	}
 	
 	@Override

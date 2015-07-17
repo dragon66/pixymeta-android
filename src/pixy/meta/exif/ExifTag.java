@@ -47,7 +47,7 @@ public enum ExifTag implements Tag {
 	
 	EXIF_VERSION("ExifVersion", (short)0x9000) {
 		public String getFieldAsString(Object value) {
-			return new String((byte[])value);
+			return new String((byte[])value).trim();
 		}
 	},
 	DATE_TIME_ORIGINAL("DateTimeOriginal", (short)0x9003),
@@ -94,7 +94,7 @@ public enum ExifTag implements Tag {
 	
 	FLASH_PIX_VERSION("FlashPixVersion", (short)0xa000) {
 		public String getFieldAsString(Object value) {
-			return new String((byte[])value);
+			return new String((byte[])value).trim();
 		}
 	},
 	COLOR_SPACE("ColorSpace", (short)0xa001) {

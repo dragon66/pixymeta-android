@@ -28,7 +28,6 @@ import pixy.meta.exif.JpegExif;
 import pixy.meta.exif.TiffExif;
 import pixy.meta.iptc.IPTCApplicationTag;
 import pixy.meta.iptc.IPTCDataSet;
-import pixy.meta.iptc.IPTCRecord;
 import pixy.meta.jpeg.JPEGMeta;
 import pixy.image.tiff.FieldType;
 import pixy.image.tiff.TiffTag;
@@ -146,18 +145,18 @@ public class TestPixyMetaAndroid {
 	
 	private static List<IPTCDataSet> createIPTCDataSet() {
 		List<IPTCDataSet> iptcs = new ArrayList<IPTCDataSet>();
-		iptcs.add(new IPTCDataSet(IPTCRecord.APPLICATION, IPTCApplicationTag.COPYRIGHT_NOTICE.getTag(), "Copyright 2014-2015, yuwen_66@yahoo.com"));
-		iptcs.add(new IPTCDataSet(IPTCApplicationTag.CATEGORY.getTag(), "ICAFE"));
-		iptcs.add(new IPTCDataSet(IPTCApplicationTag.KEY_WORDS.getTag(), "Welcome 'icafe' user!"));
+		iptcs.add(new IPTCDataSet(IPTCApplicationTag.COPYRIGHT_NOTICE, "Copyright 2014-2015, yuwen_66@yahoo.com"));
+		iptcs.add(new IPTCDataSet(IPTCApplicationTag.CATEGORY, "ICAFE"));
+		iptcs.add(new IPTCDataSet(IPTCApplicationTag.KEY_WORDS, "Welcome 'icafe' user!"));
 		
 		return iptcs;
 	}
 	
 	private static List<_8BIM> createPhotoshopIPTC() {
 		IPTC_NAA iptc = new IPTC_NAA();
-		iptc.addDataSet(new IPTCDataSet(IPTCRecord.APPLICATION, IPTCApplicationTag.COPYRIGHT_NOTICE.getTag(), "Copyright 2014-2015, yuwen_66@yahoo.com"));
-		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.KEY_WORDS.getTag(), "Welcome 'icafe' user!"));
-		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.CATEGORY.getTag(), "ICAFE"));
+		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.COPYRIGHT_NOTICE, "Copyright 2014-2015, yuwen_66@yahoo.com"));
+		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.KEY_WORDS, "Welcome 'icafe' user!"));
+		iptc.addDataSet(new IPTCDataSet(IPTCApplicationTag.CATEGORY, "ICAFE"));
 		
 		return new ArrayList<_8BIM>(Arrays.asList(iptc));
 	}
