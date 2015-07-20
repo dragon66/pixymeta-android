@@ -7,12 +7,15 @@ pixy.image.tiff
 pixy.io
 pixy.meta
 pixy.meta.adobe
+pixy.meta.bmp
 pixy.meta.exif
+pixy.meta.gif
 pixy.meta.icc
 pixy.meta.image
 pixy.meta.iptc
 pixy.meta.jpeg
 pixy.meta.png
+pixy.meta.tiff
 pixy.string
 pixy.test
 pixy.util

@@ -16,7 +16,7 @@
  * WY    14Mar2015  Initial creation
  */
 
-package pixy.image.bmp;
+package pixy.meta.bmp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.image.ImageMetadata;
+import pixy.image.bmp.BmpCompression;
 import pixy.io.IOUtils;
 import static pixy.string.XMLUtils.*;
 

@@ -65,7 +65,7 @@ public class IRB extends Metadata {
 	}
 	
 	public IRB(byte[] data) {
-		super(MetadataType.PHOTOSHOP, data);
+		super(MetadataType.PHOTOSHOP_IRB, data);
 	}
 	
 	public boolean containsThumbnail() {

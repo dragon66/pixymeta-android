@@ -20,7 +20,7 @@
  * WY    13Mar2015  Initial creation
  */
 
-package pixy.image.tiff;
+package pixy.meta.tiff;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -1324,7 +1324,7 @@ public class TIFFMeta {
 		field = currIFD.getField(TiffTag.PHOTOSHOP);
 		if(field != null) { // We have found Photoshop IRB
 			IRB irb = new IRB((byte[])field.getData());
-			metadataMap.put(MetadataType.PHOTOSHOP, irb);
+			metadataMap.put(MetadataType.PHOTOSHOP_IRB, irb);
 			_8BIM photoshop_8bim = irb.get8BIM(ImageResourceID.IPTC_NAA.getValue());
 			if(photoshop_8bim != null) { // If we have IPTC data inside Photoshop, keep it
 				IPTC iptc = new IPTC(photoshop_8bim.getData());
@@ -1410,7 +1410,7 @@ public class TIFFMeta {
 						removeMetadataFromIRB(workingPage, data, ImageResourceID.ICC_PROFILE);
 					}
 					break;
-				case PHOTOSHOP:
+				case PHOTOSHOP_IRB:
 					workingPage.removeField(TiffTag.PHOTOSHOP);
 					break;
 				case EXIF:

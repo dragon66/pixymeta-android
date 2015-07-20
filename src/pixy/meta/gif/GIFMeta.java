@@ -18,7 +18,7 @@
  * WY    13Mar2015  Initial creation
  */
 
-package pixy.image.gif;
+package pixy.meta.gif;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

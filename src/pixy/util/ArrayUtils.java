@@ -214,13 +214,13 @@ public class ArrayUtils
 	 * Type safe concatenation of arrays with upper type bound T
 	 * <p>
 	 * Note: if type parameter is not explicitly supplied, it will be inferred as the 
-	 * upper bound for the two parameters.
+	 * upper bound for the input parameters.
 	 * 
 	 * @param arrays the arrays to be concatenated
 	 * @return a concatenation of the input arrays
 	 * @throws NullPointerException if any of the input array is null
 	 */
-	public static <T> T[] concat(T[]... arrays) {
+	@SafeVarargs public static <T> T[] concat(T[]... arrays) {
 		if(arrays.length == 0)
 			throw new IllegalArgumentException("Varargs length is zero");
 		
@@ -255,7 +255,7 @@ public class ArrayUtils
      * @throws NullPointerException if any of the arrays to be
      *         concatenated is null.
    	 */
-  	public static <T> T[] concat(Class<T> type, T[]... arrays) {
+	@SafeVarargs public static <T> T[] concat(Class<T> type, T[]... arrays) {
 		if(type == null) 
 			throw new IllegalArgumentException("Input type class is null");
 		

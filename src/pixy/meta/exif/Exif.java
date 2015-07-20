@@ -32,10 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
-import pixy.image.tiff.TIFFMeta;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
+import pixy.meta.tiff.TIFFMeta;
 import pixy.image.tiff.FieldType;
 import pixy.image.tiff.IFD;
 import pixy.image.tiff.TiffField;

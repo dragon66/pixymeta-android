@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Bitmap;
-import pixy.image.tiff.TIFFMeta;
 import pixy.meta.Thumbnail;
+import pixy.meta.tiff.TIFFMeta;
 import pixy.image.tiff.IFD;
 import pixy.image.tiff.LongField;
 import pixy.image.tiff.RationalField;

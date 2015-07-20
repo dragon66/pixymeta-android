@@ -18,6 +18,7 @@ import java.util.List;
 
 import pixy.io.RandomAccessInputStream;
 import pixy.io.RandomAccessOutputStream;
+import pixy.meta.tiff.TIFFMeta;
 
 /**
  * TIFF image wrapper to manipulate pages and fields
