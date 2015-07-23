@@ -25,7 +25,12 @@ import pixy.string.StringUtils;
  * @version 1.0 03/13/2015
  */
 public enum IPTCApplicationTag implements IPTCTag {
-	 RECORD_VERSION(0, "ApplicationRecordVersion"),
+	 RECORD_VERSION(0, "ApplicationRecordVersion") {
+		 public String getDataAsString(byte[] data) {
+			 // Hex representation of the data
+			 return StringUtils.byteArrayToHexString(data, 0, 10);
+		 }
+	 },
 	 OBJECT_TYPE_REF(3, "ObjectTypeRef"),
 	 OBJECT_ATTR_REF(4, "ObjectAttribRef") {
 		 @Override
