@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>_8BIM</title>
+<title>DDBEntry</title>
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="_8BIM";
+        parent.document.title="DDBEntry";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
-<li><a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/adobe/DDB.html" title="class in pixy.meta.adobe"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../pixy/meta/adobe/ImageResourceID.html" title="enum in pixy.meta.adobe"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../index.html?pixy/meta/adobe/_8BIM.html" target="_top">Frames</a></li>
-<li><a href="_8BIM.html" target="_top">No Frames</a></li>
+<li><a href="../../../index.html?pixy/meta/adobe/DDBEntry.html" target="_top">Frames</a></li>
+<li><a href="DDBEntry.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,27 +77,23 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">pixy.meta.adobe</div>
-<h2 title="Class _8BIM" class="title">Class _8BIM</h2>
+<h2 title="Class DDBEntry" class="title">Class DDBEntry</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>pixy.meta.adobe._8BIM</li>
+<li>pixy.meta.adobe.DDBEntry</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../pixy/meta/adobe/IPTC_NAA.html" title="class in pixy.meta.adobe">IPTC_NAA</a>, <a href="../../../pixy/meta/adobe/JPEGQuality.html" title="class in pixy.meta.adobe">JPEGQuality</a>, <a href="../../../pixy/meta/adobe/Slices.html" title="class in pixy.meta.adobe">Slices</a>, <a href="../../../pixy/meta/adobe/ThumbnailResource.html" title="class in pixy.meta.adobe">ThumbnailResource</a>, <a href="../../../pixy/meta/adobe/VersionInfo.html" title="class in pixy.meta.adobe">VersionInfo</a></dd>
-</dl>
 <hr>
 <br>
-<pre>public class <span class="strong">_8BIM</span>
+<pre>public class <span class="strong">DDBEntry</span>
 extends java.lang.Object</pre>
 </li>
 </ul>
@@ -118,12 +114,8 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected byte[]</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#data">data</a></strong></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected int</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#size">size</a></strong></code>&nbsp;</td>
+<td class="colFirst"><code>protected <a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a></code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#readStrategy">readStrategy</a></strong></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -140,20 +132,16 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#_8BIM(pixy.meta.adobe.ImageResourceID,%20java.lang.String,%20byte[])">_8BIM</a></strong>(<a href="../../../pixy/meta/adobe/ImageResourceID.html" title="enum in pixy.meta.adobe">ImageResourceID</a>&nbsp;eId,
-     java.lang.String&nbsp;name,
-     byte[]&nbsp;data)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#DDBEntry(pixy.meta.adobe.DataBlockType,%20int,%20byte[],%20pixy.io.ReadStrategy)">DDBEntry</a></strong>(<a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe">DataBlockType</a>&nbsp;etype,
+        int&nbsp;size,
+        byte[]&nbsp;data,
+        <a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a>&nbsp;readStrategy)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#_8BIM(short,%20java.lang.String,%20byte[])">_8BIM</a></strong>(short&nbsp;id,
-     java.lang.String&nbsp;name,
-     byte[]&nbsp;data)</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#_8BIM(short,%20java.lang.String,%20int,%20byte[])">_8BIM</a></strong>(short&nbsp;id,
-     java.lang.String&nbsp;name,
-     int&nbsp;size,
-     byte[]&nbsp;data)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#DDBEntry(int,%20int,%20byte[],%20pixy.io.ReadStrategy)">DDBEntry</a></strong>(int&nbsp;type,
+        int&nbsp;size,
+        byte[]&nbsp;data,
+        <a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a>&nbsp;readStrategy)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -172,27 +160,23 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>byte[]</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#getData()">getData</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>short</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#getID()">getID</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#getName()">getName</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#getData()">getData</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#getSize()">getSize</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#getSize()">getSize</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#getType()">getType</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe">DataBlockType</a></code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#getTypeEnum()">getTypeEnum</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#print()">print</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/_8BIM.html#write(java.io.OutputStream)">write</a></strong>(java.io.OutputStream&nbsp;os)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/adobe/DDBEntry.html#print()">print</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,22 +200,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="size">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>size</h4>
-<pre>protected&nbsp;int size</pre>
-</li>
-</ul>
-<a name="data">
+<a name="readStrategy">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>data</h4>
-<pre>protected&nbsp;byte[] data</pre>
+<h4>readStrategy</h4>
+<pre>protected&nbsp;<a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a> readStrategy</pre>
 </li>
 </ul>
 </li>
@@ -242,38 +217,28 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="_8BIM(short, java.lang.String, byte[])">
+<a name="DDBEntry(pixy.meta.adobe.DataBlockType, int, byte[], pixy.io.ReadStrategy)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>_8BIM</h4>
-<pre>public&nbsp;_8BIM(short&nbsp;id,
-     java.lang.String&nbsp;name,
-     byte[]&nbsp;data)</pre>
+<h4>DDBEntry</h4>
+<pre>public&nbsp;DDBEntry(<a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe">DataBlockType</a>&nbsp;etype,
+        int&nbsp;size,
+        byte[]&nbsp;data,
+        <a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a>&nbsp;readStrategy)</pre>
 </li>
 </ul>
-<a name="_8BIM(short, java.lang.String, int, byte[])">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>_8BIM</h4>
-<pre>public&nbsp;_8BIM(short&nbsp;id,
-     java.lang.String&nbsp;name,
-     int&nbsp;size,
-     byte[]&nbsp;data)</pre>
-</li>
-</ul>
-<a name="_8BIM(pixy.meta.adobe.ImageResourceID, java.lang.String, byte[])">
+<a name="DDBEntry(int, int, byte[], pixy.io.ReadStrategy)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>_8BIM</h4>
-<pre>public&nbsp;_8BIM(<a href="../../../pixy/meta/adobe/ImageResourceID.html" title="enum in pixy.meta.adobe">ImageResourceID</a>&nbsp;eId,
-     java.lang.String&nbsp;name,
-     byte[]&nbsp;data)</pre>
+<h4>DDBEntry</h4>
+<pre>public&nbsp;DDBEntry(int&nbsp;type,
+        int&nbsp;size,
+        byte[]&nbsp;data,
+        <a href="../../../pixy/io/ReadStrategy.html" title="interface in pixy.io">ReadStrategy</a>&nbsp;readStrategy)</pre>
 </li>
 </ul>
 </li>
@@ -284,31 +249,31 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getData()">
+<a name="print()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getData</h4>
-<pre>public&nbsp;byte[]&nbsp;getData()</pre>
+<h4>print</h4>
+<pre>public&nbsp;void&nbsp;print()</pre>
 </li>
 </ul>
-<a name="getName()">
+<a name="getType()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getName</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getName()</pre>
+<h4>getType</h4>
+<pre>public&nbsp;int&nbsp;getType()</pre>
 </li>
 </ul>
-<a name="getID()">
+<a name="getTypeEnum()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getID</h4>
-<pre>public&nbsp;short&nbsp;getID()</pre>
+<h4>getTypeEnum</h4>
+<pre>public&nbsp;<a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe">DataBlockType</a>&nbsp;getTypeEnum()</pre>
 </li>
 </ul>
 <a name="getSize()">
@@ -320,25 +285,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;int&nbsp;getSize()</pre>
 </li>
 </ul>
-<a name="print()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>print</h4>
-<pre>public&nbsp;void&nbsp;print()</pre>
-</li>
-</ul>
-<a name="write(java.io.OutputStream)">
+<a name="getData()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>write</h4>
-<pre>public&nbsp;void&nbsp;write(java.io.OutputStream&nbsp;os)
-           throws java.io.IOException</pre>
-<dl><dt><span class="strong">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd></dl>
+<h4>getData</h4>
+<pre>public&nbsp;byte[]&nbsp;getData()</pre>
 </li>
 </ul>
 </li>
@@ -366,12 +319,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
-<li><a href="../../../pixy/meta/adobe/DataBlockType.html" title="enum in pixy.meta.adobe"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../pixy/meta/adobe/DDB.html" title="class in pixy.meta.adobe"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../pixy/meta/adobe/ImageResourceID.html" title="enum in pixy.meta.adobe"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../index.html?pixy/meta/adobe/_8BIM.html" target="_top">Frames</a></li>
-<li><a href="_8BIM.html" target="_top">No Frames</a></li>
+<li><a href="../../../index.html?pixy/meta/adobe/DDBEntry.html" target="_top">Frames</a></li>
+<li><a href="DDBEntry.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../allclasses-noframe.html">All Classes</a></li>

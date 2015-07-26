@@ -43,6 +43,7 @@ import org.w3c.dom.Document;
 
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
+import pixy.meta.adobe.DDB;
 import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.IRBThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
@@ -78,6 +79,7 @@ import pixy.image.tiff.TIFFImage;
 import pixy.io.IOUtils;
 import pixy.io.RandomAccessInputStream;
 import pixy.io.RandomAccessOutputStream;
+import pixy.io.ReadStrategy;
 import pixy.io.ReadStrategyII;
 import pixy.io.ReadStrategyMM;
 import pixy.io.WriteStrategyII;
@@ -1347,6 +1349,12 @@ public class TIFFMeta {
 		field = currIFD.getField(TiffTag.EXIF_SUB_IFD);
 		if(field != null) { // We have found EXIF SubIFD
 			metadataMap.put(MetadataType.EXIF, new TiffExif(currIFD));
+		}
+		field = currIFD.getField(TiffTag.IMAGE_SOURCE_DATA);
+		if(field != null) {
+			boolean bigEndian = (rin.getEndian() == IOUtils.BIG_ENDIAN);
+			ReadStrategy readStrategy = bigEndian?ReadStrategyMM.getInstance():ReadStrategyII.getInstance();
+			metadataMap.put(MetadataType.PHOTOSHOP_DDB, new DDB((byte[])field.getData(), readStrategy));
 		}
 		
 		return metadataMap;
