@@ -61,4 +61,4 @@ Tested on Android Nexus4 virtual device only!!!
 
 [Project using pixymeta-android](https://github.com/CreativeCommons-Seneca/cc-xmp-tag)
 
-Suggestions? custom requirements? Open an issue or send email to me directly: yuwen_66@yahoo.com
+Suggestions? custom requirements? [Open] an issue or send email to me directly: yuwen_66@yahoo.com
