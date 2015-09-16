@@ -464,7 +464,7 @@ public class ArrayUtils
   	 * @return the byte reverse table.
   	 */
   	public static byte[] getBitReverseTable() {
-  		return BIT_REVERSE_TABLE;
+  		return BIT_REVERSE_TABLE.clone();
   	}
 	 
 	// Insertion sort
