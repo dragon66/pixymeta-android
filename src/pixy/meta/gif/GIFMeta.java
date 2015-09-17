@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  ==================================================
+ * WY    16Sep2015  Added insertComment() to insert comment block
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    30Mar2015  Fixed bug with insertXMP() replacing '\0' with ' '
  * WY    13Mar2015  Initial creation
@@ -66,6 +67,49 @@ public class GIFMeta {
 		private byte[] globalPalette;
 		private byte[] imageDescriptor;
 		private Map<MetadataType, Metadata> metadataMap;
+	}
+	
+	public static void insertComment(InputStream is, OutputStream os, String comment) throws IOException {
+		// Read and copy header and LSD
+ 		// Create a new data transfer object to hold data
+ 		DataTransferObject DTO = new DataTransferObject();
+ 		readHeader(is, DTO);
+ 		readLSD(is, DTO);
+ 		os.write(DTO.header);
+ 		os.write(DTO.logicalScreenDescriptor);
+		if((DTO.logicalScreenDescriptor[4]&0x80) == 0x80) {
+			int bitsPerPixel = (DTO.logicalScreenDescriptor[4]&0x07)+1;
+			int colorsUsed = (1 << bitsPerPixel);
+			
+			readGlobalPalette(is, colorsUsed, DTO);
+			os.write(DTO.globalPalette);
+		}		 		
+		os.write(EXTENSION_INTRODUCER);
+		os.write(COMMENT_EXTENSION_LABEL);
+		byte[] commentBytes = comment.getBytes();
+		int numBlocks = commentBytes.length/0xff;
+		int leftOver = commentBytes.length % 0xff;
+		int offset = 0;
+		if(numBlocks > 0) {
+			for(int i = 0; i < numBlocks; i++) {
+				os.write(0xff);
+				os.write(commentBytes, offset, 0xff);
+				offset += 0xff;
+			}
+		}
+		if(leftOver > 0) {
+			os.write(leftOver);
+			os.write(commentBytes, offset, leftOver);
+		}
+		os.write(0);
+		// Copy the rest of the input stream
+ 		byte buf[] = new byte[10240]; // 10K
+ 		int bytesRead = is.read(buf);
+ 		
+ 		while(bytesRead != -1) {
+ 			os.write(buf, 0, bytesRead);
+ 			bytesRead = is.read(buf);
+ 		}
 	}
 	
 	public static void insertXMPApplicationBlock(InputStream is, OutputStream os, XMP xmp) throws IOException {

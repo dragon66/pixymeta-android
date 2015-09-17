@@ -371,7 +371,7 @@ public class TIFFMeta {
 		}
 		
 		// Add software field.
-		String softWare = "Created by PIXYMETA-ANDROID - https://github.com/dragon66/pixymeta-android\0";
+		String softWare = "PIXYMETA-ANDROID - https://github.com/dragon66/pixymeta-android\0";
 		ifd.addField(new ASCIIField(TiffTag.SOFTWARE.getValue(), softWare));
 	
 		/* The following are added to work with old-style JPEG compression (type 6) */		
