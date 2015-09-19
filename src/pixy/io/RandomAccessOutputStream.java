@@ -37,6 +37,12 @@ import java.io.OutputStream;
 public abstract class RandomAccessOutputStream extends OutputStream implements DataOutput {
 
 	private WriteStrategy strategy = WriteStrategyMM.getInstance();
+	/** The destination stream. */
+	protected OutputStream dist;
+	
+	protected RandomAccessOutputStream(OutputStream dist) {
+		this.dist = dist;
+	}
 	
 	public void close() throws IOException {
 		long flushPos = getFlushPos();
@@ -47,6 +53,15 @@ public abstract class RandomAccessOutputStream extends OutputStream implements D
 			writeToStream(length - flushPos);
 		}
 	}
+	
+	/**
+     * Closes the RandomAccessInputStream and it's underlying stream
+     * @throws IOException
+     */
+    public void closeAll() throws IOException {
+    	close();
+    	dist.close();
+    }
 	
 	public abstract void disposeBefore(long pos);
 	

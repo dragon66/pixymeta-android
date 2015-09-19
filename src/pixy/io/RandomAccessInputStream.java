@@ -36,6 +36,21 @@ import java.io.InputStream;
 public abstract class RandomAccessInputStream extends InputStream implements DataInput {	
     
     private ReadStrategy strategy = ReadStrategyMM.getInstance();
+    /** The source stream. */
+    protected InputStream src;
+    
+    protected RandomAccessInputStream(InputStream src) {
+    	this.src = src;
+    }
+    
+    /**
+     * Closes the RandomAccessInputStream and it's underlying stream
+     * @throws IOException
+     */
+    public void closeAll() throws IOException {
+    	close();
+    	src.close();
+    }
     
     protected void finalize() throws Throwable {
 		super.finalize();

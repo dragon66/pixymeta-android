@@ -1,6 +1,7 @@
 ***************************
-Last modified on 09/16/2015
+Last modified on 09/19/2015
 ***************************
+19Sep2015  Added closeAll() to random access stream
 16Sep2015  Added insertComment() to GIFMeta to insert comment block
 19Jul2015  Renamed MetadataType.PHOTOSHOP to MetadataType.PHOTOSHOP_IRB
 12Jul2015  Added Metadata support for JPEG APP0 (JFIF)
