@@ -12,7 +12,8 @@
  * Metadata.java
  *
  * Who   Date       Description
- * ====  =========  =================================================
+ * ====  =========  ======================================================
+ * WY    26Sep2015  Added insertComment(InputStream, OutputStream, String}
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    16Apr2015  Changed insertIRB() parameter List to Collection
  * WY    16Apr2015  Removed ICC_Profile related code
@@ -26,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PushbackInputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +51,7 @@ import pixy.meta.tiff.TIFFMeta;
 import pixy.image.ImageType;
 import pixy.io.FileCacheRandomAccessInputStream;
 import pixy.io.FileCacheRandomAccessOutputStream;
+import pixy.io.PeekHeadInputStream;
 import pixy.io.RandomAccessInputStream;
 import pixy.io.RandomAccessOutputStream;
 
@@ -78,15 +79,15 @@ public abstract class Metadata implements MetadataReader {
 	
 	public static void extractThumbnails(InputStream is, String pathToThumbnail) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate thumbnail extracting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.extractThumbnails(pushbackStream, pathToThumbnail);
+				JPEGMeta.extractThumbnails(peekHeadInputStream, pathToThumbnail);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				TIFFMeta.extractThumbnail(randIS, pathToThumbnail);
 				randIS.close();
 				break;
@@ -100,13 +101,48 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not contain any thumbnails", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("Thumbnail extracting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void extractThumbnails(String image, String pathToThumbnail) throws IOException {
 		extractThumbnails(new File(image), pathToThumbnail);
+	}
+	
+	public static void insertComment(InputStream is, OutputStream os, String comment) throws IOException {
+		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
+		// Delegate IPTC inserting to corresponding image tweaker.
+		switch(imageType) {
+			case JPG:
+				JPEGMeta.insertComment(peekHeadInputStream, os, comment);
+				break;
+			case TIFF:
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
+				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
+				TIFFMeta.insertComment(comment, randIS, randOS);
+				randIS.close();
+				randOS.close();
+				break;
+			case PNG:
+				PNGMeta.insertComment(peekHeadInputStream, os, comment);
+				break;
+			case GIF:
+				GIFMeta.insertComment(peekHeadInputStream, os, comment);
+				break;
+			case PCX:
+			case TGA:
+			case BMP:
+				LOGGER.info("{} image format does not support comment data", imageType);
+				break;
+			default:
+				peekHeadInputStream.close();
+				throw new IllegalArgumentException("comment data inserting is not supported for " + imageType + " image");				
+		}
+		peekHeadInputStream.close();
 	}
 	
 	/**
@@ -122,15 +158,15 @@ public abstract class Metadata implements MetadataReader {
 	
 	public static void insertExif(InputStream is, OutputStream out, Exif exif, boolean update) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate EXIF inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertExif(pushbackStream, out, exif, update);
+				JPEGMeta.insertExif(peekHeadInputStream, out, exif, update);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertExif(randIS, randOS, exif, update);
 				randIS.close();
@@ -144,22 +180,23 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support EXIF data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("EXIF data inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void insertICCProfile(InputStream is, OutputStream out, byte[] icc_profile) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate ICCP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertICCProfile(pushbackStream, out, icc_profile);
+				JPEGMeta.insertICCProfile(peekHeadInputStream, out, icc_profile);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertICCProfile(icc_profile, 0, randIS, randOS);
 				randIS.close();
@@ -172,9 +209,10 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support ICCProfile data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("ICCProfile data inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 
 	public static void insertIPTC(InputStream is, OutputStream out, Collection<IPTCDataSet> iptcs) throws IOException {
@@ -183,15 +221,15 @@ public abstract class Metadata implements MetadataReader {
 	
 	public static void insertIPTC(InputStream is, OutputStream out, Collection<IPTCDataSet> iptcs, boolean update) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate IPTC inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIPTC(pushbackStream, out, iptcs, update);
+				JPEGMeta.insertIPTC(peekHeadInputStream, out, iptcs, update);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertIPTC(randIS, randOS, iptcs, update);
 				randIS.close();
@@ -205,9 +243,10 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support IPTC data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("IPTC data inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void insertIRB(InputStream is, OutputStream out, Collection<_8BIM> bims) throws IOException {
@@ -216,15 +255,15 @@ public abstract class Metadata implements MetadataReader {
 	
 	public static void insertIRB(InputStream is, OutputStream out, Collection<_8BIM> bims, boolean update) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate IRB inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIRB(pushbackStream, out, bims, update);
+				JPEGMeta.insertIRB(peekHeadInputStream, out, bims, update);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertIRB(randIS, randOS, bims, update);
 				randIS.close();
@@ -238,22 +277,23 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support IRB data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("IRB data inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void insertIRBThumbnail(InputStream is, OutputStream out, Bitmap thumbnail) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate IRB thumbnail inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIRBThumbnail(pushbackStream, out, thumbnail);
+				JPEGMeta.insertIRBThumbnail(peekHeadInputStream, out, thumbnail);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertThumbnail(randIS, randOS, thumbnail);
 				randIS.close();
@@ -267,32 +307,33 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support IRB thumbnail", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("IRB thumbnail inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void insertXMP(InputStream is, OutputStream out, XMP xmp) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate XMP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertXMP(pushbackStream, out, xmp); // No ExtendedXMP
+				JPEGMeta.insertXMP(peekHeadInputStream, out, xmp); // No ExtendedXMP
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertXMP(xmp, randIS, randOS);
 				randIS.close();
 				randOS.close();
 				break;
 			case PNG:
-				PNGMeta.insertXMP(pushbackStream, out, xmp);
+				PNGMeta.insertXMP(peekHeadInputStream, out, xmp);
 				break;
 			case GIF:
-				GIFMeta.insertXMPApplicationBlock(pushbackStream, out, xmp);
+				GIFMeta.insertXMPApplicationBlock(peekHeadInputStream, out, xmp);
 				break;
 			case PCX:
 			case TGA:
@@ -300,32 +341,33 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support XMP data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("XMP inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static void insertXMP(InputStream is, OutputStream out, String xmp) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate XMP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertXMP(pushbackStream, out, xmp, null); // No ExtendedXMP
+				JPEGMeta.insertXMP(peekHeadInputStream, out, xmp, null); // No ExtendedXMP
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
 				TIFFMeta.insertXMP(xmp, randIS, randOS);
 				randIS.close();
 				randOS.close();
 				break;
 			case PNG:
-				PNGMeta.insertXMP(pushbackStream, out, xmp);
+				PNGMeta.insertXMP(peekHeadInputStream, out, xmp);
 				break;
 			case GIF:
-				GIFMeta.insertXMPApplicationBlock(pushbackStream, out, xmp);
+				GIFMeta.insertXMPApplicationBlock(peekHeadInputStream, out, xmp);
 				break;
 			case PCX:
 			case TGA:
@@ -333,9 +375,10 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support XMP data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("XMP inserting is not supported for " + imageType + " image");				
-		}		
+		}
+		peekHeadInputStream.close();
 	}
 	
 	public static Map<MetadataType, Metadata> readMetadata(File image) throws IOException {
@@ -357,33 +400,33 @@ public abstract class Metadata implements MetadataReader {
 		// Metadata map for all the Metadata read
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate metadata reading to corresponding image tweakers.
 		switch(imageType) {
 			case JPG:
-				metadataMap = JPEGMeta.readMetadata(pushbackStream);
+				metadataMap = JPEGMeta.readMetadata(peekHeadInputStream);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				metadataMap = TIFFMeta.readMetadata(randIS);
 				randIS.close();
 				break;
 			case PNG:
-				metadataMap = PNGMeta.readMetadata(pushbackStream);
+				metadataMap = PNGMeta.readMetadata(peekHeadInputStream);
 				break;
 			case GIF:
-				metadataMap = GIFMeta.readMetadata(pushbackStream);
+				metadataMap = GIFMeta.readMetadata(peekHeadInputStream);
 				break;
 			case BMP:
-				metadataMap = BMPMeta.readMetadata(pushbackStream);
+				metadataMap = BMPMeta.readMetadata(peekHeadInputStream);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("Metadata reading is not supported for " + imageType + " image");
 				
 		}	
-		pushbackStream.close();
+		peekHeadInputStream.close();
 		
 		return metadataMap;
 	}
@@ -401,15 +444,15 @@ public abstract class Metadata implements MetadataReader {
 	 */
 	public static void removeMetadata(InputStream is, OutputStream os, MetadataType ...metadataTypes) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PushbackInputStream pushbackStream = new PushbackInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(pushbackStream);		
+		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate meta data removing to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.removeMetadata(pushbackStream, os, metadataTypes);
+				JPEGMeta.removeMetadata(peekHeadInputStream, os, metadataTypes);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(pushbackStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
 				TIFFMeta.removeMetadata(randIS, randOS, metadataTypes);
 				randIS.close();
@@ -421,9 +464,10 @@ public abstract class Metadata implements MetadataReader {
 				LOGGER.info("{} image format does not support meta data", imageType);
 				break;
 			default:
-				pushbackStream.close();
+				peekHeadInputStream.close();
 				throw new IllegalArgumentException("Metadata removing is not supported for " + imageType + " image");				
 		}
+		peekHeadInputStream.close();
 	}
 	
 	public Metadata(MetadataType type, byte[] data) {

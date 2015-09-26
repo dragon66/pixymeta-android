@@ -37,8 +37,10 @@ import java.io.OutputStream;
 public abstract class RandomAccessOutputStream extends OutputStream implements DataOutput {
 
 	private WriteStrategy strategy = WriteStrategyMM.getInstance();
+	
 	/** The destination stream. */
 	protected OutputStream dist;
+	protected boolean closed;
 	
 	protected RandomAccessOutputStream(OutputStream dist) {
 		this.dist = dist;
@@ -61,16 +63,25 @@ public abstract class RandomAccessOutputStream extends OutputStream implements D
     public void closeAll() throws IOException {
     	close();
     	dist.close();
+    	dist = null;
+    }
+    
+    /**
+     * Check to make sure that this stream has not been closed
+     */
+    protected  void ensureOpen() throws IOException {
+    	if (closed)
+    		throw new IOException("Stream closed");
     }
 	
-	public abstract void disposeBefore(long pos);
+	public abstract void disposeBefore(long pos) throws IOException;
 	
 	protected void finalize() throws Throwable {
 		super.finalize();
 		close();
 	}
 		
-	public short getEndian()	{
+	public short getEndian() {
 		return strategy instanceof WriteStrategyMM?IOUtils.BIG_ENDIAN:IOUtils.LITTLE_ENDIAN;
 	}
 	
@@ -80,11 +91,13 @@ public abstract class RandomAccessOutputStream extends OutputStream implements D
 	 * Returns the total length of data that has been cached,
 	 * regardless of whether any early blocks have been disposed.
 	 * This value will only ever increase. 
+	 * @throws IOException 
 	 */
 	public abstract long getLength();
 	
 	/**
 	 * @return the current stream position
+	 * @throws IOException 
 	 */
 	public abstract long getStreamPointer();	
 	

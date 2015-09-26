@@ -367,7 +367,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/io/MemoryCacheRandomAccessOutputStream.html#close()">close()</a></span> - Method in class pixy.io.<a href="./pixy/io/MemoryCacheRandomAccessOutputStream.html" title="class in pixy.io">MemoryCacheRandomAccessOutputStream</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#close()">close()</a></span> - Method in class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/io/RandomAccessOutputStream.html#close()">close()</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessOutputStream.html" title="class in pixy.io">RandomAccessOutputStream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#closeAll()">closeAll()</a></span> - Method in class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/io/RandomAccessInputStream.html#closeAll()">closeAll()</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessInputStream.html" title="class in pixy.io">RandomAccessInputStream</a></dt>
 <dd>
@@ -377,6 +381,10 @@
 <dd>
 <div class="block">Closes the RandomAccessInputStream and it's underlying stream</div>
 </dd>
+<dt><span class="strong"><a href="./pixy/io/RandomAccessInputStream.html#closed">closed</a></span> - Variable in class pixy.io.<a href="./pixy/io/RandomAccessInputStream.html" title="class in pixy.io">RandomAccessInputStream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/RandomAccessOutputStream.html#closed">closed</a></span> - Variable in class pixy.io.<a href="./pixy/io/RandomAccessOutputStream.html" title="class in pixy.io">RandomAccessOutputStream</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="./pixy/util/CollectionUtils.html" title="class in pixy.util"><span class="strong">CollectionUtils</span></a> - Class in <a href="./pixy/util/package-summary.html">pixy.util</a></dt>
 <dd>
 <div class="block">A collection utility class</div>
@@ -647,6 +655,14 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/Metadata.html#ensureDataRead()">ensureDataRead()</a></span> - Method in class pixy.meta.<a href="./pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/RandomAccessInputStream.html#ensureOpen()">ensureOpen()</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessInputStream.html" title="class in pixy.io">RandomAccessInputStream</a></dt>
+<dd>
+<div class="block">Check to make sure that this stream has not been closed</div>
+</dd>
+<dt><span class="strong"><a href="./pixy/io/RandomAccessOutputStream.html#ensureOpen()">ensureOpen()</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessOutputStream.html" title="class in pixy.io">RandomAccessOutputStream</a></dt>
+<dd>
+<div class="block">Check to make sure that this stream has not been closed</div>
+</dd>
 <dt><span class="strong"><a href="./pixy/image/png/Chunk.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class pixy.image.png.<a href="./pixy/image/png/Chunk.html" title="class in pixy.image.png">Chunk</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/iptc/IPTCDataSet.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class pixy.meta.iptc.<a href="./pixy/meta/iptc/IPTCDataSet.html" title="class in pixy.meta.iptc">IPTCDataSet</a></dt>
@@ -1718,7 +1734,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/image/png/PLTEBuilder.html#greenMap(byte[])">greenMap(byte[])</a></span> - Method in class pixy.image.png.<a href="./pixy/image/png/PLTEBuilder.html" title="class in pixy.image.png">PLTEBuilder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./pixy/util/MetadataUtils.html#guessImageType(java.io.PushbackInputStream)">guessImageType(PushbackInputStream)</a></span> - Static method in class pixy.util.<a href="./pixy/util/MetadataUtils.html" title="class in pixy.util">MetadataUtils</a></dt>
+<dt><span class="strong"><a href="./pixy/util/MetadataUtils.html#guessImageType(pixy.io.PeekHeadInputStream)">guessImageType(PeekHeadInputStream)</a></span> - Static method in class pixy.util.<a href="./pixy/util/MetadataUtils.html" title="class in pixy.util">MetadataUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/util/MetadataUtils.html#guessImageType(byte[])">guessImageType(byte[])</a></span> - Static method in class pixy.util.<a href="./pixy/util/MetadataUtils.html" title="class in pixy.util">MetadataUtils</a></dt>
 <dd>&nbsp;</dd>
@@ -1855,6 +1871,16 @@
 <dt><span class="strong"><a href="./pixy/meta/png/PNGMeta.html#insertChunks(java.util.List,%20java.io.InputStream,%20java.io.OutputStream)">insertChunks(List&lt;Chunk&gt;, InputStream, OutputStream)</a></span> - Static method in class pixy.meta.png.<a href="./pixy/meta/png/PNGMeta.html" title="class in pixy.meta.png">PNGMeta</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/gif/GIFMeta.html#insertComment(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertComment(InputStream, OutputStream, String)</a></span> - Static method in class pixy.meta.gif.<a href="./pixy/meta/gif/GIFMeta.html" title="class in pixy.meta.gif">GIFMeta</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/meta/jpeg/JPEGMeta.html#insertComment(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertComment(InputStream, OutputStream, String)</a></span> - Static method in class pixy.meta.jpeg.<a href="./pixy/meta/jpeg/JPEGMeta.html" title="class in pixy.meta.jpeg">JPEGMeta</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/meta/Metadata.html#insertComment(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertComment(InputStream, OutputStream, String)</a></span> - Static method in class pixy.meta.<a href="./pixy/meta/Metadata.html" title="class in pixy.meta">Metadata</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/meta/png/PNGMeta.html#insertComment(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertComment(InputStream, OutputStream, String)</a></span> - Static method in class pixy.meta.png.<a href="./pixy/meta/png/PNGMeta.html" title="class in pixy.meta.png">PNGMeta</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/meta/tiff/TIFFMeta.html#insertComment(java.lang.String,%20pixy.io.RandomAccessInputStream,%20pixy.io.RandomAccessOutputStream)">insertComment(String, RandomAccessInputStream, RandomAccessOutputStream)</a></span> - Static method in class pixy.meta.tiff.<a href="./pixy/meta/tiff/TIFFMeta.html" title="class in pixy.meta.tiff">TIFFMeta</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/meta/tiff/TIFFMeta.html#insertComment(java.lang.String,%20int,%20pixy.io.RandomAccessInputStream,%20pixy.io.RandomAccessOutputStream)">insertComment(String, int, RandomAccessInputStream, RandomAccessOutputStream)</a></span> - Static method in class pixy.meta.tiff.<a href="./pixy/meta/tiff/TIFFMeta.html" title="class in pixy.meta.tiff">TIFFMeta</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/jpeg/JPEGMeta.html#insertExif(java.io.InputStream,%20java.io.OutputStream,%20pixy.meta.exif.Exif,%20boolean)">insertExif(InputStream, OutputStream, Exif, boolean)</a></span> - Static method in class pixy.meta.jpeg.<a href="./pixy/meta/jpeg/JPEGMeta.html" title="class in pixy.meta.jpeg">JPEGMeta</a></dt>
 <dd>&nbsp;</dd>
@@ -2349,6 +2375,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/string/StringUtils.html#parseShort(java.lang.String,%20int)">parseShort(String, int)</a></span> - Static method in class pixy.string.<a href="./pixy/string/StringUtils.html" title="class in pixy.string">StringUtils</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#peek(int)">peek(int)</a></span> - Method in class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io"><span class="strong">PeekHeadInputStream</span></a> - Class in <a href="./pixy/io/package-summary.html">pixy.io</a></dt>
+<dd>
+<div class="block">Lightweight stream wrapper which allows to peek a
+ fixed length of bytes from the current stream head</div>
+</dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#PeekHeadInputStream(java.io.InputStream,%20int)">PeekHeadInputStream(InputStream, int)</a></span> - Constructor for class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/jpeg/JPEGMeta.html#PHOTOSHOP_IRB_ID">PHOTOSHOP_IRB_ID</a></span> - Static variable in class pixy.meta.jpeg.<a href="./pixy/meta/jpeg/JPEGMeta.html" title="class in pixy.meta.jpeg">JPEGMeta</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/meta/jpeg/JPEGMeta.html#PICTURE_INFO_ID">PICTURE_INFO_ID</a></span> - Static variable in class pixy.meta.jpeg.<a href="./pixy/meta/jpeg/JPEGMeta.html" title="class in pixy.meta.jpeg">JPEGMeta</a></dt>
@@ -2593,6 +2628,10 @@
 <div class="block">Reads up to <code>len</code> bytes of data from the input stream into
  an array of bytes.</div>
 </dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#read()">read()</a></span> - Method in class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./pixy/io/PeekHeadInputStream.html#read(byte[],%20int,%20int)">read(byte[], int, int)</a></span> - Method in class pixy.io.<a href="./pixy/io/PeekHeadInputStream.html" title="class in pixy.io">PeekHeadInputStream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/io/RandomAccessInputStream.html#read()">read()</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessInputStream.html" title="class in pixy.io">RandomAccessInputStream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./pixy/io/RandomAccessInputStream.html#read(byte[],%20int,%20int)">read(byte[], int, int)</a></span> - Method in class pixy.io.<a href="./pixy/io/RandomAccessInputStream.html" title="class in pixy.io">RandomAccessInputStream</a></dt>
