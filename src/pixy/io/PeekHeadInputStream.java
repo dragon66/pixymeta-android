@@ -60,20 +60,20 @@ public class PeekHeadInputStream extends InputStream {
 	public void close() throws IOException {
 		if(closed) return;
 		buffer = null;
-		closed = true;
-	}
-	
-	public void closeAll() throws IOException {
-		if(closed) return;
-		buffer = null;
 		src.close();
 		src = null;
 		closed = true;
 	}
 	
+	public void shallowClose() throws IOException {
+		if(closed) return;
+		buffer = null;
+		closed = true;
+	}
+	
 	/**
-     * Check to make sure that this stream has not been closed
-     */
+	 * Check to make sure that this stream has not been closed
+	 */
     private  void ensureOpen() throws IOException {
     	if (closed)
     		throw new IOException("Stream closed");

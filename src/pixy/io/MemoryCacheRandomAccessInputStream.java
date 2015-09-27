@@ -51,14 +51,7 @@ public class MemoryCacheRandomAccessInputStream extends RandomAccessInputStream 
 		
 	public void close() throws IOException {
 		if(closed) return;
-		cache.clear();
-		cache = null;
-		src = null;
-		closed = true;
-	}
-	
-	public void closeAll() throws IOException {
-		if(closed) return;
+		super.close();
 		cache.clear();
 		cache = null;
 		src.close();
@@ -138,5 +131,15 @@ public class MemoryCacheRandomAccessInputStream extends RandomAccessInputStream 
 			throw new IOException("Negtive seek position.");
 			
 		pointer = loc;
+	}
+
+	@Override
+	public void shallowClose() throws IOException {
+		if(closed) return;
+		super.close();
+		cache.clear();
+		cache = null;
+		src = null;
+		closed = true;		
 	}
 }

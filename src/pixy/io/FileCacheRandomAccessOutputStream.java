@@ -69,9 +69,10 @@ public class FileCacheRandomAccessOutputStream extends RandomAccessOutputStream 
         super.close();
         cache.close();
         cacheFile.delete();
+        dist.close();
         dist = null;
         closed = true;
-    }
+     }
     
 	@Override
 	public void disposeBefore(long pos) { 
@@ -168,13 +169,12 @@ public class FileCacheRandomAccessOutputStream extends RandomAccessOutputStream 
     }
 
 	@Override
-	public void closeAll() throws IOException {
-		if(closed) return;
+	public void shallowClose() throws IOException {
+	   	if(closed) return;
         super.close();
         cache.close();
         cacheFile.delete();
-        dist.close();
         dist = null;
-        closed = true;		
+        closed = true;
 	}
 }

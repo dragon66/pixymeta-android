@@ -45,6 +45,8 @@ public class MemoryCacheRandomAccessOutputStream extends RandomAccessOutputStrea
 		if(closed) return;
 		super.close();
  		cache.clear();
+ 		cache = null;
+ 		dist.close();
  		dist = null;
  		closed = true;
     }	
@@ -201,12 +203,13 @@ public class MemoryCacheRandomAccessOutputStream extends RandomAccessOutputStrea
     }
 
 	@Override
-	public void closeAll() throws IOException {
+	public void shallowClose() throws IOException {
+
 		if(closed) return;
 		super.close();
  		cache.clear();
- 		dist.close();
+ 		cache = null;
  		dist = null;
- 		closed = true;
+ 		closed = true;		
 	}
 }
