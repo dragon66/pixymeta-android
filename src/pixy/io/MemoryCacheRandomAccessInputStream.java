@@ -51,9 +51,18 @@ public class MemoryCacheRandomAccessInputStream extends RandomAccessInputStream 
 		
 	public void close() throws IOException {
 		if(closed) return;
-		super.close();
 		cache.clear();
 		cache = null;
+		src = null;
+		closed = true;
+	}
+	
+	public void closeAll() throws IOException {
+		if(closed) return;
+		cache.clear();
+		cache = null;
+		src.close();
+		src = null;
 		closed = true;
 	}
 		
