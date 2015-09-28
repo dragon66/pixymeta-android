@@ -570,11 +570,11 @@ public class JPEGMeta {
 			    		gpsSubIFD.addFields(oldGpsSubIFD.getFields());
 					}
 		    	}
-		    	if(imageIFD != null) {
-		    		if(newImageIFD != null)
-		    			imageIFD.addFields(newImageIFD.getFields());
-		    	} else
-		    		imageIFD = newImageIFD;
+		    	if(newImageIFD != null) {
+		    		if(imageIFD == null)
+		    			imageIFD = new IFD();
+		    		imageIFD.addFields(newImageIFD.getFields());
+		    	}
 		    	if(exifSubIFD != null) {
 		    		if(newExifSubIFD != null)
 		    			exifSubIFD.addFields(newExifSubIFD.getFields());
