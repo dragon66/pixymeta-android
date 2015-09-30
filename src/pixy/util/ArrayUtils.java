@@ -132,7 +132,7 @@ public class ArrayUtils
 	        n--;
 	        doMore = false;  // assume this is our last pass over the array
 	    
-	        for (int i=0; i<n; i++) {
+	        for (int i=0; i < n; i++) {
 	            if (array[i] > array[i+1]) {
 	                // exchange elements
 	                int temp = array[i];
@@ -152,7 +152,7 @@ public class ArrayUtils
 	        n--;
 	        doMore = false;  // assume this is our last pass over the array
 	    
-	        for (int i=0; i<n; i++) {
+	        for (int i = 0; i < n; i++) {
 	            if (array[i].compareTo(array[i+1]) > 0) {
 	                // exchange elements
 	                T temp = array[i];
@@ -214,7 +214,7 @@ public class ArrayUtils
 	 * Type safe concatenation of arrays with upper type bound T
 	 * <p>
 	 * Note: if type parameter is not explicitly supplied, it will be inferred as the 
-	 * upper bound for the input parameters.
+	 * upper bound for the two parameters.
 	 * 
 	 * @param arrays the arrays to be concatenated
 	 * @return a concatenation of the input arrays
@@ -433,28 +433,28 @@ public class ArrayUtils
    	public static int fromFloat(float fval)
    	{
    	    int fbits = Float.floatToIntBits(fval);
-   	    int sign = fbits >>> 16 & 0x8000;          // sign only
+   	    int sign = fbits >>> 16 & 0x8000; // sign only
    	    int val = (fbits & 0x7fffffff) + 0x1000; // rounded value
 
-   	    if(val >= 0x47800000)               // might be or become NaN/Inf
-   	    {                                     // avoid Inf due to rounding
+   	    if(val >= 0x47800000) // might be or become NaN/Inf
+   	    {                     // avoid Inf due to rounding
    	        if( (fbits & 0x7fffffff) >= 0x47800000)
-   	        {                                 // is or must become NaN/Inf
-   	            if(val < 0x7f800000)        // was value but too large
-   	                return sign | 0x7c00;     // make it +/-Inf
-   	            return sign | 0x7c00 |        // remains +/-Inf or NaN
+   	        {                        // is or must become NaN/Inf
+   	            if(val < 0x7f800000) // was value but too large
+   	                return sign | 0x7c00;  // make it +/-Inf
+   	            return sign | 0x7c00 |  // remains +/-Inf or NaN
    	                (fbits & 0x007fffff) >>> 13; // keep NaN (and Inf) bits
    	        }
-   	        return sign | 0x7bff;             // unrounded not quite Inf
+   	        return sign | 0x7bff;  // unrounded not quite Inf
    	    }
-   	    if(val >= 0x38800000)               // remains normalized value
+   	    if(val >= 0x38800000)  // remains normalized value
    	        return sign | val - 0x38000000 >>> 13; // exp - 127 + 15
-   	    if(val < 0x33000000)                // too small for subnormal
-   	        return sign;                      // becomes +/-0
+   	    if(val < 0x33000000) // too small for subnormal
+   	        return sign;     // becomes +/-0
    	    val = (fbits & 0x7fffffff) >>> 23;  // tmp exp for subnormal calc
    	    return sign | ((fbits & 0x7fffff | 0x800000) // add subnormal bit
-   	         + (0x800000 >>> val - 102)     // round depending on cut off
-   	      >>> 126 - val);   // div by 2^(1-(exp-127+15)) and >> 13 | exp=0
+   	         + (0x800000 >>> val - 102) // round depending on cut off
+   	      >>> 126 - val); // div by 2^(1-(exp-127+15)) and >> 13 | exp=0
    	}
 	
 	/**
@@ -468,17 +468,16 @@ public class ArrayUtils
   	}
 	 
 	// Insertion sort
-    public static void insertionsort(int[] array)
-    {
-	   insertionsort(array, 0, array.length-1);
+    public static void insertionsort(int[] array) {
+	   insertionsort(array, 0, array.length - 1);
     }
 
-	public static void insertionsort(int[] array, int start, int end)
-    {
+	public static void insertionsort(int[] array, int start, int end) {
 	   int j;
 
-	   for (int i = start+1; i < end+1; i++)
+	   for (int i = start + 1; i < end + 1; i++)
 	   {
+		   
 		   int temp = array[i];
 		   for ( j = i; j > start && temp <= array[j-1]; j-- )
 		       array[j] = array[j-1];
@@ -488,11 +487,15 @@ public class ArrayUtils
     }
 	
 	// Insertion sort
-    public static <T extends Comparable<? super T>> void insertionsort(T[] array, int start, int end)
-    {
+    public static <T extends Comparable<? super T>> void insertionsort(T[] array) {
+    	insertionsort(array, 0, array.length - 1);
+    }
+    
+	// Insertion sort
+    public static <T extends Comparable<? super T>> void insertionsort(T[] array, int start, int end) {
 	   int j;
 
-	   for (int i = start+1; i < end+1; i++)
+	   for (int i = start + 1; i < end + 1; i++)
 	   {
 		   T temp = array[i];
 		   for ( j = i; j > start && temp.compareTo(array[j-1]) <= 0; j-- )
@@ -501,7 +504,107 @@ public class ArrayUtils
 		   array[j] = temp;
 	   }
     }
-	
+    
+    // Merge sort
+    public static void mergesort(int[] array) { 
+	   mergesort(array, new int[array.length], 0, array.length - 1);
+    }
+    
+    public static void mergesort(int[] array, int left, int right) {
+    	if(left < 0 || right > array.length - 1) throw new IllegalArgumentException("Array index out of bounds");
+        mergesort(array, new int[array.length], left, right);
+    }
+    
+    private static void mergesort(int[] array, int[] temp, int left, int right) {
+    	// check the base case
+        if (left < right) {
+          // Get the index of the element which is in the middle
+          int middle = left + (right - left) / 2;
+          // Sort the left side of the array
+          mergesort(array, temp, left, middle);
+          // Sort the right side of the array
+          mergesort(array, temp, middle + 1, right);
+          // Merge the left and the right
+          merge(array, temp, left, middle, right);
+        }
+    }
+    
+    public static <T extends Comparable<? super T>> void mergesort(T[] array) {
+    	mergesort(array, 0, array.length - 1);
+    }
+    
+    public static <T extends Comparable<? super T>> void mergesort(T[] array, int left, int right) {
+     	if(left < 0 || right > array.length - 1) throw new IllegalArgumentException("Array index out of bounds");
+        @SuppressWarnings("unchecked")
+		T[] temp = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+    	mergesort(array, temp, left, right);
+    }
+    
+    // Merge sort
+    private static <T extends Comparable<? super T>> void mergesort(T[] array, T[] temp, int left, int right) {
+    	// check the base case
+        if (left < right) {
+          // Get the index of the element which is in the middle
+          int middle = left + (right - left) / 2;
+          // Sort the left side of the array
+          mergesort(array, temp, left, middle);
+          // Sort the right side of the array
+          mergesort(array, temp, middle + 1, right);
+          // Merge the left and the right
+          merge(array, temp, left, middle, right);
+        }
+    }   
+    
+    private static <T extends Comparable<? super T>> void merge(T[] array, T[] temp, int left, int middle, int right) {
+    	// Copy both parts into the temporary array
+        for (int i = left; i <= right; i++) {
+          temp[i] = array[i];
+        }
+        int i = left;
+        int j = middle + 1;
+        int k = left;
+        while (i <= middle && j <= right) {
+            if (temp[i].compareTo(temp[j]) <= 0) {
+                array[k] = temp[i];
+                i++;
+            } else {
+                array[k] = temp[j];
+                j++;
+            }
+            k++;
+        }
+        while (i <= middle) {
+            array[k] = temp[i];
+            k++;
+            i++;
+        }        
+    }
+    
+    private static void merge(int[] array, int[] temp, int left, int middle, int right) {
+    	// Copy both parts into the temporary array
+        for (int i = left; i <= right; i++) {
+          temp[i] = array[i];
+        }
+        int i = left;
+        int j = middle + 1;
+        int k = left;
+        while (i <= middle && j <= right) {
+            if (temp[i] <= temp[j]) {
+                array[k] = temp[i];
+                i++;
+            } else {
+                array[k] = temp[j];
+                j++;
+            }
+            k++;
+        }
+        while (i <= middle) {
+            array[k] = temp[i];
+            k++;
+            i++;
+        }        
+    }
+    
 	/**
 	 * Packs all or part of the input byte array which uses "bits" bits to use all 8 bits.
 	 * 
@@ -636,6 +739,11 @@ public class ArrayUtils
     }
     
     // Quick sort
+    public static <T extends Comparable<? super T>> void quicksort (T[] array) {
+    	quicksort(array, 0, array.length);
+    }
+    
+    // Quick sort
     public static <T extends Comparable<? super T>> void quicksort (T[] array, int low, int high) {
     	int i = low, j = high;
 		// Get the pivot element from the middle of the list
@@ -739,51 +847,62 @@ public class ArrayUtils
 	}
    	
     // Shell sort
-    public static void shellsort(int[] array)
-    {
-	   shellsort(array, 0, array.length-1);
+    public static void shellsort(int[] array) {
+    	shellsort(array, 0, array.length-1);
     }
    	
-    public static void shellsort(int[] array, int start, int end)
-    {
-	   int mid = (start + end)/2;
-
-	   while ( mid > start )
-	   {
-		   for (int i = mid; i <= end; i++)
-		   {
-			   int temp = array[i];
-			   int j = i;
-			   while ( j >= mid && temp <= array[j - mid + start])
-			   {
-				   array[j] = array[j - mid + start];
-				   j -= (mid - start);
-			   }
-			   array[j] = temp;
-		   }
-		   mid = (start + mid)/2;
-	   }
+    public static void shellsort(int[] array, int start, int end) {
+    	if(start < 0 || end < 0 || start > end) throw new IllegalArgumentException("Invalid array index");
+    	int gap = 1;
+    	int len = end - start + 1;
+ 	    // Generate Knuth sequence 1, 4, 13, 40, 121, 364,1093, 3280, 9841 ...
+    	while(gap < len) gap = 3*gap + 1;
+    	while ( gap > 0 )
+    	{
+    		int begin = start + gap;
+    		for (int i = begin; i <= end; i++)
+    		{
+    			int temp = array[i];
+    			int j = i;
+    			while ( j >= begin && temp <= array[j - gap])
+    			{
+    				array[j] = array[j - gap];
+    				j -= gap;
+    			}
+    			array[j] = temp;
+    		}
+    		gap /= 3;
+    	}
+	}
+    
+    // Shell sort
+    public static <T extends Comparable<? super T>> void shellsort(T[] array) {
+    	shellsort(array, 0, array.length);
     }
    	
     // Shell sort
-    public static <T extends Comparable<? super T>> void shellsort(T[] array, int start, int end)
-    {
-	   int mid = (start + end)/2;
-	   while ( mid > start )
-	   {
-		   for (int i = mid; i <= end; i++)
-		   {
-			   T temp = array[i];
-			   int j = i;
-			   while ( j >= mid && temp.compareTo(array[j - mid + start]) <= 0)
-			   {
-				   array[j] = array[j - mid + start];
-				   j -= (mid - start);
-			   }
-			   array[j] = temp;
-		   }
-		   mid = (start + mid)/2;
-	   }
+    public static <T extends Comparable<? super T>> void shellsort(T[] array, int start, int end) {
+    	if(start < 0 || end < 0 || start > end) throw new IllegalArgumentException("Invalid array index");
+	   	int gap = 1;
+	   	int len = end - start + 1;
+  	    // Generate Knuth sequence 1, 4, 13, 40, 121, 364,1093, 3280, 9841 ...
+	   	while(gap < len) gap = 3*gap + 1;
+	   	while ( gap > 0 )
+	   	{
+	   		int begin = start + gap;
+	   		for (int i = begin; i <= end; i++)
+	   		{
+	   			T temp = array[i];
+	   			int j = i;
+	   			while ( j >= begin && temp.compareTo(array[j - gap]) <= 0)
+	   			{
+	   				array[j] = array[j - gap];
+	   				j -= gap;
+	   			}
+	   			array[j] = temp;
+	   		}
+	   		gap /= 3;
+	   	}
     } 	
 
     public static byte[] subArray(byte[] src, int offset, int len) {
