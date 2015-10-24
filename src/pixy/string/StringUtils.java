@@ -259,7 +259,7 @@ public class StringUtils {
 	 *
 	 * Input: latitude or longitude in the DMS format ( example: N 43° 36' 15.894")
 	 * @param hemisphereOUmeridien => {W,E,S,N}
-	 * @return: latitude or longitude in decimal format
+	 * @return latitude or longitude in decimal format
 	 */
 	public double DMSToDecimal(String hemisphereOUmeridien, double degrees, double minutes, double seconds) {
 		double LatOrLon = 0;

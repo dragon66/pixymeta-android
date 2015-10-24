@@ -37,7 +37,6 @@ public enum IPTCPreObjectDataTag implements IPTCTag {
 		 this.name = name;
 	 }
 	 
-	 @Override
 	 public boolean allowMultiple() {
 		 return false;
 	 }

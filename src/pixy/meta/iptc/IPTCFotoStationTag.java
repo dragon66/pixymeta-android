@@ -40,7 +40,6 @@ public enum IPTCFotoStationTag implements IPTCTag  {
 		return record;
 	}
 	
-	 @Override
 	 public boolean allowMultiple() {
 		 return false;
 	 }

@@ -124,7 +124,6 @@ public class JFIFSegment extends Metadata {
 		return yDensity;
 	}
 	
-	@Override
 	public void read() throws IOException {
 		if(!isDataRead) {
 			int expectedLen = 9;

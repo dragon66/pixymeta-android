@@ -61,7 +61,6 @@ public class ImageMetadata extends Metadata {
 		return thumbnails;
 	}
 	
-	@Override
 	public void read() throws IOException {
 		if(!isDataRead)
 			// No implementation

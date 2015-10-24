@@ -149,25 +149,31 @@ public abstract class Metadata implements MetadataReader {
 	 * @param is input image stream 
 	 * @param os output image stream
 	 * @param exif Exif instance
-	 * @param update True to keep the original data, otherwise false
 	 * @throws IOException 
 	 */
-	public static void insertExif(InputStream is, OutputStream out, Exif exif) throws IOException {
-		insertExif(is, out, exif);
+	public static void insertExif(InputStream is, OutputStream os, Exif exif) throws IOException {
+		insertExif(is, os, exif, false);
 	}
 	
-	public static void insertExif(InputStream is, OutputStream out, Exif exif, boolean update) throws IOException {
+	/**
+	 * @param is input image stream 
+	 * @param os output image stream
+	 * @param exif Exif instance
+	 * @param update true to keep the original data, otherwise false
+	 * @throws IOException 
+	 */
+	public static void insertExif(InputStream is, OutputStream os, Exif exif, boolean update) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
 		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
 		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate EXIF inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertExif(peekHeadInputStream, out, exif, update);
+				JPEGMeta.insertExif(peekHeadInputStream, os, exif, update);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
-				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
+				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
 				TIFFMeta.insertExif(randIS, randOS, exif, update);
 				randIS.shallowClose();
 				randOS.shallowClose();
@@ -253,18 +259,18 @@ public abstract class Metadata implements MetadataReader {
 		insertIRB(is, out, bims, false);
 	}
 	
-	public static void insertIRB(InputStream is, OutputStream out, Collection<_8BIM> bims, boolean update) throws IOException {
+	public static void insertIRB(InputStream is, OutputStream os, Collection<_8BIM> bims, boolean update) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
 		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
 		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate IRB inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIRB(peekHeadInputStream, out, bims, update);
+				JPEGMeta.insertIRB(peekHeadInputStream, os, bims, update);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
-				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(out);
+				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
 				TIFFMeta.insertIRB(randIS, randOS, bims, update);
 				randIS.shallowClose();
 				randOS.shallowClose();
@@ -496,7 +502,6 @@ public abstract class Metadata implements MetadataReader {
 		return type;
 	}
 	
-	@Override
 	public boolean isDataRead() {
 		return isDataRead;
 	}

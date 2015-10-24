@@ -18,8 +18,6 @@ import java.util.HashMap;
  * 
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 10/09/2012
- * @see cafe.image.reader.ImageReader
- * @see cafe.image.writer.ImageWriter
  */
 public enum ImageType {
 	

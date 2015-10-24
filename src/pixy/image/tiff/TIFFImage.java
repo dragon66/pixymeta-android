@@ -90,7 +90,6 @@ public class TIFFImage implements Iterable<IFD> {
 		TIFFMeta.write(this, out);
 	}
 
-	@Override
 	public Iterator<IFD> iterator() {
 		return ifds.iterator();
 	}
