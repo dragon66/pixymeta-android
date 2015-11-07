@@ -88,8 +88,8 @@ import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.exif.JpegExif;
 import pixy.meta.icc.ICCProfile;
-import pixy.meta.image.Comment;
 import pixy.meta.image.ImageMetadata;
+import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.util.MetadataUtils;
@@ -1279,7 +1279,8 @@ public class JPEGMeta {
 		// Used to read multiple segment XMP
 		byte[] extendedXMP = null;
 		String xmpGUID = ""; // 32 byte ASCII hex string
-		
+		Comments comments = null;
+				
 		List<Segment> appnSegments = new ArrayList<Segment>();
 	
 		boolean finished = false;
@@ -1321,8 +1322,9 @@ public class JPEGMeta {
 						marker = IOUtils.readShortMM(is);
 						break;
 					case COM:
-						metadataMap.put(MetadataType.COMMENT, new Comment(readSegmentData(is)));
-				    	marker = IOUtils.readShortMM(is);
+						if(comments == null) comments = new Comments();
+						comments.addComment(readSegmentData(is));
+						marker = IOUtils.readShortMM(is);
 				    	break;				   				
 					case DHT:
 						readDHT(is, m_acTables, m_dcTables);
@@ -1457,6 +1459,9 @@ public class JPEGMeta {
 				xmp.setExtendedXMPData(extendedXMP);
 		}
 		
+		if(comments != null)
+			metadataMap.put(MetadataType.COMMENT, comments);
+			
 		// Extract thumbnails to ImageMetadata
 		Metadata meta = metadataMap.get(MetadataType.EXIF);
 		if(meta != null) {

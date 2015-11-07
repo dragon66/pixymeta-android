@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.XMP;
-import pixy.meta.image.Comment;
+import pixy.meta.image.Comments;
 import pixy.io.IOUtils;
 import pixy.string.XMLUtils;
 import pixy.util.ArrayUtils;
@@ -67,6 +67,7 @@ public class GIFMeta {
 		private byte[] globalPalette;
 		private byte[] imageDescriptor;
 		private Map<MetadataType, Metadata> metadataMap;
+		private Comments comments;
 	}
 	
 	public static void insertComment(InputStream is, OutputStream os, String comment) throws IOException {
@@ -259,7 +260,8 @@ public class GIFMeta {
 					// Comment block
 					byte[] comment = new byte[len];
 					IOUtils.readFully(is, comment);
-					DTO.metadataMap.put(MetadataType.COMMENT, new Comment(comment));
+					if(DTO.comments == null) DTO.comments = new Comments();
+					DTO.comments.addComment(comment);
 					// Comment: new String(comment)
 					len = is.read();
 				}
@@ -343,6 +345,9 @@ public class GIFMeta {
 			;	
 		}
 		
+		if(DTO.comments != null)
+			DTO.metadataMap.put(MetadataType.COMMENT, DTO.comments);		
+			
 		return DTO.metadataMap;		
 	}
 	
