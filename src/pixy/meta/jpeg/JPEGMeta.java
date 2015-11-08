@@ -449,7 +449,7 @@ public class JPEGMeta {
 		return profile;
 	}
 	
-	public static void insertComment(InputStream is, OutputStream os, String comment) throws IOException {
+	public static void insertComments(InputStream is, OutputStream os, List<String> comments) throws IOException {
 		boolean finished = false;
 		short marker;
 		Marker emarker;
@@ -465,7 +465,8 @@ public class JPEGMeta {
 		while (!finished) {	        
 			if (Marker.fromShort(marker) == Marker.SOS) {
 				// Write comment
-		    	writeComment(comment, os);
+				for(String comment : comments)
+					writeComment(comment, os);
 				// Copy the rest of the data
 				IOUtils.writeShortMM(os, marker);
 				copyToEnd(is, os);

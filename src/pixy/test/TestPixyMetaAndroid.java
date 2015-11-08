@@ -141,6 +141,14 @@ public class TestPixyMetaAndroid {
 		JPEGMeta.extractDepthMap(fin, "table");
 		
 		fin.close();
+		
+		fin = new FileInputStream("images/butterfly.png");
+		fout = new FileOutputStream("comment-inserted.png");
+		
+		Metadata.insertComments(fin, fout, Arrays.asList("Comment1", "Comment2"));
+		
+		fin.close();
+		fout.close();
 	}
 	
 	private static List<IPTCDataSet> createIPTCDataSet() {

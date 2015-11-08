@@ -56,6 +56,7 @@ import pixy.meta.exif.GPSTag;
 import pixy.meta.exif.InteropTag;
 import pixy.meta.exif.TiffExif;
 import pixy.meta.icc.ICCProfile;
+import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.image.jpeg.Marker;
@@ -626,11 +627,11 @@ public class TIFFMeta {
 		return totalBytes2Read;
 	}
 	
-	public static void insertComment(String comment, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
-		insertComment(comment, 0, rin, rout);
+	public static void insertComments(List<String> comments, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
+		insertComments(comments, 0, rin, rout);
 	}
 		
-	public static void insertComment(String comment, int pageNumber, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
+	public static void insertComments(List<String> comments, int pageNumber, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
 		int offset = copyHeader(rin, rout);
 		// Read the IFDs into a list first
 		List<IFD> ifds = new ArrayList<IFD>();
@@ -640,7 +641,16 @@ public class TIFFMeta {
 			throw new IllegalArgumentException("pageNumber " + pageNumber + " out of bounds: 0 - " + (ifds.size() - 1));
 		
 		IFD workingPage = ifds.get(pageNumber);
-		workingPage.addField(new ASCIIField(TiffTag.IMAGE_DESCRIPTION.getValue(), comment));
+
+		StringBuilder commentsBuilder = new StringBuilder();
+		
+		// ASCII field allows for multiple strings
+		for(String comment : comments) {
+			commentsBuilder.append(comment);
+			commentsBuilder.append('\0');
+		}
+		
+		workingPage.addField(new ASCIIField(TiffTag.IMAGE_DESCRIPTION.getValue(), commentsBuilder.toString()));
 		
 		offset = copyPages(ifds, offset, rin, rout);
 		int firstIFDOffset = ifds.get(0).getStartOffset();	
@@ -1377,6 +1387,12 @@ public class TIFFMeta {
 			boolean bigEndian = (rin.getEndian() == IOUtils.BIG_ENDIAN);
 			ReadStrategy readStrategy = bigEndian?ReadStrategyMM.getInstance():ReadStrategyII.getInstance();
 			metadataMap.put(MetadataType.PHOTOSHOP_DDB, new DDB((byte[])field.getData(), readStrategy));
+		}
+		field = currIFD.getField(TiffTag.IMAGE_DESCRIPTION);
+		if(field != null) { // We have Comment
+			Comments comments = new pixy.meta.image.Comments();
+			comments.addComment(field.getDataAsString());
+			metadataMap.put(MetadataType.COMMENT, comments);
 		}
 		
 		return metadataMap;

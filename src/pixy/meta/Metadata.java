@@ -27,8 +27,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -112,26 +114,30 @@ public abstract class Metadata implements MetadataReader {
 	}
 	
 	public static void insertComment(InputStream is, OutputStream os, String comment) throws IOException {
+		insertComments(is, os, Arrays.asList(comment));
+	}
+	
+	public static void insertComments(InputStream is, OutputStream os, List<String> comments) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
 		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
 		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
 		// Delegate IPTC inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertComment(peekHeadInputStream, os, comment);
+				JPEGMeta.insertComments(peekHeadInputStream, os, comments);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
-				TIFFMeta.insertComment(comment, randIS, randOS);
+				TIFFMeta.insertComments(comments, randIS, randOS);
 				randIS.shallowClose();
 				randOS.shallowClose();
 				break;
 			case PNG:
-				PNGMeta.insertComment(peekHeadInputStream, os, comment);
+				PNGMeta.insertComments(peekHeadInputStream, os, comments);
 				break;
 			case GIF:
-				GIFMeta.insertComment(peekHeadInputStream, os, comment);
+				GIFMeta.insertComments(peekHeadInputStream, os, comments);
 				break;
 			case PCX:
 			case TGA:
