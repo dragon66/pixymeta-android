@@ -1097,7 +1097,7 @@ public class JPEGMeta {
 		insertXMP(is, os, xmpBytes, extendedXmpBytes, guid);
 	}
 	
-	public static void printHTables(List<HTable> tables) {
+	private static void printHTables(List<HTable> tables) {
 		final String[] HT_class_table = {"DC Component", "AC Component"};
 		
 		StringBuilder hufTable = new StringBuilder();
@@ -1143,10 +1143,10 @@ public class JPEGMeta {
 			hufTable.append("<<End of Huffman table information>>\n");
 		}
 		
-		LOGGER.info("\n{}", hufTable);
+		LOGGER.debug("\n{}", hufTable);
 	}
 	
-	public static void printQTables(List<QTable> qTables) {
+	private static void printQTables(List<QTable> qTables) {
 		StringBuilder qtTable = new StringBuilder();
 				
 		qtTable.append("Quantization table information =>:\n");
@@ -1186,28 +1186,28 @@ public class JPEGMeta {
 		qtTable.append("Total number of Quantation tables: " + count + "\n");
 		qtTable.append("End of quantization table information\n");
 		
-		LOGGER.info("\n{}", qtTable);
+		LOGGER.debug("\n{}", qtTable);
 	}
 		
-	public static void printSOF(SOFReader reader) {
-		LOGGER.info("SOF informtion =>");
-		LOGGER.info("Precision: {}", reader.getPrecision());
-		LOGGER.info("Image height: {}", reader.getFrameHeight());
-		LOGGER.info("Image width: {}", reader.getFrameWidth());
-		LOGGER.info("# of Components: {}", reader.getNumOfComponents());
-		LOGGER.info("(1 = grey scaled, 3 = color YCbCr or YIQ, 4 = color CMYK)");		
+	private static void printSOF(SOFReader reader) {
+		LOGGER.debug("SOF informtion =>");
+		LOGGER.debug("Precision: {}", reader.getPrecision());
+		LOGGER.debug("Image height: {}", reader.getFrameHeight());
+		LOGGER.debug("Image width: {}", reader.getFrameWidth());
+		LOGGER.debug("# of Components: {}", reader.getNumOfComponents());
+		LOGGER.debug("(1 = grey scaled, 3 = color YCbCr or YIQ, 4 = color CMYK)");		
 		    
 		for(Component component : reader.getComponents()) {
-			LOGGER.info("\n");
-			LOGGER.info("Component ID: {}", component.getId());
-			LOGGER.info("Herizontal sampling factor: {}", component.getHSampleFactor());
-			LOGGER.info("Vertical sampling factor: {}", component.getVSampleFactor());
-			LOGGER.info("Quantization table #: {}", component.getQTableNumber());
-			LOGGER.info("DC table number: {}", component.getDCTableNumber());
-			LOGGER.info("AC table number: {}", component.getACTableNumber());
+			LOGGER.debug("\n");
+			LOGGER.debug("Component ID: {}", component.getId());
+			LOGGER.debug("Herizontal sampling factor: {}", component.getHSampleFactor());
+			LOGGER.debug("Vertical sampling factor: {}", component.getVSampleFactor());
+			LOGGER.debug("Quantization table #: {}", component.getQTableNumber());
+			LOGGER.debug("DC table number: {}", component.getDCTableNumber());
+			LOGGER.debug("AC table number: {}", component.getACTableNumber());
 		}
 		
-		LOGGER.info("End of SOF information");
+		LOGGER.debug("End of SOF information");
 	}
 	
 	private static void readAPP13(InputStream is, OutputStream os) throws IOException {
@@ -1374,6 +1374,15 @@ public class JPEGMeta {
 	    }
 		
 		is.close();
+		
+		// Debugging
+		printQTables(m_qTables);
+		printHTables(m_acTables);	
+		printHTables(m_dcTables);
+		
+		// Debugging
+		for(SOFReader reader : readers)
+			printSOF(reader);
 		
 		for(Segment segment : appnSegments) {
 			byte[] data = segment.getData();
@@ -1841,11 +1850,6 @@ public class JPEGMeta {
 			}
 		}
 	}
-
-	public static void showICCProfile(InputStream is) throws IOException {
-		byte[] icc_profile = extractICCProfile(is);
-		ICCProfile.showProfile(icc_profile);
-	}
 	
 	@SuppressWarnings("unused")
 	private static short skipSOS(InputStream is) throws IOException {
@@ -1912,7 +1916,7 @@ public class JPEGMeta {
 	 * @param data ICC_Profile data
 	 * @throws IOException
 	 */
-	public static void writeICCProfile(OutputStream os, byte[] data) throws IOException {
+	private static void writeICCProfile(OutputStream os, byte[] data) throws IOException {
 		// ICC_Profile ID
 		int maxSegmentLen = 65535;
 		int maxICCDataLen = 65519;
@@ -1978,12 +1982,12 @@ public class JPEGMeta {
 		}
 	}
 	
-	public static void writeIRB(OutputStream os, _8BIM ... bims) throws IOException {
+	private static void writeIRB(OutputStream os, _8BIM ... bims) throws IOException {
 		if(bims != null && bims.length > 0)
 			writeIRB(os, Arrays.asList(bims));
 	}
 	
-	public static void writeIRB(OutputStream os, Collection<_8BIM> bims) throws IOException {
+	private static void writeIRB(OutputStream os, Collection<_8BIM> bims) throws IOException {
 		if(bims != null && bims.size() > 0) {
 			IOUtils.writeShortMM(os, Marker.APP13.getValue());
 	    	ByteArrayOutputStream bout = new ByteArrayOutputStream();
