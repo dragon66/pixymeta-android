@@ -13,6 +13,8 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    30Mar2016  Added insertTextChunk()
+ * WY    30Mar2016  Changed XMP trailing pi to "end='r'"
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    30Mar2015  Added insertICCProfile()
  * WY    13Mar2015  Initial creation
@@ -104,6 +106,18 @@ public class PNGMeta {
   		insertChunk(builder.build(), is, os);
   	}
   	
+  	public static void insertTextChunk(ChunkType type, String keyword, String text, InputStream is, OutputStream os) throws IOException {
+  		if(type == null || keyword == null || text == null)
+  			throw new IllegalArgumentException("Argument(s) are null");
+  		
+  		insertChunk(new TextBuilder(type).keyword(keyword).text(text).build(), is, os);
+  	}
+  	
+  	public static void insertTextChunks(TextualChunks textualChunks, InputStream is, OutputStream os) throws IOException {
+  		if(textualChunks == null) throw new IllegalArgumentException("Argument is null");
+  		insertChunks(textualChunks.getChunks(), is, os);
+  	}
+  	
 	public static void insertXMP(InputStream is, OutputStream os, XMP xmp) throws IOException {
   		insert(is, os, XMLUtils.serializeToString(xmp.getMergedDocument()));
   	}
@@ -112,7 +126,7 @@ public class PNGMeta {
   	public static void insertXMP(InputStream is, OutputStream os, String xmp) throws IOException {
   		Document doc = XMLUtils.createXML(xmp);
 		XMLUtils.insertLeadingPI(doc, "xpacket", "begin='' id='W5M0MpCehiHzreSzNTczkc9d'");
-		XMLUtils.insertTrailingPI(doc, "xpacket", "end='w'");
+		XMLUtils.insertTrailingPI(doc, "xpacket", "end='r'");
 		String newXmp = XMLUtils.serializeToString(doc); // DONOT use XMLUtils.serializeToStringLS()
   		insert(is, os, newXmp);
     }

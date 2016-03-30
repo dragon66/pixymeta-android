@@ -1,6 +1,7 @@
 ***************************
 Last modified on 03/30/2016
 ***************************
+30Mar2016  Added insertTextChunk() to PNGMeta
 30Mar2016  Rewrite JPEGMeta writeComment() to leverage COMBuilder
 07Nov2015  Added Metadata multiple comments support
 30Sep2015  Added mergesort() to ArrayUtils

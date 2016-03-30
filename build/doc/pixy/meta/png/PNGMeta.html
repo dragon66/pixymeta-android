@@ -151,6 +151,20 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/png/PNGMeta.html#insertTextChunk(pixy.image.png.ChunkType,%20java.lang.String,%20java.lang.String,%20java.io.InputStream,%20java.io.OutputStream)">insertTextChunk</a></strong>(<a href="../../../pixy/image/png/ChunkType.html" title="enum in pixy.image.png">ChunkType</a>&nbsp;type,
+               java.lang.String&nbsp;keyword,
+               java.lang.String&nbsp;text,
+               java.io.InputStream&nbsp;is,
+               java.io.OutputStream&nbsp;os)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../pixy/meta/png/PNGMeta.html#insertTextChunks(pixy.meta.png.TextualChunks,%20java.io.InputStream,%20java.io.OutputStream)">insertTextChunks</a></strong>(<a href="../../../pixy/meta/png/TextualChunks.html" title="class in pixy.meta.png">TextualChunks</a>&nbsp;textualChunks,
+                java.io.InputStream&nbsp;is,
+                java.io.OutputStream&nbsp;os)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><strong><a href="../../../pixy/meta/png/PNGMeta.html#insertXMP(java.io.InputStream,%20java.io.OutputStream,%20java.lang.String)">insertXMP</a></strong>(java.io.InputStream&nbsp;is,
          java.io.OutputStream&nbsp;os,
          java.lang.String&nbsp;xmp)</code>&nbsp;</td>
@@ -272,6 +286,36 @@ extends java.lang.Object</pre>
 <h4>insertICCProfile</h4>
 <pre>public static&nbsp;void&nbsp;insertICCProfile(java.lang.String&nbsp;profile_name,
                     byte[]&nbsp;icc_profile,
+                    java.io.InputStream&nbsp;is,
+                    java.io.OutputStream&nbsp;os)
+                             throws java.io.IOException</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd></dl>
+</li>
+</ul>
+<a name="insertTextChunk(pixy.image.png.ChunkType, java.lang.String, java.lang.String, java.io.InputStream, java.io.OutputStream)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>insertTextChunk</h4>
+<pre>public static&nbsp;void&nbsp;insertTextChunk(<a href="../../../pixy/image/png/ChunkType.html" title="enum in pixy.image.png">ChunkType</a>&nbsp;type,
+                   java.lang.String&nbsp;keyword,
+                   java.lang.String&nbsp;text,
+                   java.io.InputStream&nbsp;is,
+                   java.io.OutputStream&nbsp;os)
+                            throws java.io.IOException</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd></dl>
+</li>
+</ul>
+<a name="insertTextChunks(pixy.meta.png.TextualChunks, java.io.InputStream, java.io.OutputStream)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>insertTextChunks</h4>
+<pre>public static&nbsp;void&nbsp;insertTextChunks(<a href="../../../pixy/meta/png/TextualChunks.html" title="class in pixy.meta.png">TextualChunks</a>&nbsp;textualChunks,
                     java.io.InputStream&nbsp;is,
                     java.io.OutputStream&nbsp;os)
                              throws java.io.IOException</pre>
