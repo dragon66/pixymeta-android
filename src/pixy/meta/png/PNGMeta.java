@@ -166,13 +166,13 @@ public class PNGMeta {
         long signature = IOUtils.readLongMM(is);
 
         if (signature != SIGNATURE) {
-       	 	throw new RuntimeException("--- NOT A PNG IMAGE ---");
+       	 	throw new RuntimeException("Invalid PNG signature");
         }   
 
         /** Read header */
         /** We are expecting IHDR */
         if ((IOUtils.readIntMM(is)!=13)||(IOUtils.readIntMM(is) != ChunkType.IHDR.getValue())) {
-            throw new RuntimeException("Not a valid IHDR chunk.");
+            throw new RuntimeException("Invalid PNG header");
         }     
         
         buf = new byte[13];
@@ -204,7 +204,7 @@ public class PNGMeta {
 	private static byte[] readICCProfile(byte[] buf) throws IOException {
 		int profileName_len = 0;
 		while(buf[profileName_len] != 0) profileName_len++;
-		String profileName = new String(buf, 0, profileName_len,"UTF-8");
+		String profileName = new String(buf, 0, profileName_len, "UTF-8");
 		
 		InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
 		LOGGER.info("ICCProfile name: {}", profileName);
