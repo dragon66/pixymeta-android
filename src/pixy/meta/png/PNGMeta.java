@@ -43,8 +43,8 @@ import org.w3c.dom.Document;
 import pixy.image.png.ICCPBuilder;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
-import pixy.meta.adobe.XMP;
 import pixy.meta.icc.ICCProfile;
+import pixy.meta.xmp.XMP;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
 import pixy.image.png.TextBuilder;
@@ -245,7 +245,7 @@ public class PNGMeta {
 			
 			for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
 				if(entry.getKey().equals("XML:com.adobe.xmp"))
-					metadataMap.put(MetadataType.XMP, new XMP(entry.getValue()));
+					metadataMap.put(MetadataType.XMP, new PngXMP(entry.getValue()));
 			}
 		}
 			

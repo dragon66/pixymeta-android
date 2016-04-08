@@ -12,7 +12,8 @@
  * JPEGMeta.java
  *
  * Who   Date       Description
- * ====  =======    ==========================================================
+ * ====  =======    ===================================================
+ * WY    07Apr2016  Rewrite insertXMP() to leverage JpegXMP
  * WY    30Mar2016  Rewrite writeComment() to leverage COMBuilder
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    02Jul2015  Added support for APP14 segment reading
@@ -84,7 +85,6 @@ import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
 import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.ImageResourceID;
-import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifThumbnail;
@@ -95,6 +95,7 @@ import pixy.meta.image.ImageMetadata;
 import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.xmp.XMP;
 import pixy.util.MetadataUtils;
 
 /**
@@ -1416,7 +1417,7 @@ public class JPEGMeta {
 				} else if(new String(data, 0, XMP_ID.length()).equals(XMP_ID) ||
 						new String(data, 0, NON_STANDARD_XMP_ID.length()).equals(NON_STANDARD_XMP_ID)) {
 					// We found XMP, add it to metadata list (We may later revise it if we have ExtendedXMP)
-					XMP xmp = new XMP(ArrayUtils.subArray(data, XMP_ID.length(), length - XMP_ID.length() - 2));
+					XMP xmp = new JpegXMP(ArrayUtils.subArray(data, XMP_ID.length(), length - XMP_ID.length() - 2));
 					metadataMap.put(MetadataType.XMP, xmp);
 					// Retrieve and remove XMP GUID if available
 					xmpGUID = XMLUtils.getAttribute(xmp.getXmpDocument(), "rdf:Description", "xmpNote:HasExtendedXMP");
