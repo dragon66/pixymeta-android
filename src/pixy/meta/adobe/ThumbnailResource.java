@@ -15,6 +15,7 @@
  *
  * Who   Date       Description
  * ====  =========  ===================================================
+ * WY    09Apr2016  Added new constructor
  * WY    14Apr2015  Fixed a bug with super() call, changed data to null 
  * WY    14Apr2015  Added new constructor
  * WY    13Apr2015  Initial creation
@@ -96,6 +97,10 @@ public class ThumbnailResource extends _8BIM {
 		super(validateID(id), "THUMBNAIL_RESOURCE", data);
 		this.id = id;
 		read();
+	}
+	
+	public ThumbnailResource(ImageResourceID id,Thumbnail thumbnail) {
+		this(id, thumbnail.getDataType(), thumbnail.getWidth(), thumbnail.getHeight(), thumbnail.getCompressedImage());
 	}
 	
 	private IRBThumbnail createThumbnail(Bitmap thumbnail) throws IOException {
