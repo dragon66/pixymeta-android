@@ -13,13 +13,15 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    06Apr2016  Moved to new package
  * WY    03Jul2015  Added override method getData()
  * WY    13Mar2015  Initial creation
  */
 
-package pixy.meta.adobe;
+package pixy.meta.xmp;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,7 +32,7 @@ import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.string.XMLUtils;
 
-public class XMP extends Metadata {
+public abstract class XMP extends Metadata {
 	// Fields
 	private Document xmpDocument;
 	private Document extendedXmpDocument;
@@ -50,6 +52,19 @@ public class XMP extends Metadata {
 		this.xmp = xmp;
 	}
 	
+	public XMP(String xmp, String extendedXmp) {
+		super(MetadataType.XMP, null);
+		if(xmp == null) throw new IllegalArgumentException("Input XMP string is null");
+		this.xmp = xmp;
+		if(extendedXmp != null) { // We have ExtendedXMP
+			try {
+				setExtendedXMPData(XMLUtils.serializeToByteArray(XMLUtils.createXML(extendedXmp)));
+			} catch (IOException e) {				
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public byte[] getData() {
 		byte[] data = super.getData();
 		if(data != null && !hasExtendedXmp)
@@ -133,5 +148,7 @@ public class XMP extends Metadata {
 	public void showMetadata() {
 		ensureDataRead();
 		XMLUtils.showXML(getMergedDocument());
-	}	
+	}
+	
+	public abstract void write(OutputStream os) throws IOException;
 }
