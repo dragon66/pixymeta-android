@@ -26,8 +26,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pixy.image.BitmapFactory;
 import pixy.image.IBitmap;
-import pixy.image.BitmapNative;
 import pixy.io.PeekHeadInputStream;
 import pixy.io.RandomAccessInputStream;
 import pixy.meta.adobe.ImageResourceID;
@@ -110,11 +110,11 @@ public class MetadataUtils {
 			RandomAccessInputStream rin = (RandomAccessInputStream)is;
 			long streamPointer = rin.getStreamPointer();
 			rin.seek(streamPointer);
-			original = BitmapNative.decodeStream(rin);
+			original = BitmapFactory.decodeStream(rin);
 			// Reset the stream pointer
 			rin.seek(streamPointer);
 		} else {
-			original = BitmapNative.decodeStream(is);
+			original = BitmapFactory.decodeStream(is);
 		}		
 		int imageWidth = original.getWidth();
 		int imageHeight = original.getHeight();

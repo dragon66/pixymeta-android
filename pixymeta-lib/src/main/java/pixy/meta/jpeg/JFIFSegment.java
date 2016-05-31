@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pixy.image.BitmapNative;
+import pixy.image.BitmapFactory;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.io.IOUtils;
@@ -145,7 +145,7 @@ public class JFIFSegment extends Metadata {
 		    		//Create a IBitmap
 		    		int size = 3*thumbnailWidth*thumbnailHeight;
 					int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(data, expectedLen, size));
-					thumbnail = new JFIFThumbnail(BitmapNative.createBitmap(colors, thumbnailWidth, thumbnailHeight));
+					thumbnail = new JFIFThumbnail(BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight));
 				}
 			}
 			

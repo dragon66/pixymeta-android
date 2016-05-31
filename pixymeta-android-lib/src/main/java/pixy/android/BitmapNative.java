@@ -1,10 +1,12 @@
-package pixy.image;
+package pixy.android;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import pixy.image.IBitmap;
 
 /**
  * Abstraction layer for android.graphics.Bitmap.

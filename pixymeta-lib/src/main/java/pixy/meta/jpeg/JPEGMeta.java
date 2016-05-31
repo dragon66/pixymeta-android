@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import pixy.image.BitmapFactory;
 import pixy.image.IBitmap;
-import pixy.image.BitmapNative;
 import pixy.image.tiff.IFD;
 import pixy.image.tiff.TiffTag;
 import pixy.image.jpeg.COMBuilder;
@@ -358,7 +358,7 @@ public class JPEGMeta {
 					    		//Create a BufferedImage
 					    		int size = 3*thumbnailWidth*thumbnailHeight;
 								int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(jfif_buf, 14, size));
-								IBitmap bmp = BitmapNative.createBitmap(colors, thumbnailWidth, thumbnailHeight);
+								IBitmap bmp = BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight);
 								FileOutputStream fout = new FileOutputStream(outpath + ".jpg");
 								try {
 									bmp.compressJPG(100, fout);

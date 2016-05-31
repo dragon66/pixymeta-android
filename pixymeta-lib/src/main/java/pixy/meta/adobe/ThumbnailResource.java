@@ -27,8 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import pixy.image.BitmapFactory;
 import pixy.image.IBitmap;
-import pixy.image.BitmapNative;
 import pixy.io.IOUtils;
 import pixy.meta.Thumbnail;
 import pixy.util.ArrayUtils;
@@ -182,7 +182,7 @@ public class ThumbnailResource extends _8BIM {
 				colors = MetadataUtils.bgr2ARGB(thumbnailData);
 			else if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS5)
 				colors = MetadataUtils.toARGB(thumbnailData);
-			thumbnail.setImage(BitmapNative.createBitmap(colors, width, height));
+			thumbnail.setImage(BitmapFactory.createBitmap(colors, width, height));
 		} else
 			throw new UnsupportedOperationException("Unsupported IRB thumbnail data type: " + dataType);
 	}
