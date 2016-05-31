@@ -49,7 +49,7 @@ public enum ImageType {
 		}
 	},
 	
-    BMP("IBitmap") {
+    BMP("Bitmap") {
 		@Override
 		public String getExtension() {
 			return "bmp";

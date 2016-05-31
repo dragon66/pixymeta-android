@@ -99,7 +99,8 @@ public class ThumbnailResource extends _8BIM {
 		this.id = id;
 		read();
 	}
-	
+
+	// id is either ImageResourceID.THUMBNAIL_RESOURCE_PS4 or ImageResourceID.THUMBNAIL_RESOURCE_PS5
 	public ThumbnailResource(ImageResourceID id,Thumbnail thumbnail) {
 		this(id, thumbnail.getDataType(), thumbnail.getWidth(), thumbnail.getHeight(), thumbnail.getCompressedImage());
 	}
