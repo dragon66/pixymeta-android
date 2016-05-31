@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =========  ==================================================
+ * WY    07Apr2016  Rewrite insertXMPApplicationBlock() to leverage GifXMP
  * WY    16Sep2015  Added insertComment() to insert comment block
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    30Mar2015  Fixed bug with insertXMP() replacing '\0' with ' '
@@ -34,8 +35,8 @@ import org.w3c.dom.Document;
 
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
-import pixy.meta.adobe.XMP;
 import pixy.meta.image.Comments;
+import pixy.meta.xmp.XMP;
 import pixy.io.IOUtils;
 import pixy.string.XMLUtils;
 import pixy.util.ArrayUtils;
@@ -256,7 +257,7 @@ public class GIFMeta {
 						// Remove the magic trailer - 258 bytes minus the block terminator
 						len = xmp.length - 257;
 						if(len > 0) // Put it into the Meta data map
-							DTO.metadataMap.put(MetadataType.XMP, new XMP(ArrayUtils.subArray(xmp, 0, len)));
+							DTO.metadataMap.put(MetadataType.XMP, new GifXMP(ArrayUtils.subArray(xmp, 0, len)));
 						len = 0; // We're already at block terminator
 					} else 
 						len = is.read(); // Block terminator					

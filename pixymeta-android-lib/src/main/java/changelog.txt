@@ -1,6 +1,9 @@
 ***************************
-Last modified on 11/07/2015
+Last modified on 04/07/2016
 ***************************
+07Apr2016  Moved XMP to new package and make it abstract
+30Mar2016  Added insertTextChunk() to PNGMeta
+30Mar2016  Rewrite JPEGMeta writeComment() to leverage COMBuilder
 07Nov2015  Added Metadata multiple comments support
 30Sep2015  Added mergesort() to ArrayUtils
 27Sep2015  Added shallowClose() to stream classes

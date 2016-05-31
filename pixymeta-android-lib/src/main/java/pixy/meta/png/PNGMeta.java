@@ -13,6 +13,8 @@
  *
  * Who   Date       Description
  * ====  =========  =================================================
+ * WY    30Mar2016  Added insertTextChunk()
+ * WY    30Mar2016  Changed XMP trailing pi to "end='r'"
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
  * WY    30Mar2015  Added insertICCProfile()
  * WY    13Mar2015  Initial creation
@@ -41,8 +43,8 @@ import org.w3c.dom.Document;
 import pixy.image.png.ICCPBuilder;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
-import pixy.meta.adobe.XMP;
 import pixy.meta.icc.ICCProfile;
+import pixy.meta.xmp.XMP;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
 import pixy.image.png.TextBuilder;
@@ -104,6 +106,18 @@ public class PNGMeta {
   		insertChunk(builder.build(), is, os);
   	}
   	
+  	public static void insertTextChunk(ChunkType type, String keyword, String text, InputStream is, OutputStream os) throws IOException {
+  		if(type == null || keyword == null || text == null)
+  			throw new IllegalArgumentException("Argument(s) are null");
+  		
+  		insertChunk(new TextBuilder(type).keyword(keyword).text(text).build(), is, os);
+  	}
+  	
+  	public static void insertTextChunks(TextualChunks textualChunks, InputStream is, OutputStream os) throws IOException {
+  		if(textualChunks == null) throw new IllegalArgumentException("Argument is null");
+  		insertChunks(textualChunks.getChunks(), is, os);
+  	}
+  	
 	public static void insertXMP(InputStream is, OutputStream os, XMP xmp) throws IOException {
   		insert(is, os, XMLUtils.serializeToString(xmp.getMergedDocument()));
   	}
@@ -112,7 +126,7 @@ public class PNGMeta {
   	public static void insertXMP(InputStream is, OutputStream os, String xmp) throws IOException {
   		Document doc = XMLUtils.createXML(xmp);
 		XMLUtils.insertLeadingPI(doc, "xpacket", "begin='' id='W5M0MpCehiHzreSzNTczkc9d'");
-		XMLUtils.insertTrailingPI(doc, "xpacket", "end='w'");
+		XMLUtils.insertTrailingPI(doc, "xpacket", "end='r'");
 		String newXmp = XMLUtils.serializeToString(doc); // DONOT use XMLUtils.serializeToStringLS()
   		insert(is, os, newXmp);
     }
@@ -152,13 +166,13 @@ public class PNGMeta {
         long signature = IOUtils.readLongMM(is);
 
         if (signature != SIGNATURE) {
-       	 	throw new RuntimeException("--- NOT A PNG IMAGE ---");
+       	 	throw new RuntimeException("Invalid PNG signature");
         }   
 
         /** Read header */
         /** We are expecting IHDR */
         if ((IOUtils.readIntMM(is)!=13)||(IOUtils.readIntMM(is) != ChunkType.IHDR.getValue())) {
-            throw new RuntimeException("Not a valid IHDR chunk.");
+            throw new RuntimeException("Invalid PNG header");
         }     
         
         buf = new byte[13];
@@ -190,7 +204,7 @@ public class PNGMeta {
 	private static byte[] readICCProfile(byte[] buf) throws IOException {
 		int profileName_len = 0;
 		while(buf[profileName_len] != 0) profileName_len++;
-		String profileName = new String(buf, 0, profileName_len,"UTF-8");
+		String profileName = new String(buf, 0, profileName_len, "UTF-8");
 		
 		InflaterInputStream ii = new InflaterInputStream(new ByteArrayInputStream(buf, profileName_len + 2, buf.length - profileName_len - 2));
 		LOGGER.info("ICCProfile name: {}", profileName);
@@ -231,7 +245,7 @@ public class PNGMeta {
 			
 			for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
 				if(entry.getKey().equals("XML:com.adobe.xmp"))
-					metadataMap.put(MetadataType.XMP, new XMP(entry.getValue()));
+					metadataMap.put(MetadataType.XMP, new PngXMP(entry.getValue()));
 			}
 		}
 			

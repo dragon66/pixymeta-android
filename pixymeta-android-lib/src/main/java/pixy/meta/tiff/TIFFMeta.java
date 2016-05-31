@@ -48,7 +48,6 @@ import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.IRBThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.adobe.ImageResourceID;
-import pixy.meta.adobe.XMP;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifTag;
@@ -59,6 +58,7 @@ import pixy.meta.icc.ICCProfile;
 import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.xmp.XMP;
 import pixy.image.jpeg.Marker;
 import pixy.image.tiff.ASCIIField;
 import pixy.image.tiff.ByteField;
@@ -1353,7 +1353,7 @@ public class TIFFMeta {
 		}
 		field = currIFD.getField(TiffTag.XMP);
 		if(field != null) { // We have found XMP
-			metadataMap.put(MetadataType.XMP, new XMP((byte[])field.getData()));
+			metadataMap.put(MetadataType.XMP, new TiffXMP((byte[])field.getData()));
 		}
 		field = currIFD.getField(TiffTag.PHOTOSHOP);
 		if(field != null) { // We have found Photoshop IRB
