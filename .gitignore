@@ -5,3 +5,7 @@
 /.gradle
 /pixymeta-android-lib/build
 /*.properties
+/pixymeta-android-lib/*.iml
+/*.iml
+/.idea
+/gradle-app.setting
