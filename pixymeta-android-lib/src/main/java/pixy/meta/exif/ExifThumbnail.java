@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
 import pixy.meta.Thumbnail;
 import pixy.meta.tiff.TIFFMeta;
 import pixy.image.tiff.IFD;
@@ -54,7 +54,7 @@ public class ExifThumbnail extends Thumbnail {
 		
 	public ExifThumbnail() { }
 	
-	public ExifThumbnail(Bitmap thumbnail) {
+	public ExifThumbnail(IBitmap thumbnail) {
 		super(thumbnail);
 	}
 	
@@ -125,7 +125,7 @@ public class ExifThumbnail extends Thumbnail {
 			for(int i : off)
 				randOS.writeInt(i);		
 		} else {
-			Bitmap thumbnail = getRawImage();
+			IBitmap thumbnail = getRawImage();
 			if(thumbnail == null) throw new IllegalArgumentException("Expected raw data thumbnail does not exist!");
 			// We are going to write the IFD and associated thumbnail
 			int thumbnailWidth = thumbnail.getWidth();
@@ -152,7 +152,7 @@ public class ExifThumbnail extends Thumbnail {
 			// the underlying stream
 			long startOffset = randOS.getStreamPointer();
 			try {
-				thumbnail.compress(Bitmap.CompressFormat.JPEG, writeQuality, randOS);
+				thumbnail.compressJPG(writeQuality, randOS);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to compress thumbnail as JPEG");
 			}

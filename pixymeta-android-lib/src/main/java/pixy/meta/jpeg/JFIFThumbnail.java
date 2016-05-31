@@ -22,12 +22,12 @@ package pixy.meta.jpeg;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
 import pixy.meta.Thumbnail;
 
 public class JFIFThumbnail extends Thumbnail {
 
-	public JFIFThumbnail(Bitmap thumbnail) {
+	public JFIFThumbnail(IBitmap thumbnail) {
 		super(thumbnail);
 	}
 	
@@ -41,7 +41,7 @@ public class JFIFThumbnail extends Thumbnail {
 
 	@Override
 	public void write(OutputStream os) throws IOException {
-		Bitmap thumbnail = getRawImage();
+		IBitmap thumbnail = getRawImage();
 		if(thumbnail == null) throw new IllegalArgumentException("Expected raw data thumbnail does not exist!");
 		int thumbnailWidth = thumbnail.getWidth();
 		int thumbnailHeight = thumbnail.getHeight();

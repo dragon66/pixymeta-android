@@ -31,7 +31,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
@@ -233,7 +233,7 @@ public abstract class Exif extends Metadata {
 		this.thumbnail = thumbnail;
 	}
 	
-	public void setThumbnailImage(Bitmap thumbnail) {
+	public void setThumbnailImage(IBitmap thumbnail) {
 		if(this.thumbnail == null)
 			this.thumbnail = new ExifThumbnail(); 
 		this.thumbnail.setImage(thumbnail);

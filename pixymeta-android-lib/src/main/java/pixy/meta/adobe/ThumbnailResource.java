@@ -27,7 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
+import pixy.image.BitmapNative;
 import pixy.io.IOUtils;
 import pixy.meta.Thumbnail;
 import pixy.util.ArrayUtils;
@@ -60,16 +61,16 @@ public class ThumbnailResource extends _8BIM {
 	// Thumbnail
 	private IRBThumbnail thumbnail = new IRBThumbnail();
 	
-	public ThumbnailResource(Bitmap thumbnail) {
+	public ThumbnailResource(IBitmap thumbnail) {
 		this("THUMBNAIL_RESOURCE", thumbnail);
 	}
 		
-	public ThumbnailResource(String name, Bitmap thumbnail) {
+	public ThumbnailResource(String name, IBitmap thumbnail) {
 		super(ImageResourceID.THUMBNAIL_RESOURCE_PS5, name, null);
 		try {
 			this.thumbnail = createThumbnail(thumbnail);
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to create IRBThumbnail from Bitmap");
+			throw new RuntimeException("Unable to create IRBThumbnail from IBitmap");
 		}
 	}
 	
@@ -103,12 +104,12 @@ public class ThumbnailResource extends _8BIM {
 		this(id, thumbnail.getDataType(), thumbnail.getWidth(), thumbnail.getHeight(), thumbnail.getCompressedImage());
 	}
 	
-	private IRBThumbnail createThumbnail(Bitmap thumbnail) throws IOException {
+	private IRBThumbnail createThumbnail(IBitmap thumbnail) throws IOException {
 		// Create memory buffer to write data
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		// Compress the thumbnail
 		try {
-			thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bout);
+			thumbnail.compressJPG(100, bout);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -181,7 +182,7 @@ public class ThumbnailResource extends _8BIM {
 				colors = MetadataUtils.bgr2ARGB(thumbnailData);
 			else if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS5)
 				colors = MetadataUtils.toARGB(thumbnailData);
-			thumbnail.setImage(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
+			thumbnail.setImage(BitmapNative.createBitmap(colors, width, height));
 		} else
 			throw new UnsupportedOperationException("Unsupported IRB thumbnail data type: " + dataType);
 	}

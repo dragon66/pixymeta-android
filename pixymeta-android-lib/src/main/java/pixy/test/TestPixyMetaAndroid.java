@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.IPTC_NAA;
@@ -171,7 +171,7 @@ public class TestPixyMetaAndroid {
 		return new ArrayList<_8BIM>(Arrays.asList(iptc));
 	}
 	
-	private static Bitmap createThumbnail(String filePath) throws IOException {
+	private static IBitmap createThumbnail(String filePath) throws IOException {
 		FileInputStream fin = null;
 		try {
 			fin = new FileInputStream(filePath);
@@ -179,7 +179,7 @@ public class TestPixyMetaAndroid {
 			e.printStackTrace();
 		}
 		
-		Bitmap thumbnail = MetadataUtils.createThumbnail(fin);
+		IBitmap thumbnail = MetadataUtils.createThumbnail(fin);
 		
 		fin.close();
 		

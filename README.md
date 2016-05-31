@@ -1,6 +1,8 @@
 # pixymeta-android
 Standalone Android version of PixyMeta - a pure Java image metadata manipulation tool.
 
+branch gradle-build of k3b-s fork: [![Build Status](https://travis-ci.org/k3b/pixymeta-android.svg?branch=gradle-build)](https://travis-ci.org/k3b/pixymeta-android)
+
 Image metadata manipulation:
 ----------------------------------------
 - JPEG and TIFF EXIF data manipulation

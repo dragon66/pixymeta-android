@@ -22,6 +22,8 @@
 
 package pixy.meta.tiff;
 
+import pixy.image.IBitmap;
+
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.FileOutputStream;
@@ -88,7 +90,6 @@ import pixy.io.WriteStrategyMM;
 import pixy.string.StringUtils;
 import pixy.string.XMLUtils;
 import pixy.util.ArrayUtils;
-import android.graphics.*;
 
 public class TIFFMeta {
 	// Offset where to write the value of the first IFD offset
@@ -513,9 +514,9 @@ public class TIFFMeta {
 			if(thumbnail.getDataType() == IRBThumbnail.DATA_TYPE_KJpegRGB) {
 				fout.write(thumbnail.getCompressedImage());
 			} else {
-				Bitmap bm = thumbnail.getRawImage();
+				IBitmap bm = thumbnail.getRawImage();
 				try {
-					bm.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+					bm.compressJPG(100, fout);
 				} catch (Exception e) {
 					throw new IOException("Writing thumbnail failed!");
 				}
@@ -895,10 +896,10 @@ public class TIFFMeta {
 	 *  
 	 * @param rin RandomAccessInputStream for the input TIFF
 	 * @param rout RandomAccessOutputStream for the output TIFF
-	 * @param thumbnail a Bitmap to be inserted
+	 * @param thumbnail a IBitmap to be inserted
 	 * @throws Exception
 	 */
-	public static void insertThumbnail(RandomAccessInputStream rin, RandomAccessOutputStream rout, Bitmap thumbnail) throws IOException {
+	public static void insertThumbnail(RandomAccessInputStream rin, RandomAccessOutputStream rout, IBitmap thumbnail) throws IOException {
 		// Sanity check
 		if(thumbnail == null) throw new IllegalArgumentException("Input thumbnail is null");
 		_8BIM bim = new ThumbnailResource(thumbnail);

@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import pixy.image.IBitmap;
+import pixy.image.BitmapNative;
 import pixy.image.tiff.IFD;
 import pixy.image.tiff.TiffTag;
 import pixy.image.jpeg.COMBuilder;
@@ -78,8 +80,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import pixy.meta.Metadata;
 import pixy.meta.MetadataType;
 import pixy.meta.Thumbnail;
@@ -358,10 +358,10 @@ public class JPEGMeta {
 					    		//Create a BufferedImage
 					    		int size = 3*thumbnailWidth*thumbnailHeight;
 								int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(jfif_buf, 14, size));
-								Bitmap bmp = Bitmap.createBitmap(colors, thumbnailWidth, thumbnailHeight, Bitmap.Config.ARGB_8888);
+								IBitmap bmp = BitmapNative.createBitmap(colors, thumbnailWidth, thumbnailHeight);
 								FileOutputStream fout = new FileOutputStream(outpath + ".jpg");
 								try {
-									bmp.compress(CompressFormat.JPEG, 100, fout);
+									bmp.compressJPG(100, fout);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -423,9 +423,9 @@ public class JPEGMeta {
 								if(thumbnail.getDataType() == Thumbnail.DATA_TYPE_KJpegRGB) {
 									fout.write(thumbnail.getCompressedImage());
 								} else {
-									Bitmap bmp = thumbnail.getRawImage();
+									IBitmap bmp = thumbnail.getRawImage();
 									try {
-										 bmp.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+										 bmp.compressJPG(100, fout);
 									} catch (Exception e) {
 										throw new IOException("Writing thumbnail failed!");
 									}
@@ -968,7 +968,7 @@ public class JPEGMeta {
 	    }
 	}
 	
-	public static void insertIRBThumbnail(InputStream is, OutputStream os, Bitmap thumbnail) throws IOException {
+	public static void insertIRBThumbnail(InputStream is, OutputStream os, IBitmap thumbnail) throws IOException {
 		// Sanity check
 		if(thumbnail == null) throw new IllegalArgumentException("Input thumbnail is null");
 		_8BIM bim = new ThumbnailResource(thumbnail);

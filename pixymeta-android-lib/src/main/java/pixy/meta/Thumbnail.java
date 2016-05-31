@@ -20,20 +20,20 @@
 
 package pixy.meta;
 
+import pixy.image.IBitmap;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
-import android.graphics.*;
-
 public abstract class Thumbnail {
-	// Internal data type for thumbnail represented by a Bitmap
+	// Internal data type for thumbnail represented by a IBitmap
 	public static final int DATA_TYPE_KRawRGB = 0; // For ExifThumbnail and IRBThumbnail
 	// Represented by a byte array of JPEG
 	public static final int DATA_TYPE_KJpegRGB = 1; // For ExifThumbnail and IRBThumbnail
 	// Represented by a byte array of uncompressed TIFF
 	public static final int DATA_TYPE_TIFF = 2; // For ExifThumbnail only
 	
-	protected Bitmap thumbnail;
+	protected IBitmap thumbnail;
 	protected byte[] compressedThumbnail;
 	
 	protected int writeQuality = 100; // Default JPEG write quality
@@ -46,7 +46,7 @@ public abstract class Thumbnail {
 	
 	public Thumbnail() {}
 	
-	public Thumbnail(Bitmap thumbnail) {
+	public Thumbnail(IBitmap thumbnail) {
 		setImage(thumbnail);
 	}
 	
@@ -83,7 +83,7 @@ public abstract class Thumbnail {
 		return height;
 	}
 	
-	public Bitmap getRawImage() {
+	public IBitmap getRawImage() {
 		return thumbnail;
 	}
 	
@@ -91,7 +91,7 @@ public abstract class Thumbnail {
 		return width;
 	}
 	
-	public void setImage(Bitmap thumbnail) {
+	public void setImage(IBitmap thumbnail) {
 		this.width = thumbnail.getWidth();
 		this.height = thumbnail.getHeight();
 		this.thumbnail = thumbnail;

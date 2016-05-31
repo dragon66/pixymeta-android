@@ -36,11 +36,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.graphics.Bitmap;
-import pixy.meta.Metadata;
+import pixy.image.IBitmap;
 import pixy.util.MetadataUtils;
-import pixy.meta.MetadataReader;
-import pixy.meta.MetadataType;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.bmp.BMPMeta;
 import pixy.meta.exif.Exif;
@@ -295,7 +292,7 @@ public abstract class Metadata implements MetadataReader {
 		peekHeadInputStream.shallowClose();
 	}
 	
-	public static void insertIRBThumbnail(InputStream is, OutputStream out, Bitmap thumbnail) throws IOException {
+	public static void insertIRBThumbnail(InputStream is, OutputStream out, IBitmap thumbnail) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
 		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
 		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		

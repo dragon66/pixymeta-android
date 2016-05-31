@@ -26,10 +26,10 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pixy.image.IBitmap;
+import pixy.image.BitmapNative;
 import pixy.io.PeekHeadInputStream;
 import pixy.io.RandomAccessInputStream;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe._8BIM;
 import pixy.image.ImageType;
@@ -104,17 +104,17 @@ public class MetadataUtils {
 		return imageType;
 	}
 	
-	public static Bitmap createThumbnail(InputStream is) throws IOException {
-		Bitmap original = null;
+	public static IBitmap createThumbnail(InputStream is) throws IOException {
+		IBitmap original = null;
 		if(is instanceof RandomAccessInputStream) {
 			RandomAccessInputStream rin = (RandomAccessInputStream)is;
 			long streamPointer = rin.getStreamPointer();
 			rin.seek(streamPointer);
-			original = BitmapFactory.decodeStream(rin);
+			original = BitmapNative.decodeStream(rin);
 			// Reset the stream pointer
 			rin.seek(streamPointer);
 		} else {
-			original = BitmapFactory.decodeStream(is);
+			original = BitmapNative.decodeStream(is);
 		}		
 		int imageWidth = original.getWidth();
 		int imageHeight = original.getHeight();
@@ -129,7 +129,7 @@ public class MetadataUtils {
 		if(imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;			
 		if(imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
 		
-		Bitmap thumbnail = Bitmap.createScaledBitmap(original, thumbnailWidth, thumbnailHeight, false);
+		IBitmap thumbnail = original.createScaledBitmap(thumbnailWidth, thumbnailHeight, false);
 				
 		return thumbnail;
 	}
@@ -140,12 +140,12 @@ public class MetadataUtils {
 	 * @return a Photoshop _8BMI
 	 * @throws IOException
 	 */
-	public static _8BIM createThumbnail8BIM(Bitmap thumbnail) throws IOException {
+	public static _8BIM createThumbnail8BIM(IBitmap thumbnail) throws IOException {
 		// Create memory buffer to write data
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		// Compress the thumbnail
 		try {
-			thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bout);
+			thumbnail.compressJPG(100, bout);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

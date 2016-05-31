@@ -23,7 +23,7 @@ package pixy.meta.adobe;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import android.graphics.Bitmap;
+import pixy.image.IBitmap;
 import pixy.meta.Thumbnail;
 
 /** 
@@ -36,7 +36,7 @@ public class IRBThumbnail extends Thumbnail {
 	
 	public IRBThumbnail() { ; }
 	
-	public IRBThumbnail(Bitmap thumbnail) {
+	public IRBThumbnail(IBitmap thumbnail) {
 		super(thumbnail);
 	}
 	
@@ -57,10 +57,10 @@ public class IRBThumbnail extends Thumbnail {
 		if(getDataType() == Thumbnail.DATA_TYPE_KJpegRGB) { // Compressed old-style JPEG format
 			os.write(getCompressedImage());
 		} else if(getDataType() == Thumbnail.DATA_TYPE_KRawRGB) {
-			Bitmap thumbnail = getRawImage();
+			IBitmap thumbnail = getRawImage();
 			if(thumbnail == null) throw new IllegalArgumentException("Expected raw data thumbnail does not exist!");
 			try {
-				thumbnail.compress(Bitmap.CompressFormat.JPEG, writeQuality, os);
+				thumbnail.compressJPG(writeQuality, os);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to compress thumbnail as JPEG");
 			}			
