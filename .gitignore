@@ -2,3 +2,6 @@
 /build
 /bin
 /deleted
+/.gradle
+/pixymeta-android-lib/build
+/*.properties

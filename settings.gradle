@@ -1,0 +1,3 @@
+// startParameter.offline=true
+
+include ':pixymeta-android-lib'
