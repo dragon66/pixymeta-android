@@ -1,22 +1,37 @@
-package pixy.android;
+package pixy.j2se;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import pixy.image.IBitmap;
+import pixy.meta.adobe.ImageResourceID;
+import pixy.util.MetadataUtils;
 
 /**
- * Abstraction layer for android.graphics.Bitmap.
- * This is the only place in the lib that has dependencies to android
- *
  * Created by k3b on 31.05.2016.
  */
-public class BitmapNative implements IBitmap {
-    private final Bitmap mBitmap;
-    public BitmapNative(Bitmap bitmap) {
+public class BitmapNative  implements IBitmap {
+    private final BufferedImage mBitmap;
+    public BitmapNative(BufferedImage bitmap) {
         mBitmap = bitmap;
     }
 
@@ -35,7 +50,13 @@ public class BitmapNative implements IBitmap {
     @Override
     public IBitmap createScaledBitmap(int dstWidth, int dstHeight,
                                       boolean filter) {
-        return new BitmapNative(Bitmap.createScaledBitmap(this.mBitmap, dstWidth, dstHeight, filter));
+        BufferedImage thumbnail = new BufferedImage(dstWidth, dstHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = thumbnail.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(this.mBitmap, 0, 0, dstWidth, dstHeight, null);
+
+        return new BitmapNative(thumbnail);
     }
 
     /**
@@ -50,8 +71,18 @@ public class BitmapNative implements IBitmap {
      * @throws IllegalArgumentException if the width or height are <= 0, or if
      *         the color array's length is less than the number of pixels.
      */
-    public static IBitmap createBitmap(int colors[], int width, int height) {
-        return new BitmapNative(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
+    public static IBitmap createBitmap(int colors[], int width, int height, int totalSize, byte[] thumbnailData, int paddedRowBytes, ImageResourceID id) {
+        DataBuffer db = new DataBufferByte(thumbnailData, totalSize);
+        int[] off = {0, 1, 2};//RGB band offset, we have 3 bands
+        if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS4)
+            off = new int[]{2, 1, 0}; // RGB band offset for BGR for photoshop4.0 BGR format
+        int numOfBands = 3;
+        int trans = Transparency.OPAQUE;
+
+        WritableRaster raster = Raster.createInterleavedRaster(db, width, height, paddedRowBytes, numOfBands, off, null);
+        ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false, trans, DataBuffer.TYPE_BYTE);
+
+        return new BitmapNative(new BufferedImage(cm, raster, false, null));
     }
 
     /** Returns the bitmap's width */
@@ -83,8 +114,30 @@ public class BitmapNative implements IBitmap {
      * @return true if successfully compressed to the specified stream.
      */
     @Override
-    public void compressJPG(int quality, OutputStream stream) {
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+    public void compressJPG(int quality, OutputStream stream) throws IOException {
+        saveAsJPEG(this.mBitmap, stream, quality);
+    }
+
+    public static void saveAsJPEG(BufferedImage image, OutputStream os, int quality) throws IOException {
+        if ((quality < 0) || (quality > 100)) {
+            throw new IllegalArgumentException("Quality out of bounds!");
+        }
+        float writeQuality = quality / 100f;
+        ImageWriter jpgWriter = null;
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpg");
+        if (iter.hasNext()) {
+            jpgWriter = (ImageWriter) iter.next();
+        }
+        ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
+        jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        jpgWriteParam.setCompressionQuality(writeQuality);
+        ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+        jpgWriter.setOutput(ios);
+        IIOImage outputImage = new IIOImage(image, null, null);
+        jpgWriter.write(null, outputImage, jpgWriteParam);
+        ios.flush();
+        jpgWriter.dispose();
+        ios.close();
     }
 
     /**
@@ -113,8 +166,8 @@ public class BitmapNative implements IBitmap {
     @Override
     public int[] getPixels(int[] pixels, int offset, int stride,
                           int x, int y, int width, int height) {
-        mBitmap.getPixels(pixels, offset, stride,
-                x, y, width, height);
+        pixels = mBitmap.getRGB(0, 0, width, height, null, 0, width);
+
         return pixels;
     }
 
@@ -128,7 +181,7 @@ public class BitmapNative implements IBitmap {
      *           bitmap.
      * @return The decoded bitmap, or null if the image data could not be decoded.
      */
-    public static IBitmap decodeStream(InputStream is) {
-        return new BitmapNative(BitmapFactory.decodeStream(is));
+    public static IBitmap decodeStream(InputStream is) throws IOException {
+        return new BitmapNative(javax.imageio.ImageIO.read(is));
     }
 }

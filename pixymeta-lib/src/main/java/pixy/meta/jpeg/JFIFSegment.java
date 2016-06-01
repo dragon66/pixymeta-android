@@ -143,9 +143,9 @@ public class JFIFSegment extends Metadata {
 					containsThumbnail = true;
 					// Extract the thumbnail
 		    		//Create a IBitmap
-		    		int size = 3*thumbnailWidth*thumbnailHeight;
-					int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(data, expectedLen, size));
-					thumbnail = new JFIFThumbnail(BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight));
+		    		int totalSize = 3*thumbnailWidth*thumbnailHeight;
+					int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(data, expectedLen, totalSize));
+					thumbnail = new JFIFThumbnail(BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight, totalSize, data, -1 , null));
 				}
 			}
 			

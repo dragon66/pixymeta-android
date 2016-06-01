@@ -1,5 +1,6 @@
 package pixy.image;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -45,7 +46,7 @@ public interface IBitmap {
      * @param stream   The outputstream to write the compressed data.
      * @return true if successfully compressed to the specified stream.
      */
-    void compressJPG (int quality, OutputStream stream);
+    void compressJPG (int quality, OutputStream stream) throws IOException;
 
     /**
      * Returns in pixels[] a copy of the data in the bitmap. Each value is
@@ -70,6 +71,6 @@ public interface IBitmap {
      * @throws ArrayIndexOutOfBoundsException if the pixels array is too small
      *         to receive the specified number of pixels.
      */
-    void getPixels(int[] pixels, int offset, int stride,
+    int[]  getPixels(int[] pixels, int offset, int stride,
                    int x, int y, int width, int height);
 }

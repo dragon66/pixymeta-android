@@ -183,7 +183,7 @@ public class ThumbnailResource extends _8BIM {
 				colors = MetadataUtils.bgr2ARGB(thumbnailData);
 			else if(id == ImageResourceID.THUMBNAIL_RESOURCE_PS5)
 				colors = MetadataUtils.toARGB(thumbnailData);
-			thumbnail.setImage(BitmapFactory.createBitmap(colors, width, height));
+			thumbnail.setImage(BitmapFactory.createBitmap(colors, width, height,totalSize, thumbnailData, paddedRowBytes, id));
 		} else
 			throw new UnsupportedOperationException("Unsupported IRB thumbnail data type: " + dataType);
 	}

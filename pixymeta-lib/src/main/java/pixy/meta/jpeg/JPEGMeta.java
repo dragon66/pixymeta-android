@@ -358,15 +358,15 @@ public class JPEGMeta {
 					    		//Create a BufferedImage
 					    		int size = 3*thumbnailWidth*thumbnailHeight;
 								int[] colors = MetadataUtils.toARGB(ArrayUtils.subArray(jfif_buf, 14, size));
-								IBitmap bmp = BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight);
+								IBitmap bmp = BitmapFactory.createBitmap(colors, thumbnailWidth, thumbnailHeight, size, jfif_buf, -1, null);
 								FileOutputStream fout = new FileOutputStream(outpath + ".jpg");
 								try {
 									bmp.compressJPG(100, fout);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
-								fout.close();		
-					    	}
+								fout.close();
+							}
 					    }
 				    	marker = IOUtils.readShortMM(is);
 						break;

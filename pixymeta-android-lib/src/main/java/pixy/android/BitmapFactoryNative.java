@@ -1,9 +1,11 @@
 package pixy.android;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import pixy.image.BitmapFactory;
 import pixy.image.IBitmap;
+import pixy.meta.adobe.ImageResourceID;
 
 /**
  * Created by k3b on 31.05.2016.
@@ -14,7 +16,7 @@ public class BitmapFactoryNative implements BitmapFactory.IBitmapFactory {
     }
 
     @Override
-    public IBitmap createBitmap(int[] colors, int width, int height) {
+    public IBitmap createBitmap(int colors[], int width, int height, int totalSize, byte[] thumbnailData, int paddedRowBytes, ImageResourceID id) {
         return BitmapNative.createBitmap(colors, width, height);
     }
 
@@ -28,7 +30,7 @@ public class BitmapFactoryNative implements BitmapFactory.IBitmapFactory {
      *           bitmap.
      * @return The decoded bitmap, or null if the image data could not be decoded.
      */
-    public IBitmap decodeStream(InputStream is) {
+    public IBitmap decodeStream(InputStream is)  throws IOException {
         return BitmapNative.decodeStream(is);
     }
 
