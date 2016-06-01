@@ -29,5 +29,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="pixymeta-lib" exported="" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.7" level="project" />
+    <orderEntry type="library" exported="" name="pixymeta-j2se-lib.pixymeta-j2se-lib" level="project" />
   </component>
 </module>

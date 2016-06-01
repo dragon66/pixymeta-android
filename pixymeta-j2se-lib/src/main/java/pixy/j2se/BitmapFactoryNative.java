@@ -25,6 +25,10 @@ public class BitmapFactoryNative implements BitmapFactory.IBitmapFactory {
             BitmapFactory.register(new BitmapFactoryNative());
         }
 
+        public static void init() {
+            // do nothing. just make shure that the static constructor has been called
+        }
+
         @Override
         public IBitmap createBitmap(int colors[], int width, int height, int totalSize, byte[] data, int paddedRowBytes, ImageResourceID id) {
 

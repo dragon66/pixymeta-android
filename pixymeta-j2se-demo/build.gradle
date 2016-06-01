@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': '1.0.0.1',
+                'Main-Class': 'pixy.demo.j2se.TestPixyMetaJ2se'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.slf4j:slf4j-api:1.7.7@jar'
+    compile 'org.slf4j:slf4j-simple:1.7.7@jar'
+    compile project(':pixymeta-lib')
+    compile project(':pixymeta-j2se-lib')
+}
+

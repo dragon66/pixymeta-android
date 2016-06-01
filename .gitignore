@@ -9,3 +9,5 @@
 /*.iml
 /.idea
 /gradle-app.setting
+/todo.txt
+*.iml

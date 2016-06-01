@@ -35,7 +35,7 @@ public class BitmapNative implements IBitmap {
     @Override
     public IBitmap createScaledBitmap(int dstWidth, int dstHeight,
                                       boolean filter) {
-        return new BitmapNative(Bitmap.createScaledBitmap(this.mBitmap, dstWidth, dstHeight, filter));
+        return create(Bitmap.createScaledBitmap(this.mBitmap, dstWidth, dstHeight, filter));
     }
 
     /**
@@ -51,7 +51,7 @@ public class BitmapNative implements IBitmap {
      *         the color array's length is less than the number of pixels.
      */
     public static IBitmap createBitmap(int colors[], int width, int height) {
-        return new BitmapNative(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
+        return create(Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888));
     }
 
     /** Returns the bitmap's width */
@@ -129,6 +129,13 @@ public class BitmapNative implements IBitmap {
      * @return The decoded bitmap, or null if the image data could not be decoded.
      */
     public static IBitmap decodeStream(InputStream is) {
-        return new BitmapNative(BitmapFactory.decodeStream(is));
+        return create(BitmapFactory.decodeStream(is));
     }
+
+    private static IBitmap create(Bitmap bitmap) {
+        if (bitmap != null) return new BitmapNative(bitmap);
+        return null;
+    }
+
+
 }

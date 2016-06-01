@@ -56,7 +56,7 @@ public class BitmapNative  implements IBitmap {
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.drawImage(this.mBitmap, 0, 0, dstWidth, dstHeight, null);
 
-        return new BitmapNative(thumbnail);
+        return create(thumbnail);
     }
 
     /**
@@ -82,7 +82,12 @@ public class BitmapNative  implements IBitmap {
         WritableRaster raster = Raster.createInterleavedRaster(db, width, height, paddedRowBytes, numOfBands, off, null);
         ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false, trans, DataBuffer.TYPE_BYTE);
 
-        return new BitmapNative(new BufferedImage(cm, raster, false, null));
+        return create(new BufferedImage(cm, raster, false, null));
+    }
+
+    private static IBitmap create(BufferedImage bitmap) {
+        if (bitmap != null) return new BitmapNative(bitmap);
+        return null;
     }
 
     /** Returns the bitmap's width */
@@ -182,6 +187,6 @@ public class BitmapNative  implements IBitmap {
      * @return The decoded bitmap, or null if the image data could not be decoded.
      */
     public static IBitmap decodeStream(InputStream is) throws IOException {
-        return new BitmapNative(javax.imageio.ImageIO.read(is));
+        return create(javax.imageio.ImageIO.read(is));
     }
 }

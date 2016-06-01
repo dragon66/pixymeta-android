@@ -17,6 +17,13 @@ public class BitmapFactory {
         BitmapFactory.mFactory = factory;
     }
 
+    public static IBitmapFactory getFactory() {
+        if (mFactory == null) {
+            throw new RuntimeException("BitmapFactory.register() has not been called. Forgot to call BitmapFactoryNative.init() for j2se or android?");
+        }
+        return mFactory;
+    }
+
     /**  */
     public interface IBitmapFactory {
         /**
@@ -61,7 +68,7 @@ public class BitmapFactory {
      * @param paddedRowBytes
      */
     public static IBitmap createBitmap(int colors[], int width, int height, int totalSize, byte[] thumbnailData, int paddedRowBytes, ImageResourceID id) {
-        return mFactory.createBitmap(colors, width, height, totalSize, thumbnailData, paddedRowBytes, id);
+        return getFactory().createBitmap(colors, width, height, totalSize, thumbnailData, paddedRowBytes, id);
     }
 
     /**
@@ -75,7 +82,7 @@ public class BitmapFactory {
      * @return The decoded bitmap, or null if the image data could not be decoded.
      */
     public static IBitmap decodeStream(InputStream is)  throws IOException  {
-        return mFactory.decodeStream(is);
+        return getFactory().decodeStream(is);
     }
 
 
