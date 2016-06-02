@@ -1,6 +1,7 @@
 apply plugin: 'java'
 
 //create a single Jar with all dependencies
+// from http://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
 task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Gradle Jar File Example',

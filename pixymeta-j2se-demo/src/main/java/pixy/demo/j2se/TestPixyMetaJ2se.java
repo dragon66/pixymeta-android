@@ -86,7 +86,7 @@ public class TestPixyMetaJ2se {
 
         }
 
-        Metadata.extractThumbnails(TestPixyMetaJ2se.class.getResourceAsStream("images/iptc-envelope.tif"), "iptc-envelope");
+        Metadata.extractThumbnails(TestPixyMetaJ2se.class.getResourceAsStream("images/iptc-envelope.tif"), OUTDIR + "iptc-envelope");
 
         fin = TestPixyMetaJ2se.class.getResourceAsStream("images/iptc-envelope.tif");
         fout = new FileOutputStream(OUTDIR + "iptc-envelope-iptc-inserted.tif");
@@ -113,9 +113,16 @@ public class TestPixyMetaJ2se {
         fout.close();
 
         fin = TestPixyMetaJ2se.class.getResourceAsStream("images/f1.tif");
+        // fin = new FileInputStream("D:\\prj\\eve\\android\\prj\\fotos-android.wrk\\downloaded\\pixymeta-android\\pixymeta-j2se-demo\\src\\main\\resources\\pixy\\demo\\j2se\\images\\f1.tif");
+
         fout = new FileOutputStream(OUTDIR + "f1-irbthumbnail-inserted.tif");
 
-        Metadata.insertIRBThumbnail(fin, fout, createThumbnail("images/f1.tif"));
+        //!!! this currently fails in j2se
+        IBitmap thumbnail = createThumbnail("images/f1.tif");
+
+        if (thumbnail != null) {
+            Metadata.insertIRBThumbnail(fin, fout, thumbnail);
+        }
 
         fin.close();
         fout.close();
@@ -153,15 +160,19 @@ public class TestPixyMetaJ2se {
         fout.close();
 
         fin = TestPixyMetaJ2se.class.getResourceAsStream("images/table.jpg");
-        JPEGMeta.extractDepthMap(fin, "table");
+        JPEGMeta.extractDepthMap(fin, OUTDIR + "table");
 
         fin.close();
 
         fin = TestPixyMetaJ2se.class.getResourceAsStream("images/butterfly.png");
         fout = new FileOutputStream(OUTDIR + "comment-inserted.png");
 
-        Metadata.insertComments(fin, fout, Arrays.asList("Comment1", "Comment2"));
-
+        //!!! this currently fails in j2se
+        try {
+            Metadata.insertComments(fin, fout, Arrays.asList("Comment1", "Comment2"));
+        } catch (Exception ex) {
+            LOGGER.error("cannot set comment to images/butterfly.png", ex);
+        }
         fin.close();
         fout.close();
     }
@@ -185,16 +196,19 @@ public class TestPixyMetaJ2se {
     }
 
     private static IBitmap createThumbnail(String filePath) throws IOException {
-        InputStream fin = null;
+        IBitmap thumbnail = null;
+                InputStream fin = null;
         try {
             fin = TestPixyMetaJ2se.class.getResourceAsStream(filePath);
+            thumbnail = MetadataUtils.createThumbnail(fin);
+
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("createThumbnail('" + filePath + "') failed", e);
         }
 
-        IBitmap thumbnail = MetadataUtils.createThumbnail(fin);
-
-        fin.close();
+        if (fin != null) {
+            fin.close();
+        }
 
         return thumbnail;
     }

@@ -115,23 +115,26 @@ public class MetadataUtils {
 			rin.seek(streamPointer);
 		} else {
 			original = BitmapFactory.decodeStream(is);
-		}		
-		int imageWidth = original.getWidth();
-		int imageHeight = original.getHeight();
-		int thumbnailWidth = 160;
-		int thumbnailHeight = 120;
-		if(imageWidth < imageHeight) { 
-			// Swap thumbnail width and height to keep a relative aspect ratio
-			int temp = thumbnailWidth;
-			thumbnailWidth = thumbnailHeight;
-			thumbnailHeight = temp;
-		}			
-		if(imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;			
-		if(imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
-		
-		IBitmap thumbnail = original.createScaledBitmap(thumbnailWidth, thumbnailHeight, false);
-				
-		return thumbnail;
+		}
+		if (original != null) {
+			int imageWidth = original.getWidth();
+			int imageHeight = original.getHeight();
+			int thumbnailWidth = 160;
+			int thumbnailHeight = 120;
+			if (imageWidth < imageHeight) {
+				// Swap thumbnail width and height to keep a relative aspect ratio
+				int temp = thumbnailWidth;
+				thumbnailWidth = thumbnailHeight;
+				thumbnailHeight = temp;
+			}
+			if (imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;
+			if (imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
+
+			IBitmap thumbnail = original.createScaledBitmap(thumbnailWidth, thumbnailHeight, false);
+
+			return thumbnail;
+		}
+		throw new IOException("Cannot load original");
 	}
 	
 	/**
