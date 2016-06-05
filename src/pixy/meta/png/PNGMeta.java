@@ -176,7 +176,7 @@ public class PNGMeta {
         }     
         
         buf = new byte[13];
-        IOUtils.read(is, buf, 0, 13);
+        IOUtils.readFully(is, buf, 0, 13);
   
         list.add(new Chunk(ChunkType.IHDR, 13, buf, IOUtils.readUnsignedIntMM(is)));         
       
@@ -190,7 +190,7 @@ public class PNGMeta {
 	       	} 
        		ChunkType chunkType = ChunkType.fromInt(chunk_type);
        		buf = new byte[data_len];
-       		IOUtils.read(is, buf,0, data_len);
+       		IOUtils.readFully(is, buf,0, data_len);
               
        		if (chunkType == ChunkType.UNKNOWN)
        			list.add(new UnknownChunk(data_len, chunk_type, buf, IOUtils.readUnsignedIntMM(is)));
