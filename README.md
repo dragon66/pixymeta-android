@@ -1,5 +1,34 @@
 # pixymeta-android
-Standalone Android version of PixyMeta - a pure Java image metadata manipulation tool.
+Combined Android/j2se version of PixyMeta - a pure Java image metadata manipulation tool.
+
+## Subprojects
+
+* pixymeta-lib
+  * platform independant code useable by android and by j2se
+  * has no code to handle (preview-)Bitmaps that are platform dependant.
+  * if you want to use IBitmap (an interface replacement for Bitmap) you either need pixymeta-android-lib or pixymeta-j2se-lib
+* pixymeta-android-lib
+  * android specific implementation to handle (preview-)Bitmaps
+* pixymeta-j2se-lib
+  * java/awt specific implementation to handle (preview-)Bitmaps
+* pixymeta-j2se-demo
+  * java commandline programm to demonstrate image meta functions
+
+## Dependencies 
+
+* implementation of imageio drivers 
+  * com.twelvemonkeys.imageio:imageio-tiff (version 3.2.1 working with pixymeta-j2se-demo)
+  * com.github.jai-imageio:jai-imageio-core (version 1.3.1 has problems with tiff files)
+
+## How to build
+
+* use `./gradlew --gui` 
+  * to start a build gui
+* use `./gradlew pixymeta-j2se-demo:fatJar` 
+  * to create `pixymeta-j2se-demo-all.jar` that contains all dependencies and testimages
+  * execute `java -jar pixymeta-j2se-demo-all.jar` to run the demo
+   
+  
 
 branch gradle-build of k3b-s fork: [![Build Status](https://travis-ci.org/k3b/pixymeta-android.svg?branch=gradle-build)](https://travis-ci.org/k3b/pixymeta-android)
 
