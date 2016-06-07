@@ -73,4 +73,19 @@ public interface IBitmap {
      */
     int[]  getPixels(int[] pixels, int offset, int stride,
                    int x, int y, int width, int height);
+
+    /**
+     * usage
+     *
+     * IBitmap somePixyMetaBitmap = ....;
+     *
+     * android.graphics.Bitmap image = (android.graphics.Bitmap) somePixyMetaBitmap.getImage();
+     *
+     * or
+     *
+     * java.awt.image.BufferedImage image = (java.awt.image.BufferedImage) somePixyMetaBitmap.getImage();
+     *
+     * @return the os-native Bitmap
+     */
+    Object getImage();
 }

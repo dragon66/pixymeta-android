@@ -138,4 +138,17 @@ public class BitmapNative implements IBitmap {
     }
 
 
+    /**
+     * usage
+     *
+     * IBitmap somePixyMetaBitmap = ....;
+     *
+     * android.graphics.Bitmap image = (android.graphics.Bitmap) somePixyMetaBitmap.getImage();
+     *
+     * @return the os-native image
+     */
+    public Object getImage() {
+        return mBitmap;
+    }
+
 }

@@ -189,4 +189,18 @@ public class BitmapNative  implements IBitmap {
     public static IBitmap decodeStream(InputStream is) throws IOException {
         return create(javax.imageio.ImageIO.read(is));
     }
+
+    /**
+     * usage
+     *
+     * IBitmap somePixyMetaBitmap = ....;
+     *
+     * java.awt.image.BufferedImage image = (java.awt.image.BufferedImage) somePixyMetaBitmap.getImage();
+     *
+     * @return the os-native image
+     */
+    public Object getImage() {
+        return mBitmap;
+    }
+
 }
