@@ -1,4 +1,16 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+// vvv maven upload stuff
+group = "com.github.${githubUserId}"
+description = "pixymeta-j2se-demo"
+archivesBaseName = description
+
+version = globalVersion
+
+print description + ":" + version + "\n"
+// ^^^ maven upload stuff
 
 //create a single Jar with all dependencies
 // from http://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
@@ -35,5 +47,7 @@ dependencies {
 
     compile project(':pixymeta-lib')
     compile project(':pixymeta-j2se-lib')
+	
 }
 
+apply from: '../uploadArchives.gradle'

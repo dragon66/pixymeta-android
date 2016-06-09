@@ -1,7 +1,21 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+// vvv maven upload stuff
+group = "com.github.${githubUserId}"
+description = "pixymeta-j2se-lib"
+archivesBaseName = description
+
+version = globalVersion
+
+print description + ":" + version + "\n"
+// ^^^ maven upload stuff
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':pixymeta-lib')
     compile 'org.slf4j:slf4j-api:1.7.7@jar'
 }
+
+apply from: '../uploadArchives.gradle'

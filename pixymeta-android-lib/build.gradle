@@ -1,5 +1,22 @@
-apply plugin: 'com.android.library'
 apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'com.android.library'
+
+// vvv maven upload stuff
+group = "com.github.${githubUserId}"
+description = "pixymeta-android-lib"
+archivesBaseName = description
+
+version = globalVersion
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+print description + ":" + version + "\n"
+// ^^^ maven upload stuff
 
 android {
     compileSdkVersion 21
@@ -8,7 +25,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 21
         versionCode 14
-        versionName "1.0.0"
+        versionName "${archivesBaseName}"
     }
     buildTypes {
         release {
@@ -39,3 +56,12 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.7@jar'
     // compile 'eu.lp0.slf4j:slf4j-android:1.7.7-1@jar'
 }
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    destinationDir = file("../javadoc/")
+    failOnError false
+}
+
+apply from: '../uploadArchives.gradle'

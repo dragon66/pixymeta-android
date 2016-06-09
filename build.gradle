@@ -1,5 +1,28 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+ext.globalVersion="1.1.0-SNAPSHOT"
+
+ext.githubUserId="k3b"
+ext.githubRepository="pixymeta-android"
+
+ext.isReleaseVersion = !globalVersion.endsWith("SNAPSHOT") && !globalVersion.endsWith("TEST")
+
+if (!hasProperty("uploadRepository")) {
+	ext.uploadRepository = (isReleaseVersion) ? "https://oss.sonatype.org/service/local/staging/deploy/maven2/" : "https://oss.sonatype.org/content/repositories/snapshots/"
+
+	if (!hasProperty("signing.keyId") || !hasProperty("signing.password") || !hasProperty("signing.secretKeyRingFile")) {
+		ext.uploadRepository = "file:./build/testrepository/"
+		print "signing.keyId=... or signing.password=... or signing.secretKeyRingFile=.. not found in gradle.properties\n"
+		print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using repository '${uploadRepository}' instead \n"
+	}
+	
+	if (!hasProperty("ossrhUsername") || !hasProperty("ossrhPassword")) {
+		ext.uploadRepository = "file:./build/testrepository/"
+		print "ossrhUsername=... or ossrhPassword=.. not found in gradle.properties\n"
+		print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using '${uploadRepository}' instead \n"
+	}
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -18,9 +41,21 @@ allprojects {
     repositories {
         jcenter()
     }
+
+	// http://stackoverflow.com/questions/28450703/how-to-set-the-language-level-in-gradle-so-it-is-ide-agnostic/35827609#35827609
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '1.7'
+        targetCompatibility = '1.7'
+    } 
 }
 
 // download and generate gradlew which is not part of this repository and is required by travis
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
+}
+
+task uploadArchives {
+	tasks.withType(uploadArchives) {
+        uploadArchives
+    }
 }

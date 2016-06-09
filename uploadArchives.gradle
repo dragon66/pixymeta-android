@@ -1,0 +1,81 @@
+// uploadArchives.gradle
+// identical maven repository upload stuff used in all sub-projects via 
+// apply from: '../uploadArchives.gradle'
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    description = "Builds -${classifier} archive containing api-doc."
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	description = "Builds -${classifier} archive containing source code."
+
+	from('src') {
+		include '**'
+	}
+ 
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (hasProperty("signing.keyId")) {
+	signing {
+		print "signing archives\n"
+		sign configurations.archives
+	}
+}
+
+uploadArchives {
+	dependsOn assemble
+	repositories {
+		mavenDeployer {
+			if (hasProperty("signing.keyId")) {
+				beforeDeployment { 
+					MavenDeployment deployment -> signing.signPom(deployment) 
+				}
+			}
+
+			repository(url: uploadRepository) {
+				print "uploading '${archivesBaseName}' to repository '${uploadRepository}'\n"
+				if (hasProperty('sonatypeUsername') && hasProperty('sonatypeUsername')) {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
+			}
+
+			ext.packagingType = (archivesBaseName.toLowerCase().contains('andro')) ? 'aar' : 'jar'
+			pom.project {
+				name "${archivesBaseName}"
+				packaging "${packagingType}"
+				description 'A j2se geo support library that is compatible with Android.'
+				url "https://github.com/${githubUserId}/${githubRepository}"
+
+				scm {
+					url 				"http://www.github.com/${githubUserId}/${githubRepository}"
+					connection 			"scm:git://github.com/${githubUserId}/${githubRepository}.git"
+					developerConnection	"scm:git://github.com/${githubUserId}/${githubRepository}.git"
+				}
+
+				licenses {
+					license {
+						name 'The Apache License, Version 2.0'
+						url "https://raw.github.com/${githubUserId}/${githubRepository}/master/license"
+						distribution 'repo'
+					}
+				}
+
+				developers {
+					developer {
+						id "${githubUserId}"
+						name 'Klaus Tevos'
+						email 'klaus3b-mvn@yahoo.de'
+					}
+				}
+			}
+		}
+	}
+
+}
