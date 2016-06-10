@@ -1,0 +1,30 @@
+### TODO save this as "gradle.properties" and edit the valus
+### do not upload the edited file to github because it contains confidential data
+
+### signing: if keyId and password and secretKeyRingFile are defined: the jars will be signed
+### for uploading to oss.sonatype.org these are mandatory
+
+# signing.keyId=YourKeyId
+# signing.password=YourPublicKeyPassword
+# signing.secretKeyRingFile=PathToYourKeyRingFile
+
+#-------------------------------
+
+#### if not defined use https://oss.sonatype.org/...
+mavenUpload_serverUrl=file:D:/path/to/mylocalrepository
+
+### required maven upload parameters
+
+### login data needed to allow access to repository
+mavenUpload_login=your-jira-id
+mavenUpload_password=your-jira-password
+
+### data added to the maven pom files. mandatory for oss.sonatype.org 
+mavenUpload_publisher_name=your full name
+mavenUpload_publisher_email=your email adress
+
+### your github user id where github urls are calculated from
+### For github project url "http://www.github.com/MyUserId/MyRepositoryName"
+### the userid is MyUserId
+github_userId=MyUserId
+

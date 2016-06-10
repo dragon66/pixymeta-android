@@ -39,37 +39,37 @@ uploadArchives {
 				}
 			}
 
-			repository(url: uploadRepository) {
-				print "uploading '${archivesBaseName}' to repository '${uploadRepository}'\n"
+			repository(url: mavenUpload_serverUrl) {
+				print "uploading '${mavenUpload_archivesBaseName}' to repository '${mavenUpload_serverUrl}'\n"
 				if (hasProperty('sonatypeUsername') && hasProperty('sonatypeUsername')) {
-					authentication(userName: ossrhUsername, password: ossrhPassword)
+					authentication(userName: mavenUpload_login, password: mavenUpload_password)
 				}
 			}
 
-			ext.packagingType = (archivesBaseName.toLowerCase().contains('andro')) ? 'aar' : 'jar'
+			ext.mavenUpload_packagingType = (mavenUpload_archivesBaseName.toLowerCase().contains('andro')) ? 'aar' : 'jar'
 			pom.project {
-				name "${archivesBaseName}"
-				packaging "${packagingType}"
-				description 'A j2se geo support library that is compatible with Android.'
-				url "https://github.com/${githubUserId}/${githubRepository}"
+				name "${mavenUpload_archivesBaseName}"
+				packaging "${mavenUpload_packagingType}"
+				description "${mavenUpload_description}"
+				url "https://github.com/${github_userId}/${github_repository}"
 
 				scm {
-					url 				"http://www.github.com/${githubUserId}/${githubRepository}"
-					connection 			"scm:git://github.com/${githubUserId}/${githubRepository}.git"
-					developerConnection	"scm:git://github.com/${githubUserId}/${githubRepository}.git"
+					url 				"http://www.github.com/${github_userId}/${github_repository}"
+					connection 			"scm:git://github.com/${github_userId}/${github_repository}.git"
+					developerConnection	"scm:git://github.com/${github_userId}/${github_repository}.git"
 				}
 
 				licenses {
 					license {
-						name 'The Apache License, Version 2.0'
-						url "https://raw.github.com/${githubUserId}/${githubRepository}/master/license"
+						name "${project_licence_name}"
+						url "https://raw.github.com/${github_userId}/${github_repository}/master/license"
 						distribution 'repo'
 					}
 				}
 
 				developers {
 					developer {
-						id "${githubUserId}"
+						id "${github_userId}"
 						name 'Klaus Tevos'
 						email 'klaus3b-mvn@yahoo.de'
 					}

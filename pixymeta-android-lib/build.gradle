@@ -3,20 +3,21 @@ apply plugin: 'signing'
 apply plugin: 'com.android.library'
 
 // vvv maven upload stuff
-group = "com.github.${githubUserId}"
-description = "pixymeta-android-lib"
-archivesBaseName = description
+ext {
+	mavenUpload_archivesBaseName = 'pixymeta-android-lib'
+	mavenUpload_description = 'Android specific implementation to handle (preview-)Bitmaps.'
+}
 
-version = globalVersion
+group = "com.github.${github_userId}"
+description = "${mavenUpload_description}"
+version = project_version
+// ^^^ maven upload stuff
 
 configurations {
     archives {
         extendsFrom configurations.default
     }
 }
-
-print description + ":" + version + "\n"
-// ^^^ maven upload stuff
 
 android {
     compileSdkVersion 21
@@ -25,7 +26,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 21
         versionCode 14
-        versionName "${archivesBaseName}"
+        versionName "${mavenUpload_archivesBaseName}"
     }
     buildTypes {
         release {

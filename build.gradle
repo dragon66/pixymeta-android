@@ -1,27 +1,42 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ext {
 
-ext.globalVersion="1.1.0-SNAPSHOT"
+	// global project specific properties
+	github_repository='pixymeta-android'
+	project_version='1.1.0-SNAPSHOT'
+	project_licence_name='Eclipse Public License - v 1.0'
 
-ext.githubUserId="k3b"
-ext.githubRepository="pixymeta-android"
 
-ext.isReleaseVersion = !globalVersion.endsWith("SNAPSHOT") && !globalVersion.endsWith("TEST")
-
-if (!hasProperty("uploadRepository")) {
-	ext.uploadRepository = (isReleaseVersion) ? "https://oss.sonatype.org/service/local/staging/deploy/maven2/" : "https://oss.sonatype.org/content/repositories/snapshots/"
-
-	if (!hasProperty("signing.keyId") || !hasProperty("signing.password") || !hasProperty("signing.secretKeyRingFile")) {
-		ext.uploadRepository = "file:./build/testrepository/"
-		print "signing.keyId=... or signing.password=... or signing.secretKeyRingFile=.. not found in gradle.properties\n"
-		print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using repository '${uploadRepository}' instead \n"
-	}
+	// default for global project specific properties from file gradle.properties
+	if (!hasProperty("github_userId")) github_userId='dragon66'
 	
-	if (!hasProperty("ossrhUsername") || !hasProperty("ossrhPassword")) {
-		ext.uploadRepository = "file:./build/testrepository/"
-		print "ossrhUsername=... or ossrhPassword=.. not found in gradle.properties\n"
-		print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using '${uploadRepository}' instead \n"
-	}
+	// these must be defined in gradle.properties
+	if (!hasProperty("mavenUpload_publisher_name")) mavenUpload_publisher_name= ''
+	if (!hasProperty("mavenUpload_publisher_email")) mavenUpload_publisher_email= ''
+	
+	// calculated properties
+	project_description="${github_userId}.${github_repository} ver ${project_version}"
+	project_isReleaseVersion = !project_version.endsWith("SNAPSHOT")
+
+	// Params for Task uploadArchives
+	if (!hasProperty("mavenUpload_serverUrl")) mavenUpload_serverUrl = (project_isReleaseVersion) ? "https://oss.sonatype.org/service/local/staging/deploy/maven2/" : "https://oss.sonatype.org/content/repositories/snapshots/"
+
 }
+
+// reset mavenUpload_serverUrl to local if parameter is missing 
+if (!hasProperty("signing.keyId") || !hasProperty("signing.password") || !hasProperty("signing.secretKeyRingFile")) {
+	ext.mavenUpload_serverUrl = "file:./build/testrepository/"
+	print "signing.keyId=... or signing.password=... or signing.secretKeyRingFile=.. not found in gradle.properties\n"
+	print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using repository '${mavenUpload_serverUrl}' instead \n"
+}
+
+if (!hasProperty("mavenUpload_login") || !hasProperty("mavenUpload_password")) {
+	ext.mavenUpload_serverUrl = "file:./build/testrepository/"
+	print "mavenUpload_login=... or mavenUpload_password=.. not found in gradle.properties\n"
+	print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using '${mavenUpload_serverUrl}' instead \n"
+}
+
+description = "${project_description}"
 
 buildscript {
     repositories {
@@ -52,10 +67,17 @@ allprojects {
 // download and generate gradlew which is not part of this repository and is required by travis
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
+    description = "(Re-)Genarate wrapper for Gradle version ${gradleVersion}."
+}
+
+task clean {
+    description = "Delete the build directories."
+    dependsOn { subprojects.clean }
 }
 
 task uploadArchives {
-	tasks.withType(uploadArchives) {
-        uploadArchives
-    }
+    description = "Upload ${project_description} to maven repository '${mavenUpload_serverUrl}'."
+    dependsOn { subprojects.uploadArchives }
 }
+
+

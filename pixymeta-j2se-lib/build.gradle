@@ -3,13 +3,14 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 // vvv maven upload stuff
-group = "com.github.${githubUserId}"
-description = "pixymeta-j2se-lib"
-archivesBaseName = description
+ext {
+	mavenUpload_archivesBaseName = 'pixymeta-j2se-lib'
+	mavenUpload_description = 'java/awt specific implementation to handle (preview-)Bitmaps.'
+}
 
-version = globalVersion
-
-print description + ":" + version + "\n"
+group = "com.github.${github_userId}"
+description = "${mavenUpload_description}"
+version = project_version
 // ^^^ maven upload stuff
 
 dependencies {
