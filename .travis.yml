@@ -15,7 +15,5 @@ before_install:
  
  
 script:
-  - ./gradlew assemble pixymeta-j2se-demo:fatJar
-  - java -jar pixymeta-j2se-demo/build/libs/pixymeta-j2se-demo-all.jar
-  - ls -l build/testresults/
-
+  - ./gradlew assemble pixymeta-j2se-demo:runFatJar
+  - ls -l pixymeta-j2se-demo/build/testresults/

@@ -16,14 +16,27 @@ version = project_version
 //create a single Jar with all dependencies
 // from http://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
 task fatJar(type: Jar) {
+	description = "create demo as fatJar"
     manifest {
         attributes 'Implementation-Title': 'Gradle Jar File Example',
                 'Implementation-Version': '1.0.0.1',
                 'Main-Class': 'pixy.demo.j2se.TestPixyMetaJ2se'
     }
-    baseName = project.name + '-all'
+	
+    baseName = project.name + '-all'  // i.e pixymeta-j2se-demo-all-1.1.0-SNAPSHOT.jar would break travis build with a fixed name
+	// baseName = mavenUpload_archivesBaseName + '-all'  // i.e. pixymeta-j2se-demo-all.jar
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+task runFatJar(type: JavaExec, dependsOn: fatJar) {
+	// http://stackoverflow.com/questions/20728621/running-an-executable-jar-file-built-from-a-gradle-based-project
+	ext.fatJarPath = "build/libs/${project.name}-all-${version}.jar"
+	description = "run demo"
+
+	// https://newfivefour.com/gradle-run-jar-file.html
+	main='-jar'
+	args fatJarPath
 }
 
 dependencies {

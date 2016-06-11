@@ -30,9 +30,11 @@ if (hasProperty("signing.keyId")) {
 }
 
 uploadArchives {
+
 	dependsOn assemble
 	repositories {
 		mavenDeployer {
+
 			if (hasProperty("signing.keyId")) {
 				beforeDeployment { 
 					MavenDeployment deployment -> signing.signPom(deployment) 
@@ -40,12 +42,14 @@ uploadArchives {
 			}
 
 			repository(url: mavenUpload_serverUrl) {
-				print "uploading '${mavenUpload_archivesBaseName}' to repository '${mavenUpload_serverUrl}'\n"
-				if (hasProperty('sonatypeUsername') && hasProperty('sonatypeUsername')) {
+				print "uploading '${mavenUpload_archivesBaseName}' to repository '${mavenUpload_serverUrl}'"
+				if (parent.hasProperty("mavenUpload_login") && parent.hasProperty("mavenUpload_password")) {
+					print " using login='${mavenUpload_login}'"
 					authentication(userName: mavenUpload_login, password: mavenUpload_password)
 				}
+				print "\n"
 			}
-
+	
 			ext.mavenUpload_packagingType = (mavenUpload_archivesBaseName.toLowerCase().contains('andro')) ? 'aar' : 'jar'
 			pom.project {
 				name "${mavenUpload_archivesBaseName}"
@@ -62,16 +66,18 @@ uploadArchives {
 				licenses {
 					license {
 						name "${project_licence_name}"
-						url "https://raw.github.com/${github_userId}/${github_repository}/master/license"
+						url "https://raw.github.com/${github_userId}/${github_repository}/master/LICENSE"
 						distribution 'repo'
 					}
 				}
 
-				developers {
-					developer {
-						id "${github_userId}"
-						name 'Klaus Tevos'
-						email 'klaus3b-mvn@yahoo.de'
+				if (parent.hasProperty("mavenUpload_publisher_name") && parent.hasProperty("mavenUpload_publisher_email")) {
+					developers {
+						developer {
+							id "${github_userId}"
+							name "${mavenUpload_publisher_name}"
+							email "${mavenUpload_publisher_email}"
+						}
 					}
 				}
 			}

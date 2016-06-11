@@ -1,3 +1,5 @@
+### parameter for ../uploadArchives.gradle
+###
 ### TODO save this as "gradle.properties" and edit the valus
 ### do not upload the edited file to github because it contains confidential data
 
@@ -11,6 +13,7 @@
 #-------------------------------
 
 #### if not defined use https://oss.sonatype.org/...
+#### use local file for testing
 mavenUpload_serverUrl=file:D:/path/to/mylocalrepository
 
 ### required maven upload parameters
