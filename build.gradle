@@ -26,14 +26,14 @@ ext {
 // reset mavenUpload_serverUrl to local if parameter is missing 
 if (!hasProperty("signing.keyId") || !hasProperty("signing.password") || !hasProperty("signing.secretKeyRingFile")) {
 	ext.mavenUpload_serverUrl = "file:./build/testrepository/"
-	print "signing.keyId=... or signing.password=... or signing.secretKeyRingFile=.. not found in gradle.properties\n"
-	print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using repository '${mavenUpload_serverUrl}' instead \n"
+	logger.info "signing.keyId=... or signing.password=... or signing.secretKeyRingFile=.. not found in gradle.properties\n"
+	logger.info "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using repository '${mavenUpload_serverUrl}' instead \n"
 }
 
 if (!hasProperty("mavenUpload_login") || !hasProperty("mavenUpload_password")) {
 	ext.mavenUpload_serverUrl = "file:./build/testrepository/"
-	print "mavenUpload_login=... or mavenUpload_password=.. not found in gradle.properties\n"
-	print "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using '${mavenUpload_serverUrl}' instead \n"
+	logger.info "mavenUpload_login=... or mavenUpload_password=.. not found in gradle.properties\n"
+	logger.info "Cannot upload to 'maven@https://oss.sonatype.org/...' . Using '${mavenUpload_serverUrl}' instead \n"
 }
 
 description = "${project_description}"

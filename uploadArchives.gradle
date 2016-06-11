@@ -24,7 +24,7 @@ artifacts {
 
 if (hasProperty("signing.keyId")) {
 	signing {
-		print "signing archives\n"
+		logger.info "signing archives using ${signing.keyId}\n"
 		sign configurations.archives
 	}
 }
@@ -42,12 +42,12 @@ uploadArchives {
 			}
 
 			repository(url: mavenUpload_serverUrl) {
-				print "uploading '${mavenUpload_archivesBaseName}' to repository '${mavenUpload_serverUrl}'"
+				logger.info "configured mavenUpload_serverUrl '${mavenUpload_archivesBaseName}' to repository '${mavenUpload_serverUrl}'"
 				if (parent.hasProperty("mavenUpload_login") && parent.hasProperty("mavenUpload_password")) {
-					print " using login='${mavenUpload_login}'"
+					logger.info " using login='${mavenUpload_login}'"
 					authentication(userName: mavenUpload_login, password: mavenUpload_password)
 				}
-				print "\n"
+				logger.info "\n"
 			}
 	
 			ext.mavenUpload_packagingType = (mavenUpload_archivesBaseName.toLowerCase().contains('andro')) ? 'aar' : 'jar'
