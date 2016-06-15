@@ -23,8 +23,7 @@ artifacts {
 }
 
 if (hasProperty("signing.keyId")) {
-	signing {
-		logger.info "signing archives using ${signing.keyId}\n"
+	signing {		
 		sign configurations.archives
 	}
 }
@@ -35,7 +34,7 @@ uploadArchives {
 	repositories {
 		mavenDeployer {
 
-			if (hasProperty("signing.keyId")) {
+			if (parent.hasProperty("signing.keyId")) {
 				beforeDeployment { 
 					MavenDeployment deployment -> signing.signPom(deployment) 
 				}
