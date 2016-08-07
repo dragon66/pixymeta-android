@@ -1149,7 +1149,7 @@ public class TIFFMeta {
 						rin.seek(rin.readInt());
 						rin.readFully(data, 0, field_length);
 					}
-					TiffField<String> ascIIField = new ASCIIField(tag, new String(data, 0, data.length, "UTF-8"));
+					TiffField<String> ascIIField = new ASCIIField(tag, new String(data, "UTF-8"));
 					tiffIFD.addField(ascIIField);
 					offset += 4;	
 					break;
