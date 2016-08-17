@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +159,7 @@ public class IPTC extends Metadata {
 			}
 			// Remove possible duplicates
 			for (Map.Entry<String, List<IPTCDataSet>> entry : datasetMap.entrySet()){
-			    entry.setValue(new ArrayList<IPTCDataSet>(new HashSet<IPTCDataSet>(entry.getValue())));
+			    entry.setValue(new ArrayList<IPTCDataSet>(new LinkedHashSet<IPTCDataSet>(entry.getValue())));
 			}
 			
 			isDataRead = true;
