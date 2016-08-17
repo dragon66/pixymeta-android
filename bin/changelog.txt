@@ -1,6 +1,7 @@
 ***************************
-Last modified on 04/07/2016
+Last modified on 08/16/2016
 ***************************
+16Aug2016  Added support for Unicode string data to IPTCDataSet
 07Apr2016  Moved XMP to new package and make it abstract
 30Mar2016  Added insertTextChunk() to PNGMeta
 30Mar2016  Rewrite JPEGMeta writeComment() to leverage COMBuilder
