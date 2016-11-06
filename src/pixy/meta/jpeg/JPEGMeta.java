@@ -13,6 +13,7 @@
  *
  * Who   Date       Description
  * ====  =======    ===================================================
+ * WY    06Nov2016  Added support for Cardboard Camera image and audio
  * WY    07Apr2016  Rewrite insertXMP() to leverage JpegXMP
  * WY    30Mar2016  Rewrite writeComment() to leverage COMBuilder
  * WY    06Jul2015  Added insertXMP(InputSream, OutputStream, XMP)
@@ -265,7 +266,7 @@ public class JPEGMeta {
 		}	
 	}
 	
-	// Extract depth map from google phones
+	// Extract depth map from google phones and cardboard camera audio & stereo pair
 	public static void extractDepthMap(InputStream is, String pathToDepthMap) throws IOException {
 		Map<MetadataType, Metadata> meta = readMetadata(is);
 		XMP xmp = (XMP)meta.get(MetadataType.XMP);
@@ -273,10 +274,11 @@ public class JPEGMeta {
 			Document xmpDocument = xmp.getMergedDocument();
 			String depthMapMime = XMLUtils.getAttribute(xmpDocument, "rdf:Description", "GDepth:Mime");
 			String depthData = "GDepth:Data";
+			String audioMime = XMLUtils.getAttribute(xmpDocument, "rdf:Description", "GAudio:Mime");
 			if(StringUtils.isNullOrEmpty(depthMapMime)) {
 				depthMapMime = XMLUtils.getAttribute(xmpDocument, "rdf:Description", "GImage:Mime");
 				depthData = "GImage:Data";
-			}
+			}					
 			if(!StringUtils.isNullOrEmpty(depthMapMime)) {
 				String data = XMLUtils.getAttribute(xmpDocument, "rdf:Description", depthData);
 				if(!StringUtils.isNullOrEmpty(data)) {
@@ -300,8 +302,29 @@ public class JPEGMeta {
 					}
 				}		
 			}
+			if(!StringUtils.isNullOrEmpty(audioMime)) { // Cardboard Camera Audio
+				String data = XMLUtils.getAttribute(xmpDocument, "rdf:Description", "GAudio:Data");
+				if(!StringUtils.isNullOrEmpty(data)) {
+					String outpath = "";
+					if(pathToDepthMap.endsWith("\\") || pathToDepthMap.endsWith("/"))
+						outpath = pathToDepthMap + "google_cardboard_audio";
+					else
+						outpath = pathToDepthMap.replaceFirst("[.][^.]+$", "") + "_cardboard_audio";
+					if(audioMime.equalsIgnoreCase("audio/mp4a-latm")) {
+						outpath += ".mp4";
+					}
+					try {
+						byte[] image = Base64.decodeToByteArray(data);							
+						FileOutputStream fout = new FileOutputStream(new File(outpath));
+						fout.write(image);
+						fout.close();
+					} catch (Exception e) {							
+						e.printStackTrace();
+					}
+				}		
+			}
 		}	
-	}
+	}		
 	
 	/**
 	 * Extracts thumbnail images from JFIF/APP0, Exif APP1 and/or Adobe APP13 segment if any.
