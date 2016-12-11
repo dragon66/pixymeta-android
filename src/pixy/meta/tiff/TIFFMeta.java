@@ -1586,7 +1586,7 @@ public class TIFFMeta {
 	
 	public static void write(TIFFImage tiffImage, RandomAccessOutputStream rout) throws IOException {
 		RandomAccessInputStream rin = tiffImage.getInputStream();
-		int offset = writeHeader(IOUtils.BIG_ENDIAN, rout);
+		int offset = writeHeader(rout);
 		offset = copyPages(tiffImage.getIFDs(), offset, rin, rout);
 		int firstIFDOffset = tiffImage.getIFDs().get(0).getStartOffset();	
 	 
@@ -1594,17 +1594,10 @@ public class TIFFMeta {
 	}
 	
 	// Return stream offset where to write actual image data or IFD	
-	private static int writeHeader(short endian, RandomAccessOutputStream rout) throws IOException {
+	private static int writeHeader(RandomAccessOutputStream rout) throws IOException {
 		// Write byte order
+		short endian = rout.getEndian();
 		rout.writeShort(endian);
-		// Set write strategy based on byte order
-		if (endian == IOUtils.BIG_ENDIAN)
-		    rout.setWriteStrategy(WriteStrategyMM.getInstance());
-		else if(endian == IOUtils.LITTLE_ENDIAN)
-		    rout.setWriteStrategy(WriteStrategyII.getInstance());
-		else {
-			throw new RuntimeException("Invalid TIFF byte order");
-	    }		
 		// Write TIFF identifier
 		rout.writeShort(0x2a);
 		
