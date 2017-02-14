@@ -261,7 +261,7 @@ extends java.lang.Object</pre>
          java.io.OutputStream&nbsp;os,
          java.lang.String&nbsp;xmp,
          java.lang.String&nbsp;extendedXmp)</code>
-<div class="block">Insert a XMP string into the image.</div>
+<div class="block">Insert XMP into single APP1 or multiple segments.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -643,9 +643,12 @@ extends java.lang.Object</pre>
              java.lang.String&nbsp;xmp,
              java.lang.String&nbsp;extendedXmp)
                       throws java.io.IOException</pre>
-<div class="block">Insert a XMP string into the image. When converted to bytes, 
- the XMP part should be able to fit into one APP1.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>is</code> - InputStream for the image.</dd><dd><code>os</code> - OutputStream for the image.</dd><dd><code>xmp</code> - XML string for the XMP - Assuming in UTF-8 format.</dd>
+<div class="block">Insert XMP into single APP1 or multiple segments. Support ExtendedXMP.
+ The standard part of the XMP must be a valid XMP with packet wrapper and,
+ should already include the GUID for the ExtendedXMP in case of ExtendedXMP.
+ <p>
+ When converted to bytes, the XMP part should be able to fit into one APP1.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>is</code> - InputStream for the image.</dd><dd><code>os</code> - OutputStream for the image.</dd><dd><code>xmp</code> - XML string for the XMP - Assuming in UTF-8 format.</dd><dd><code>extendedXmp</code> - XML string for the extended XMP - Assuming in UTF-8 format</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd></dl>
 </li>
