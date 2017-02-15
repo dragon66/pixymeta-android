@@ -111,6 +111,8 @@ public class IRB extends Metadata {
 					int size = IOUtils.readIntMM(data, i);
 					i += 4;
 					
+					if(size <= 0) continue; //Fix bug with zero size 8BIM
+					
 					ImageResourceID eId = ImageResourceID.fromShort(id); 
 					
 					switch(eId) {
