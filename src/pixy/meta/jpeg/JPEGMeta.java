@@ -783,9 +783,9 @@ public class JPEGMeta {
 	 * Inserts a list of IPTCDataSet into a JPEG APP13 Photoshop IRB segment
 	 * 
 	 * @param is InputStream for the original image
-	 * @param os OutputStream for the image with IPTC APP13 inserted
+	 * @param os OutputStream for the image with IPTC inserted
 	 * @param iptcs a collection of IPTCDataSet to be inserted
-	 * @param update if true, keep the original data, otherwise, replace the complete APP13 data 
+	 * @param update boolean if true, keep the original IPTC data; otherwise, replace it completely with the new IPTC data 
 	 * @throws IOException
 	 */
 	public static void insertIPTC(InputStream is, OutputStream os, Collection<IPTCDataSet> iptcs, boolean update) throws IOException {
@@ -822,7 +822,7 @@ public class JPEGMeta {
 		    		// Shallow copy the map.
 		    		bimMap = new HashMap<Short, _8BIM>(irb.get8BIM());
 					_8BIM iptcBIM = bimMap.remove(ImageResourceID.IPTC_NAA.getValue());
-					if(iptcBIM != null) { // Keep the original values
+					if(iptcBIM != null && update) { // Keep the original values
 						IPTC iptc = new IPTC(iptcBIM.getData());
 						// Shallow copy the map
 						Map<String, List<IPTCDataSet>> dataSetMap = new HashMap<String, List<IPTCDataSet>>(iptc.getDataSets());
@@ -870,14 +870,9 @@ public class JPEGMeta {
 						marker = IOUtils.readShortMM(is);
 						break;
 					case APP13:
-				    	if(update) {
-				    		if(eightBIMStream == null)
-				    			eightBIMStream = new ByteArrayOutputStream();
-				    		readAPP13(is, eightBIMStream);
-				    	} else {
-				    		length = IOUtils.readUnsignedShortMM(is);					
-						    IOUtils.skipFully(is, length - 2);
-				    	}
+			    		if(eightBIMStream == null)
+			    			eightBIMStream = new ByteArrayOutputStream();
+			    		readAPP13(is, eightBIMStream);
 				    	marker = IOUtils.readShortMM(is);
 				    	break;
 					case APP0:
@@ -898,6 +893,15 @@ public class JPEGMeta {
 	    }
 	}
 	
+	/**
+	 * Inserts a collection of _8BIM into a JPEG APP13 Photoshop IRB segment
+	 * 
+	 * @param is InputStream for the original image
+	 * @param os OutputStream for the image with _8BIMs inserted
+	 * @param bims a collection of _8BIM to be inserted
+	 * @param update boolean if true, keep the other _8BIMs; otherwise, replace the whole IRB with the inserted _8BIMs 
+	 * @throws IOException
+	 */
 	public static void insertIRB(InputStream is, OutputStream os, Collection<_8BIM> bims, boolean update) throws IOException {
 		// Copy the original image and insert Photoshop IRB data
 		boolean finished = false;
