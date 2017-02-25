@@ -48,12 +48,12 @@ public abstract class XMP extends Metadata {
 	}
 	
 	public XMP(String xmp) {
-		super(MetadataType.XMP, null);
+		super(MetadataType.XMP);
 		this.xmp = xmp;
 	}
 	
 	public XMP(String xmp, String extendedXmp) {
-		super(MetadataType.XMP, null);
+		super(MetadataType.XMP);
 		if(xmp == null) throw new IllegalArgumentException("Input XMP string is null");
 		this.xmp = xmp;
 		if(extendedXmp != null) { // We have ExtendedXMP
