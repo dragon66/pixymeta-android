@@ -89,7 +89,6 @@ import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
-import pixy.meta.exif.JpegExif;
 import pixy.meta.icc.ICCProfile;
 import pixy.meta.image.ImageMetadata;
 import pixy.meta.image.Comments;
