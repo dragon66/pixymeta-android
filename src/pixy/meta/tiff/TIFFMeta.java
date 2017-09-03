@@ -53,7 +53,6 @@ import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifTag;
 import pixy.meta.exif.GPSTag;
 import pixy.meta.exif.InteropTag;
-import pixy.meta.exif.TiffExif;
 import pixy.meta.icc.ICCProfile;
 import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
