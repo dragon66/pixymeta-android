@@ -57,6 +57,7 @@ import pixy.meta.icc.ICCProfile;
 import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.iptc.IPTCTag;
 import pixy.meta.xmp.XMP;
 import pixy.image.jpeg.Marker;
 import pixy.image.tiff.ASCIIField;
@@ -136,10 +137,10 @@ public class TIFFMeta {
 	private static Collection<IPTCDataSet> copyIPTCDataSet(Collection<IPTCDataSet> iptcs, byte[] data) throws IOException {
 		IPTC iptc = new IPTC(data);
 		// Shallow copy the map
-		Map<String, List<IPTCDataSet>> dataSetMap = new HashMap<String, List<IPTCDataSet>>(iptc.getDataSets());
+		Map<IPTCTag, List<IPTCDataSet>> dataSetMap = new HashMap<IPTCTag, List<IPTCDataSet>>(iptc.getDataSets());
 		for(IPTCDataSet set : iptcs)
 			if(!set.allowMultiple())
-				dataSetMap.remove(set.getName());
+				dataSetMap.remove(set.getTagEnum());
 		for(List<IPTCDataSet> iptcList : dataSetMap.values())
 			iptcs.addAll(iptcList);
 		

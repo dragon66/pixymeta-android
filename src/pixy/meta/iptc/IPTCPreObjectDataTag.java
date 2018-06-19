@@ -57,6 +57,10 @@ public enum IPTCPreObjectDataTag implements IPTCTag {
 		 return name;
 	 }
 	 
+	 public int getRecordNumber() {
+	 	return IPTCRecord.PRE_OBJECTDATA.getRecordNumber();
+	 }
+	 
 	 public int getTag() {
 		 return tag;
 	 }

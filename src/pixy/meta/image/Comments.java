@@ -22,20 +22,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 
 public class Comments extends Metadata {
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(Comments.class);
-		
 	private Queue<byte[]> queue;
 	private List<String> comments;
 	
@@ -67,6 +63,16 @@ public class Comments extends Metadata {
 		comments.add(comment);
 	}
 	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+			
+		for (String comment : comments)
+		    entries.add(new MetadataEntry(comment, "")); // For comments, we set the value to empty string
+		
+		return Collections.unmodifiableCollection(entries).iterator();
+	}
+	
 	public void read() throws IOException {
 		if(queue.size() > 0) {
 			for(byte[] comment : queue) {
@@ -79,16 +85,4 @@ public class Comments extends Metadata {
 			queue.clear();
 		}
 	}
-	
-	@Override
-	public void showMetadata() {
-		ensureDataRead();
-		
-		LOGGER.info("Comments start =>");
-		
-		for (String comment : comments)
-		    LOGGER.info("Comment: {}", comment);
-		
-		LOGGER.info("Comments end <=");
-	}	
 }

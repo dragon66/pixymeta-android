@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.io.ReadStrategy;
+import pixy.meta.MetadataEntry;
+import pixy.string.StringUtils;
 
 //Building block for DDB
 public class DDBEntry {
@@ -61,6 +63,17 @@ public class DDBEntry {
 	
 	public DataBlockType getTypeEnum() {
 		return DataBlockType.fromInt(type);
+	}
+	
+	protected MetadataEntry getMetadataEntry() {
+		//	
+		DataBlockType eType  = DataBlockType.fromInt(type);
+		
+		if (eType == DataBlockType.UNKNOWN) {
+			return new MetadataEntry("UNKNOWN [" + StringUtils.intToHexStringMM(type) + "]:", eType.getDescription());
+		} else {
+			return new MetadataEntry("" + eType, eType.getDescription());
+		}
 	}
 	
 	public int getSize() {

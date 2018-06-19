@@ -20,14 +20,18 @@ package pixy.meta.adobe;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.io.IOUtils;
 import pixy.io.ReadStrategy;
@@ -70,6 +74,16 @@ public class DDB extends Metadata {
 	
 	public Map<Integer, DDBEntry> getEntries() {
 		return Collections.unmodifiableMap(entries);
+	}
+	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+
+		for(DDBEntry entry : this.entries.values())
+			entries.add(entry.getMetadataEntry());
+		
+		return Collections.unmodifiableCollection(entries).iterator();
 	}
 	
 	public void read() throws IOException {

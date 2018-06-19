@@ -20,12 +20,19 @@ package pixy.meta.icc;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
+import pixy.meta.icc.ProfileTagTable.TagEntry;
 import pixy.string.StringUtils;
 import pixy.io.IOUtils;
 
@@ -58,16 +65,27 @@ public class ICCProfile extends Metadata {
 		private byte[] bytesReserved = new byte[28];
 	}
 	public static final int TAG_TABLE_OFFSET = 128;
-
+	
 	// Obtain a logger instance
 	private static final Logger LOGGER = LoggerFactory.getLogger(ICCProfile.class);
-	
+
 	public static void showProfile(byte[] data) {
 		if(data != null && data.length > 0) {
 			ICCProfile icc_profile = new ICCProfile(data);
 			try {
 				icc_profile.read();
-				icc_profile.showMetadata();
+				Iterator<MetadataEntry> iterator = icc_profile.iterator();
+				while(iterator.hasNext()) {
+					MetadataEntry item = iterator.next();
+					LOGGER.info(item.getKey() + ": " + item.getValue());
+					if(item.isMetadataEntryGroup()) {
+						String indent = "    ";
+						Collection<MetadataEntry> entries = item.getMetadataEntries();
+						for(MetadataEntry e : entries) {
+							LOGGER.info(indent + e.getKey() + ": " + e.getValue());
+						}			
+					}					
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}			
@@ -262,6 +280,49 @@ public class ICCProfile extends Metadata {
 		return (((header.deviceAttributes[0]>>7)&0x01) == 0);
 	}
 	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+		MetadataEntry header = new MetadataEntry("ICC Profile", "Header", true);
+		header.addEntry(new MetadataEntry("Profile Size", getProfileSize() + ""));
+		header.addEntry(new MetadataEntry("CMM Type", getPreferredCMMType()));
+		header.addEntry(new MetadataEntry("Version", getProfileVersionNumber() + ""));
+		header.addEntry(new MetadataEntry("Profile/Device Class", getProfileClassDescription()));
+		header.addEntry(new MetadataEntry("Color Space", getColorSpace()));
+		header.addEntry(new MetadataEntry("PCS", getPCS()));
+		header.addEntry(new MetadataEntry("Date Created", getDateTimeCreated()));
+		header.addEntry(new MetadataEntry("Profile File Signature", getProfileFileSignature()));
+		header.addEntry(new MetadataEntry("Primary Platform Signature", getPrimaryPlatformSignature()));
+		header.addEntry(new MetadataEntry("Flags", getProfileFlags()));
+		header.addEntry(new MetadataEntry("Device Manufacturer", getDeviceManufacturer()));
+		header.addEntry(new MetadataEntry("Device Model", getDeviceModel()));
+		header.addEntry(new MetadataEntry("Device Attributes", getDeviceAttributes()));
+		header.addEntry(new MetadataEntry("Rendering Intent", getRenderingIntentDescription()));
+		header.addEntry(new MetadataEntry("PCS Illuminant [X]", getPCSXYZ()[0] + ""));
+		header.addEntry(new MetadataEntry("PCS Illuminant [Y]", getPCSXYZ()[1] + ""));
+		header.addEntry(new MetadataEntry("PCS Illuminant [Z]", getPCSXYZ()[2] + ""));
+		header.addEntry(new MetadataEntry("Profile Creator", getProfileCreator()));
+		header.addEntry(new MetadataEntry("Profile ID", getProfileID()));
+	
+		entries.add(header);
+		
+		MetadataEntry tagTableEntry = new MetadataEntry("ICC Profile", "Tag Table", true);
+		tagTableEntry.addEntry(new MetadataEntry("Tag Count", tagTable.getTagCount() + ""));
+		
+		List<TagEntry> tagEntries = tagTable.getTagEntries();
+		Collections.sort(tagEntries);
+		
+		for(TagEntry entry : tagEntries) {
+			tagTableEntry.addEntry(new MetadataEntry("Tag Name", ProfileTag.fromInt(entry.getProfileTag()) + ""));
+			tagTableEntry.addEntry(new MetadataEntry("Data Offset", entry.getDataOffset() + ""));
+			tagTableEntry.addEntry(new MetadataEntry("Data Length", entry.getDataLength() + ""));
+		}
+		
+		entries.add(tagTableEntry);
+	
+		return Collections.unmodifiableCollection(entries).iterator();
+	}
+	
 	public void read() throws IOException {
 		if(!isDataRead) {
 			this.header = new ICCProfileHeader();
@@ -295,38 +356,5 @@ public class ICCProfile extends Metadata {
 	
 	private void readTagTable(byte[] data) {
 		tagTable.read(data);
-	}
-	
-	private void showHeader() {
-		LOGGER.info("*** Start of ICC_Profile Header ***");
-		LOGGER.info("Profile Size: {}", getProfileSize());
-		LOGGER.info("CMM Type: {}", getPreferredCMMType());
-		LOGGER.info("Version: {}", getProfileVersionNumber());
-		LOGGER.info("Profile/Device Class: {}", getProfileClassDescription());
-		LOGGER.info("Color Space: {}", getColorSpace());
-		LOGGER.info("PCS: {}", getPCS());
-		LOGGER.info("Date Created: {}", getDateTimeCreated());
-		LOGGER.info("Profile File Signature: {}", getProfileFileSignature());
-		LOGGER.info("Primary Platform Signature: {}", getPrimaryPlatformSignature());
-		LOGGER.info("Flags: {}", getProfileFlags());
-		LOGGER.info("Device Manufacturer: {}", getDeviceManufacturer());
-		LOGGER.info("Device Model: {}", getDeviceModel());
-		LOGGER.info("Device Attributes: {}", getDeviceAttributes());
-		LOGGER.info("Rendering Intent: {}", getRenderingIntentDescription());		
-		LOGGER.info("PCS Illuminant: X = {}, Y = {}, Z = {}", getPCSXYZ()[0], getPCSXYZ()[1], getPCSXYZ()[2]);
-		LOGGER.info("Profile Creator: {}", getProfileCreator());
-		LOGGER.info("Profile ID: {}", getProfileID());
-		LOGGER.info("*** End of ICC_Profile Header ***");
-	}
-	
-	@Override
-	public void showMetadata() {
-		ensureDataRead();
-		showHeader();
-		showTagTable();
-	}
-
-	private void showTagTable() {
-		tagTable.showTable();
 	}
 }

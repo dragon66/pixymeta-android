@@ -12,11 +12,13 @@ package pixy.meta.png;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
@@ -24,8 +26,6 @@ import pixy.image.png.TIMEBuilder;
 import pixy.image.png.TIMEReader;
 
 public class TIMEChunk extends Metadata {
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(TIMEChunk.class);
 
 	private static MetadataType validate(ChunkType chunkType) {
 		if(chunkType == null) throw new IllegalArgumentException("ChunkType is null");
@@ -117,6 +117,16 @@ public class TIMEChunk extends Metadata {
 		return year;		
 	}
 	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+				
+		entries.add(new MetadataEntry("UTC (Time of last modification)", day + " " + ((month > 0 && month <= 12)? MONTH[month]:"()") + " " + year + ", " + hour + ":" + minute + ":" + second));
+		
+		return Collections.unmodifiableCollection(entries).iterator();
+	}
+	
 	public void read() throws IOException {
 		if(!isDataRead) {
 			TIMEReader reader = new TIMEReader(chunk);
@@ -130,13 +140,6 @@ public class TIMEChunk extends Metadata {
 		}
 	}
 
-	@Override
-	public void showMetadata() {
-		LOGGER.info("PNG tIME chunk starts =>");
-		LOGGER.info("{} {} {}, {}:{}:{} UTC (Time of last modification)", day, (month > 0 && month <= 12)? MONTH[month]:"()", year, hour, minute, second);
-		LOGGER.info("PNG tIME chunk ends <=");
-	}
-	
 	public void write(OutputStream os) throws IOException {
 		getChunk().write(os);
 	}

@@ -20,20 +20,20 @@ package pixy.meta.jpeg;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import android.graphics.Bitmap;
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.io.IOUtils;
 import pixy.util.ArrayUtils;
 import pixy.util.MetadataUtils;
 
 public class JFIFSegment extends Metadata {
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(JFIFSegment.class);
 		
 	private static void checkInput(int majorVersion, int minorVersion, int densityUnit, int xDensity, int yDensity) {
 		if(majorVersion < 0 || majorVersion > 0xff) throw new IllegalArgumentException("Invalid major version number: " + majorVersion);
@@ -124,6 +124,20 @@ public class JFIFSegment extends Metadata {
 		return yDensity;
 	}
 	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+		String[] densityUnits = {"No units, aspect ratio only specified", "Dots per inch", "Dots per centimeter"};
+		entries.add(new MetadataEntry("Version", majorVersion + "." + minorVersion));
+		entries.add(new MetadataEntry("Density unit", (densityUnit <= 2)?densityUnits[densityUnit]:densityUnit + ""));
+		entries.add(new MetadataEntry("XDensity", xDensity + ""));
+		entries.add(new MetadataEntry("YDensity", yDensity + ""));
+		entries.add(new MetadataEntry("Thumbnail width", thumbnailWidth + ""));
+		entries.add(new MetadataEntry("Thumbnail height", thumbnailHeight + ""));
+		
+		return Collections.unmodifiableCollection(entries).iterator();
+	}
+	
 	public void read() throws IOException {
 		if(!isDataRead) {
 			int expectedLen = 9;
@@ -153,20 +167,6 @@ public class JFIFSegment extends Metadata {
 		}		
 	}
 
-	@Override
-	public void showMetadata() {
-		ensureDataRead();
-		String[] densityUnits = {"No units, aspect ratio only specified", "Dots per inch", "Dots per centimeter"};
-		LOGGER.info("JPEG JFIF output starts =>");
-		LOGGER.info("Version: {}.{}", majorVersion, minorVersion);
-		LOGGER.info("Density unit: {}", (densityUnit <= 2)?densityUnits[densityUnit]:densityUnit);
-		LOGGER.info("XDensity: {}", xDensity);
-		LOGGER.info("YDensity: {}", yDensity);
-		LOGGER.info("Thumbnail width: {}", thumbnailWidth);
-		LOGGER.info("Thumbnail height: {}", thumbnailHeight);
-		LOGGER.info("<= JPEG JFIF output ends");		
-	}
-	
 	public void write(OutputStream os) throws IOException {
 		ensureDataRead();
 		IOUtils.write(os, majorVersion);

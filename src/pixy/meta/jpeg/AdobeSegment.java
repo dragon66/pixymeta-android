@@ -20,18 +20,18 @@ package pixy.meta.jpeg;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.string.StringUtils;
 import pixy.io.IOUtils;
 
 public class AdobeSegment extends Metadata {
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdobeSegment.class);
 
 	private int m_DCTEncodeVersion;
 	private int m_APP14Flags0;
@@ -87,16 +87,17 @@ public class AdobeSegment extends Metadata {
 		}
 	}
 
-	@Override
-	public void showMetadata() {
+	public Iterator<MetadataEntry> iterator() {
 		ensureDataRead();
+		
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
 		String[] colorTransform = {"Unknown (RGB or CMYK)", "YCbCr", "YCCK"};
-		LOGGER.info("JPEG AdobeSegment output starts =>");
-		LOGGER.info("DCTEncodeVersion: {}", m_DCTEncodeVersion);
-		LOGGER.info("APP14Flags0: {}", StringUtils.shortToHexStringMM((short)m_APP14Flags0));
-		LOGGER.info("APP14Flags1: {}", StringUtils.shortToHexStringMM((short)m_APP14Flags1));
-		LOGGER.info("ColorTransform: {}", (m_ColorTransform <= 2)?colorTransform[m_ColorTransform]:m_ColorTransform);
-		LOGGER.info("<= JPEG AdobeSegment output ends");
+		entries.add(new MetadataEntry("DCTEncodeVersion", m_DCTEncodeVersion + ""));
+		entries.add(new MetadataEntry("APP14Flags0", StringUtils.shortToHexStringMM((short)m_APP14Flags0)));
+		entries.add(new MetadataEntry("APP14Flags1", StringUtils.shortToHexStringMM((short)m_APP14Flags1)));
+		entries.add(new MetadataEntry("ColorTransform", (m_ColorTransform <= 2)?colorTransform[m_ColorTransform]:m_ColorTransform + ""));
+		
+		return Collections.unmodifiableCollection(entries).iterator();
 	}
 
 	public void write(OutputStream os) throws IOException {

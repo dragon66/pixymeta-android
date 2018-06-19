@@ -26,24 +26,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.image.png.Chunk;
 import pixy.image.png.ChunkType;
 import pixy.image.png.TextReader;
 
 public class TextualChunks extends Metadata {
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(TextualChunks.class);
-	
 	/* This queue is used to keep track of the unread chunks
 	 * After it's being read, all of it's elements will be moved
 	 * to chunks list
@@ -84,6 +80,17 @@ public class TextualChunks extends Metadata {
 		queue.offer(chunk);
 	}
 	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+			
+		for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
+		    entries.add(new MetadataEntry(entry.getKey(), entry.getValue()));
+		}
+		
+		return Collections.unmodifiableCollection(entries).iterator();
+	}
+	
 	public void read() throws IOException {
 		if(queue.size() > 0) {
 			TextReader reader = new TextReader();
@@ -97,19 +104,6 @@ public class TextualChunks extends Metadata {
 			}
 			queue.clear();
 		}
-	}
-	
-	@Override
-	public void showMetadata() {
-		ensureDataRead();
-		
-		LOGGER.info("PNG textual chunk starts =>");
-		
-		for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
-		    LOGGER.info("{}: {}", entry.getKey(), entry.getValue());
-		}
-		
-		LOGGER.info("PNG textual chunk ends <=");
 	}
 	
 	private static void validateChunks(Collection<Chunk> chunks) {

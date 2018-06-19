@@ -60,6 +60,10 @@ public enum IPTCFotoStationTag implements IPTCTag  {
 		return name;
 	}
 	
+	public int getRecordNumber() {
+		return IPTCRecord.FOTOSTATION.getRecordNumber();
+	}
+	
 	public int getTag() {
 		return tag;
 	}	

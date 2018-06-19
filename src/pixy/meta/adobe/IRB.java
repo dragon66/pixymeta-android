@@ -22,14 +22,18 @@ package pixy.meta.adobe;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe._8BIM;
 import pixy.util.ArrayUtils;
@@ -65,6 +69,40 @@ public class IRB extends Metadata {
 	
 	public IRB(byte[] data) {
 		super(MetadataType.PHOTOSHOP_IRB, data);
+	}
+	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		List<MetadataEntry> items = new ArrayList<MetadataEntry>();
+
+		for(_8BIM _8bim : _8bims.values())
+			items.add(_8bim.getMetadataEntry());
+	
+		if(containsThumbnail) {
+			int thumbnailFormat = thumbnail.getDataType(); //1 = kJpegRGB. Also supports kRawRGB (0).
+			switch (thumbnailFormat) {
+				case IRBThumbnail.DATA_TYPE_KJpegRGB:
+					items.add(new MetadataEntry("Thumbnail Format: ", "DATA_TYPE_KJpegRGB"));
+					break;
+				case IRBThumbnail.DATA_TYPE_KRawRGB:
+					items.add(new MetadataEntry("Thumbnail Format: ", "DATA_TYPE_KRawRGB"));
+					break;
+			}
+			items.add(new MetadataEntry("Thumbnail width:", "" + thumbnail.getWidth()));
+			items.add(new MetadataEntry("Thumbnail height: ", "" + thumbnail.getHeight()));
+			// Padded row bytes = (width * bits per pixel + 31) / 32 * 4.
+			items.add(new MetadataEntry("Thumbnail Padded row bytes:  ", "" + thumbnail.getPaddedRowBytes()));
+			// Total size = widthbytes * height * planes
+			items.add(new MetadataEntry("Thumbnail Total size: ", "" + thumbnail.getTotalSize()));
+			// Size after compression. Used for consistency check.
+			items.add(new MetadataEntry("Thumbnail Size after compression: ", "" + thumbnail.getCompressedSize()));
+			// Bits per pixel. = 24
+			items.add(new MetadataEntry("Thumbnail Bits per pixel: ", "" + thumbnail.getBitsPerPixel()));
+			// Number of planes. = 1
+			items.add(new MetadataEntry("Thumbnail Number of planes: ", "" + thumbnail.getNumOfPlanes()));
+		}
+	
+		return Collections.unmodifiableList(items).iterator();
 	}
 	
 	public boolean containsThumbnail() {

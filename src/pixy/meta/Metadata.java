@@ -63,7 +63,7 @@ import pixy.io.RandomAccessOutputStream;
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 01/12/2015
  */
-public abstract class Metadata implements MetadataReader {
+public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry> {
 	public static final int IMAGE_MAGIC_NUMBER_LEN = 4;
 	// Fields
 	private MetadataType type;
@@ -494,7 +494,7 @@ public abstract class Metadata implements MetadataReader {
 		this.data = data;		
 	}
 	
-	protected void ensureDataRead() {
+	public void ensureDataRead() {
 		if(!isDataRead) {
 			try {
 				read();
@@ -518,8 +518,6 @@ public abstract class Metadata implements MetadataReader {
 	public boolean isDataRead() {
 		return isDataRead;
 	}
-	
-	public abstract void showMetadata();
 	
 	/**
 	 * Writes the metadata out to the output stream

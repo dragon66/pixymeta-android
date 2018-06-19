@@ -207,6 +207,11 @@ public enum IPTCApplicationTag implements IPTCTag {
 		 return name;
 	 }
 	 
+	 
+	 public int getRecordNumber() {
+		 return IPTCRecord.APPLICATION.getRecordNumber();
+	 }
+	 
 	 public int getTag() { 
 		 return tag;
 	 }

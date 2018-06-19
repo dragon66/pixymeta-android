@@ -94,6 +94,7 @@ import pixy.meta.image.ImageMetadata;
 import pixy.meta.image.Comments;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.iptc.IPTCTag;
 import pixy.meta.xmp.XMP;
 import pixy.util.MetadataUtils;
 
@@ -826,7 +827,7 @@ public class JPEGMeta {
 					if(iptcBIM != null && update) { // Keep the original values
 						IPTC iptc = new IPTC(iptcBIM.getData());
 						// Shallow copy the map
-						Map<String, List<IPTCDataSet>> dataSetMap = new HashMap<String, List<IPTCDataSet>>(iptc.getDataSets());
+						Map<IPTCTag, List<IPTCDataSet>> dataSetMap = new HashMap<IPTCTag, List<IPTCDataSet>>(iptc.getDataSets());
 						for(IPTCDataSet set : iptcs)
 							if(!set.allowMultiple())
 								dataSetMap.remove(set.getName());
@@ -1462,7 +1463,6 @@ public class JPEGMeta {
 		// Now it's time to join multiple segments ICC_PROFILE and/or XMP		
 		if(iccProfileStream != null) { // We have ICCProfile data
 			ICCProfile icc_profile = new ICCProfile(iccProfileStream.toByteArray());
-			icc_profile.showMetadata();
 			metadataMap.put(MetadataType.ICC_PROFILE, icc_profile);
 		}
 		
@@ -1506,7 +1506,7 @@ public class JPEGMeta {
 			}
 		}
 		
-		metadataMap.put(MetadataType.IMAGE, new ImageMetadata(null, thumbnails));
+		metadataMap.put(MetadataType.IMAGE, new ImageMetadata(thumbnails));
 		
 		return metadataMap;
 	}

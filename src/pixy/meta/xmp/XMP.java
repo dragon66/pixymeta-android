@@ -22,13 +22,22 @@ package pixy.meta.xmp;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Iterator;
 
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Text;
 
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.string.XMLUtils;
 
@@ -42,6 +51,11 @@ public abstract class XMP extends Metadata {
 	private byte[] extendedXmpData;
 	
 	private String xmp;
+	
+
+	public static void showXMP(XMP xmp) {
+		XMLUtils.showXML(xmp.getMergedDocument());
+	}
 		
 	public XMP(byte[] data) {
 		super(MetadataType.XMP, data);
@@ -61,6 +75,73 @@ public abstract class XMP extends Metadata {
 				setExtendedXMPData(XMLUtils.serializeToByteArray(XMLUtils.createXML(extendedXmp)));
 			} catch (IOException e) {				
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void addNodeToEntry(Node node, MetadataEntry entry) {
+		if(node != null) {
+			switch(node.getNodeType()) {
+		        case Node.DOCUMENT_NODE: {
+		            Node child = node.getFirstChild();
+		            while(child != null) {
+		            	addNodeToEntry(child, entry);
+		            	child = child.getNextSibling();
+		            }
+		            break;
+		        } 
+		        case Node.DOCUMENT_TYPE_NODE: {
+		            DocumentType doctype = (DocumentType) node;
+		            entry.addEntry(new MetadataEntry("!DOCTYPE", doctype.getName()));
+		            break;
+		        }
+		        case Node.ELEMENT_NODE: { // Element node
+		            Element ele = (Element) node;
+		       
+		            NamedNodeMap attrs = ele.getAttributes();
+		            StringBuilder attributes = new StringBuilder();
+		            for(int i = 0; i < attrs.getLength(); i++) {
+		                Node a = attrs.item(i);
+		            	attributes.append(a.getNodeName()).append("=").append("'" + a.getNodeValue()).append("' ");
+		            }
+		            MetadataEntry element = new MetadataEntry(ele.getTagName(), attributes.toString().trim(), true);
+		            entry.addEntry(element);
+	       
+		            Node child = ele.getFirstChild();
+		            while(child != null) {
+		            	addNodeToEntry(child, element);
+		            	child = child.getNextSibling();
+		            }
+		            break;
+		        }
+		        case Node.TEXT_NODE: {
+		            Text textNode = (Text)node;
+		            String text = textNode.getData().trim();
+		            if ((text != null) && text.length() > 0)
+		                entry.addEntry(new MetadataEntry(text, ""));
+		            break;
+		        }
+		        case Node.PROCESSING_INSTRUCTION_NODE: {
+		            ProcessingInstruction pi = (ProcessingInstruction)node;
+		            entry.addEntry(new MetadataEntry("?" + pi.getTarget(), pi.getData() + "?"));
+		            break;
+		        }
+		        case Node.ENTITY_REFERENCE_NODE: {
+		        	entry.addEntry(new MetadataEntry("&" + node.getNodeName() + ";", ""));
+		            break;
+		        }
+		        case Node.CDATA_SECTION_NODE: { // Output CDATA sections
+		            CDATASection cdata = (CDATASection)node;
+		            entry.addEntry(new MetadataEntry("![CDATA[" + cdata.getData() + "]]", ""));
+		            break;
+		        }
+		        case Node.COMMENT_NODE: {
+		        	Comment c = (Comment)node;
+		        	entry.addEntry(new MetadataEntry("!--" + c.getData() + "--", ""));
+		            break;
+		        }
+		        default:
+		            break;
 			}
 		}
 	}
@@ -127,6 +208,15 @@ public abstract class XMP extends Metadata {
 	
 	public boolean hasExtendedXmp() {
 		return hasExtendedXmp;
+	}
+	
+	public Iterator<MetadataEntry> iterator() {
+		Document doc = getMergedDocument();
+		
+		MetadataEntry dummy = new MetadataEntry("XMP", " Document", true);
+		addNodeToEntry(doc, dummy);
+		
+		return Collections.unmodifiableCollection(dummy.getMetadataEntries()).iterator();
 	}
 	
 	public void read() throws IOException {

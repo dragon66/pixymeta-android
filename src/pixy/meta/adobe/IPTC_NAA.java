@@ -32,6 +32,7 @@ import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
+import pixy.meta.iptc.IPTCTag;
 
 public class IPTC_NAA extends _8BIM {
 	//
@@ -64,7 +65,7 @@ public class IPTC_NAA extends _8BIM {
 	 * 
 	 * @return a map with the key for the IPTCDataSet name and a list of IPTCDataSet as the value
 	 */
-	public Map<String, List<IPTCDataSet>> getDataSets() {
+	public Map<IPTCTag, List<IPTCDataSet>> getDataSets() {
 		return iptc.getDataSets();			
 	}
 	
@@ -74,7 +75,7 @@ public class IPTC_NAA extends _8BIM {
 	 * @param key name of the data set
 	 * @return a list of IPTCDataSet associated with the key
 	 */
-	public List<IPTCDataSet> getDataSet(String key) {
+	public List<IPTCDataSet> getDataSet(IPTCTag key) {
 		return iptc.getDataSet(key);
 	}
 	

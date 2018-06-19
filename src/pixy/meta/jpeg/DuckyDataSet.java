@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pixy.io.IOUtils;
+import pixy.meta.MetadataEntry;
 import pixy.util.ArrayUtils;
 
 public class DuckyDataSet {
@@ -50,6 +51,35 @@ public class DuckyDataSet {
 	
 	public byte[] getData() {
 		return ArrayUtils.subArray(data, offset, size);
+	}
+	
+	public MetadataEntry getMetadataEntry() {
+		//
+		MetadataEntry entry = null;
+		
+		if(size < 4) {
+			LOGGER.warn("Data set size {} is too small, should >= 4", size);
+			return new MetadataEntry("Bad Ducky DataSet", "Data set size " + size + " is two small, should >= 4");
+		}
+			
+		DuckyTag etag = DuckyTag.fromTag(tag);
+		
+		if(etag == DuckyTag.UNKNOWN) {
+			entry = new MetadataEntry("Unknown tag", tag + "");
+		} else if(etag == DuckyTag.QUALITY) {
+			entry = new MetadataEntry(etag.getName(), IOUtils.readUnsignedIntMM(data, offset) + "");
+		} else {
+			String value = "";
+			try {
+				// We need to skip 4 unknown bytes for each string entry!!!
+				value = new String(data, offset + 4, size - 4, "UTF-16BE");
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("UnsupportedEncoding \"UTF-16BE\"");
+			}
+			entry = new MetadataEntry(etag.getName(), value);
+		}
+		
+		return entry;
 	}
 	
 	public int getSize() {

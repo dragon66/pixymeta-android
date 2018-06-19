@@ -8,7 +8,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,13 +20,14 @@ import org.w3c.dom.Document;
 
 import android.graphics.Bitmap;
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 import pixy.meta.adobe.IPTC_NAA;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifTag;
-import pixy.meta.exif.JpegExif;
-import pixy.meta.exif.TiffExif;
+import pixy.meta.jpeg.JpegExif;
+import pixy.meta.tiff.TiffExif;
 import pixy.meta.iptc.IPTCApplicationTag;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.meta.jpeg.JPEGMeta;
@@ -32,6 +35,7 @@ import pixy.meta.jpeg.JpegXMP;
 import pixy.meta.xmp.XMP;
 import pixy.image.tiff.FieldType;
 import pixy.image.tiff.TiffTag;
+import pixy.string.StringUtils;
 import pixy.string.XMLUtils;
 import pixy.util.MetadataUtils;
 
@@ -39,15 +43,29 @@ public class TestPixyMetaAndroid {
 	// Obtain a logger instance
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestPixyMetaAndroid.class);
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
+		new TestPixyMetaAndroid().test(args);
+	}
+	
+	public void test(String ... args) throws Exception {
 		Map<MetadataType, Metadata> metadataMap = Metadata.readMetadata(args[0]);
 		LOGGER.info("Start of metadata information:");
 		LOGGER.info("Total number of metadata entries: {}", metadataMap.size());
 		
 		int i = 0;
 		for(Map.Entry<MetadataType, Metadata> entry : metadataMap.entrySet()) {
+			//
 			LOGGER.info("Metadata entry {} - {}", i, entry.getKey());
-			entry.getValue().showMetadata();
+			Metadata meta = entry.getValue();
+			if(meta instanceof XMP) XMP.showXMP((XMP)meta);
+			else {
+				Iterator<MetadataEntry> iterator = entry.getValue().iterator();
+				
+				while(iterator.hasNext()) {
+					MetadataEntry item = iterator.next();
+					printMetadata(item, "", "     ");
+				}
+			}			
 			i++;
 			LOGGER.info("-----------------------------------------");
 		}
@@ -206,5 +224,16 @@ public class TestPixyMetaAndroid {
 		exif.setThumbnailRequired(true);
 		
 		return exif;
+	}
+	
+	private void printMetadata(MetadataEntry entry, String indent, String increment) {
+		LOGGER.info(indent + entry.getKey() + (StringUtils.isNullOrEmpty(entry.getValue())? "" : ": " + entry.getValue()));
+		if(entry.isMetadataEntryGroup()) {
+			indent += increment;
+			Collection<MetadataEntry> entries = entry.getMetadataEntries();
+			for(MetadataEntry e : entries) {
+				printMetadata(e, indent, increment);
+			}			
+		}
 	}
 }

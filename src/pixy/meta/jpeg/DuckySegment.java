@@ -20,9 +20,12 @@ package pixy.meta.jpeg;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import pixy.io.IOUtils;
 import pixy.meta.Metadata;
+import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 
 public class DuckySegment extends Metadata {
@@ -66,6 +70,18 @@ public class DuckySegment extends Metadata {
 	public Map<DuckyTag, DuckyDataSet> getDataSets() {
 		ensureDataRead();
 		return Collections.unmodifiableMap(datasetMap);
+	}
+	
+	public Iterator<MetadataEntry> iterator() {
+		ensureDataRead();
+		
+		List<MetadataEntry> entries = new ArrayList<MetadataEntry>();
+			
+		for(DuckyDataSet dataset : datasetMap.values()) {
+			entries.add(dataset.getMetadataEntry());
+		}
+		
+		return Collections.unmodifiableCollection(entries).iterator();
 	}
 	
 	public void read() throws IOException {
