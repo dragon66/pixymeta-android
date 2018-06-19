@@ -9,7 +9,7 @@
  *
  * Change History - most recent changes go on top of previous changes
  *
- * DuckySegment.java
+ * Ducky.java
  *
  * Who   Date       Description
  * ====  =======    ============================================================
@@ -36,20 +36,20 @@ import pixy.meta.Metadata;
 import pixy.meta.MetadataEntry;
 import pixy.meta.MetadataType;
 
-public class DuckySegment extends Metadata {
+public class Ducky extends Metadata {
 
 	private Map<DuckyTag, DuckyDataSet> datasetMap;
 	
 	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(DuckySegment.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Ducky.class);
 		
-	public DuckySegment() {
+	public Ducky() {
 		super(MetadataType.JPG_DUCKY);
 		datasetMap =  new EnumMap<DuckyTag, DuckyDataSet>(DuckyTag.class);
 		isDataRead = true;
 	}
 	
-	public DuckySegment(byte[] data) {
+	public Ducky(byte[] data) {
 		super(MetadataType.JPG_DUCKY, data);
 	}
 	
@@ -106,12 +106,12 @@ public class DuckySegment extends Metadata {
 
 	public void showMetadata() {
 		ensureDataRead();
-		LOGGER.info("JPEG DuckySegment output starts =>");
+		LOGGER.info("JPEG Ducky output starts =>");
 		// Print DuckyDataSet
 		for(DuckyDataSet dataset : datasetMap.values()) {
 			dataset.print();
 		}
-		LOGGER.info("<= JPEG DuckySegment output ends");
+		LOGGER.info("<= JPEG Ducky output ends");
 	}
 	
 	public void write(OutputStream os) throws IOException {

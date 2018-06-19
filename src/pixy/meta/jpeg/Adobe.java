@@ -9,7 +9,7 @@
  *
  * Change History - most recent changes go on top of previous changes
  *
- * AdobeSegment.java
+ * Adobe.java
  *
  * Who   Date       Description
  * ====  =======    ============================================================
@@ -31,19 +31,19 @@ import pixy.meta.MetadataType;
 import pixy.string.StringUtils;
 import pixy.io.IOUtils;
 
-public class AdobeSegment extends Metadata {
+public class Adobe extends Metadata {
 
 	private int m_DCTEncodeVersion;
 	private int m_APP14Flags0;
 	private int m_APP14Flags1;
 	private int m_ColorTransform;
 	
-	public AdobeSegment(byte[] data) {
+	public Adobe(byte[] data) {
 		super(MetadataType.JPG_ADOBE, data);
 		ensureDataRead();
 	}
 	
-	public AdobeSegment(int dctEncodeVersion, int app14Flags0, int app14Flags1, int colorTransform) {
+	public Adobe(int dctEncodeVersion, int app14Flags0, int app14Flags1, int colorTransform) {
 		super(MetadataType.JPG_ADOBE);
 		this.m_DCTEncodeVersion = dctEncodeVersion;
 		this.m_APP14Flags0 = app14Flags0;

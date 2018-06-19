@@ -1403,7 +1403,7 @@ public class JPEGMeta {
 			length = segment.getLength();
 			if(segment.getMarker() == Marker.APP0) {
 				if (new String(data, 0, JFIF_ID.length()).equals(JFIF_ID)) {
-					metadataMap.put(MetadataType.JPG_JFIF, new JFIFSegment(ArrayUtils.subArray(data, JFIF_ID.length(), length - JFIF_ID.length() - 2)));
+					metadataMap.put(MetadataType.JPG_JFIF, new JFIF(ArrayUtils.subArray(data, JFIF_ID.length(), length - JFIF_ID.length() - 2)));
 				}
 			} else if(segment.getMarker() == Marker.APP1) {
 				// Check for EXIF
@@ -1445,7 +1445,7 @@ public class JPEGMeta {
 				}
 			} else if(segment.getMarker() == Marker.APP12) {
 				if (new String(data, 0, DUCKY_ID.length()).equals(DUCKY_ID)) {
-					metadataMap.put(MetadataType.JPG_DUCKY, new DuckySegment(ArrayUtils.subArray(data, DUCKY_ID.length(), length - DUCKY_ID.length() - 2)));
+					metadataMap.put(MetadataType.JPG_DUCKY, new Ducky(ArrayUtils.subArray(data, DUCKY_ID.length(), length - DUCKY_ID.length() - 2)));
 				}
 			} else if(segment.getMarker() == Marker.APP13) {
 				if (new String(data, 0, PHOTOSHOP_IRB_ID.length()).equals(PHOTOSHOP_IRB_ID)) {
@@ -1455,7 +1455,7 @@ public class JPEGMeta {
 				}
 			} else if(segment.getMarker() == Marker.APP14) {
 				if (new String(data, 0, ADOBE_ID.length()).equals(ADOBE_ID)) {
-					metadataMap.put(MetadataType.JPG_ADOBE, new AdobeSegment(ArrayUtils.subArray(data, ADOBE_ID.length(), length - ADOBE_ID.length() - 2)));
+					metadataMap.put(MetadataType.JPG_ADOBE, new Adobe(ArrayUtils.subArray(data, ADOBE_ID.length(), length - ADOBE_ID.length() - 2)));
 				}
 			}
 		}
