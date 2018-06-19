@@ -36,6 +36,6 @@ public final class SShortField extends AbstractShortField {
 	}
 	
 	public String getDataAsString() {
-		return StringUtils.shortArrayToString(data, 0, 10, false);
+		return StringUtils.shortArrayToString(data, 0, MAX_STRING_REPR_LEN, false);
 	}
 }

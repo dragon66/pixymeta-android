@@ -30,7 +30,8 @@ public abstract class TiffField<T> implements Comparable<TiffField<?>>{
 	private final short tag;
 	private final FieldType fieldType;
 	private final int length;
-	protected T data;	
+	protected T data;
+	protected static final int MAX_STRING_REPR_LEN = 10; // Default length for string representation
 		
 	protected int dataOffset;
 	
