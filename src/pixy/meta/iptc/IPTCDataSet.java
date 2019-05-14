@@ -25,9 +25,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pixy.meta.iptc.IPTCApplicationTag;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.meta.iptc.IPTCEnvelopeTag;
@@ -39,7 +36,6 @@ import pixy.meta.iptc.IPTCPreObjectDataTag;
 import pixy.meta.iptc.IPTCRecord;
 import pixy.meta.iptc.IPTCTag;
 import pixy.io.IOUtils;
-import pixy.string.StringUtils;
 import pixy.util.ArrayUtils;
 
 /**
@@ -48,7 +44,7 @@ import pixy.util.ArrayUtils;
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 06/10/2013
  */
-public class IPTCDataSet {
+public class IPTCDataSet implements Comparable<IPTCDataSet> {
 	// Fields
 	private int recordNumber; // Corresponds to IPTCRecord enumeration recordNumber 
 	private int tag; // Corresponds to IPTC tag enumeration tag field
@@ -59,9 +55,6 @@ public class IPTCDataSet {
 	
 	// A unique name used as HashMap key
 	private String name;
-	
-	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(IPTCDataSet.class);
 	
 	private static final byte[] getBytes(String str) {
 		try {
@@ -109,6 +102,25 @@ public class IPTCDataSet {
 	}
 	
 	@Override
+	public int compareTo(IPTCDataSet other) {
+		final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+	    
+	    if(this == other) return EQUAL;
+	    
+	    if (this.getRecordNumber() < other.getRecordNumber()) return BEFORE;
+	    if (this.getRecordNumber() > other.getRecordNumber()) return AFTER;
+	    if(this.getRecordNumber() == other.getRecordNumber()) {
+	    	if (this.getTag() < other.getTag()) return BEFORE;
+		    if (this.getTag() > other.getTag()) return AFTER;
+		    return EQUAL;
+	    }
+	
+		return EQUAL;
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -138,6 +150,28 @@ public class IPTCDataSet {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getRecordType() {
+		//
+		switch (recordNumber) {
+			case 1: //Envelope Record
+				return "Envelope Record";
+			case 2: //Application Record
+				return "Application Record";
+			case 3: //NewsPhoto Record
+				return "NewsPhoto Record";
+			case 7: //PreObjectData Record
+				return "PreObjectData Record";
+			case 8: //ObjectData Record
+				return "ObjectData Record";
+			case 9: //PostObjectData Record
+				return "PostObjectData Record";
+			case 240: //FotoStation Record
+				return "FotoStation Record";
+			default:
+				return "Unknown Record";
+		}
 	}
 	
 	public int getRecordNumber() {
@@ -179,8 +213,32 @@ public class IPTCDataSet {
 			case PRE_OBJECTDATA:
 				tagEnum = IPTCPreObjectDataTag.fromTag(tag);
 				break;
-			default:
-				tagEnum = IPTCApplicationTag.UNKNOWN;
+			case UNKNOWN:
+				switch(IPTCRecord.fromRecordNumber(recordNumber)) {
+					case APPLICATION:
+						tagEnum = IPTCApplicationTag.UNKNOWN;
+						break;
+					case ENVELOP:
+						tagEnum = IPTCEnvelopeTag.UNKNOWN;
+						break;
+					case NEWSPHOTO:
+						tagEnum = IPTCNewsPhotoTag.UNKNOWN;
+						break;
+					case PRE_OBJECTDATA:
+						tagEnum = IPTCPreObjectDataTag.UNKNOWN;
+						break;
+					case OBJECTDATA:
+						tagEnum = IPTCObjectDataTag.UNKNOWN;
+						break;
+					case POST_OBJECTDATA:
+						tagEnum = IPTCPostObjectDataTag.UNKNOWN;
+						break;
+					case FOTOSTATION:
+						tagEnum = IPTCFotoStationTag.UNKNOWN;
+						break;
+					case UNKNOWN:
+						throw new RuntimeException("Unknown IPTC record"); 
+				}
 		}
 		
 		return tagEnum.getName();
@@ -194,42 +252,6 @@ public class IPTCDataSet {
 		result = prime * result + recordNumber;
 		result = prime * result + tag;
 		return result;
-	}
-	
-	public void print() {
-		
-		switch (recordNumber) {
-			case 1: //Envelope Record
-				LOGGER.info("Record number {}: Envelope Record", recordNumber);
-				break;
-			case 2: //Application Record
-				LOGGER.info("Record number {}: Application Record", recordNumber);
-				break;
-			case 3: //NewsPhoto Record
-				LOGGER.info("Record number {}: NewsPhoto Record", recordNumber);
-				break;
-			case 7: //PreObjectData Record
-				LOGGER.info("Record number {}: PreObjectData Record", recordNumber);
-				break;
-			case 8: //ObjectData Record
-				LOGGER.info("Record number {}: ObjectData Record", recordNumber);
-				break;				
-			case 9: //PostObjectData Record
-				LOGGER.info("Record number {}: PostObjectData Record", recordNumber);
-				break;	
-			case 240: //FotoStation Record
-				LOGGER.info("Record number {}: FotoStation Record", recordNumber);
-				break;	
-			default:
-				LOGGER.info("Record number {}: Unknown Record", recordNumber);
-				break;
-		}		
-		
-		LOGGER.info("Dataset name: {}", name);
-		LOGGER.info("Dataset tag: {}[{}]", tag, StringUtils.shortToHexStringMM((short)tag));
-		LOGGER.info("Dataset size: {}", size);
-		
-		LOGGER.info("Dataset value: {}", getDataAsString());
 	}
 	
 	/**

@@ -116,7 +116,7 @@ public class IPTC extends Metadata {
 			}
 		} else throw new IllegalStateException("DataSet Map is empty");
 	}
-
+	
 	/**
 	 * Get a string representation of the IPTCDataSet associated with the key
 	 *  
@@ -232,17 +232,6 @@ public class IPTC extends Metadata {
 		}
 	}
 	
-	public void showMetadata() {
-		ensureDataRead();
-		if(datasetMap != null){
-			// Print multiple entry IPTCDataSet
-			for(List<IPTCDataSet> iptcs : datasetMap.values()) {
-				for(IPTCDataSet iptc : iptcs)
-					iptc.print();
-			}
-		}
-	}
-
 	public void write(OutputStream os) throws IOException {
 		for(List<IPTCDataSet> datasets : getDataSets().values())
 			for(IPTCDataSet dataset : datasets)

@@ -27,12 +27,16 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import pixy.meta.MetadataEntry;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.iptc.IPTC;
 import pixy.meta.iptc.IPTCDataSet;
 import pixy.meta.iptc.IPTCTag;
+import pixy.string.StringUtils;
 
 public class IPTC_NAA extends _8BIM {
 	//
@@ -79,12 +83,33 @@ public class IPTC_NAA extends _8BIM {
 		return iptc.getDataSet(key);
 	}
 	
-	public void print() {
-		super.print();
-		// Print multiple entry IPTCDataSet
-		for(List<IPTCDataSet> datasets : iptc.getDataSets().values())
-			for(IPTCDataSet dataset : datasets)
-				dataset.print();			
+	protected MetadataEntry getMetadataEntry() {
+		//
+		ImageResourceID eId  = ImageResourceID.fromShort(getID());
+		MetadataEntry entry = new MetadataEntry(eId.name(), eId.getDescription(), true);
+		
+		Map<IPTCTag, List<IPTCDataSet>> datasetMap = this.getDataSets();
+		
+		if(datasetMap != null) {
+			// Print multiple entry IPTCDataSet
+			Set<Map.Entry<IPTCTag, List<IPTCDataSet>>> entries = datasetMap.entrySet();
+			
+			for(Entry<IPTCTag, List<IPTCDataSet>> entryMap : entries) {
+				StringBuilder strBuilder = new StringBuilder();
+				//
+				for(IPTCDataSet item : entryMap.getValue())
+					strBuilder.append(item.getDataAsString()).append(";");
+				
+				String key = entryMap.getKey().getName();				
+				String value = StringUtils.replaceLast(strBuilder.toString(), ";", "");
+				
+				entry.addEntry(new MetadataEntry(key, value));
+		    }
+			
+			return entry;
+			
+		} else 
+			return super.getMetadataEntry();
 	}
 	
 	public void write(OutputStream os) throws IOException {
