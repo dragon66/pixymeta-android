@@ -10,6 +10,7 @@
 
 package pixy.meta.exif;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +92,95 @@ public enum ExifTag implements Tag {
 	SUB_SEC_TIME("SubSecTime", (short)0x9290),
 	SUB_SEC_TIME_ORIGINAL("SubSecTimeOriginal", (short)0x9291),
 	SUB_SEC_TIME_DIGITIZED("SubSecTimeDigitized", (short)0x9292),
+	
+	WINDOWS_XP_TITLE("WindowsXP Title", (short) 0x9c9b) {
+		public String getFieldAsString(Object value) {
+			//
+			byte[] byteValue = (byte[]) value;
+			String description = "";
+			try {
+				description = new String(byteValue, "UTF-16LE").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+
+			return description;
+		}
+		public boolean isCritical() {
+			return false;
+		}
+	},
+	
+	WINDOWS_XP_COMMENT("WindowsXP Comment", (short)0x9c9c) {
+		public String getFieldAsString(Object value) {
+			//
+			byte[] byteValue = (byte[])value;
+			String description = "";
+			try {
+				description = new String(byteValue, "UTF-16LE").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			
+			return description;
+		}
+		public boolean isCritical() {
+			return false;
+		}
+	},
+	WINDOWS_XP_AUTHOR("WindowsXP Author", (short)0x9c9d) {
+		public String getFieldAsString(Object value) {
+			//
+			byte[] byteValue = (byte[])value;
+			String description = "";
+			try {
+				description = new String(byteValue, "UTF-16LE").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			
+			return description;
+		}
+		public boolean isCritical() {
+			return false;
+		}
+	},
+	
+	WINDOWS_XP_KEYWORDS("WindowsXP Keywords", (short)0x9c9e){
+		public String getFieldAsString(Object value) {
+			//
+			byte[] byteValue = (byte[])value;
+			String description = "";
+			try {
+				description = new String(byteValue, "UTF-16LE").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			
+			return description;
+		}
+		public boolean isCritical() {
+			return false;
+		}
+	},
+	
+	WINDOWS_XP_SUBJECT("WindowsXP Subject", (short) 0x9c9f) {
+		public String getFieldAsString(Object value) {
+			//
+			byte[] byteValue = (byte[]) value;
+			String description = "";
+			try {
+				description = new String(byteValue, "UTF-16LE").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+
+			return description;
+		}
+		public boolean isCritical() {
+			return false;
+		}
+	},
 	
 	FLASH_PIX_VERSION("FlashPixVersion", (short)0xa000) {
 		public String getFieldAsString(Object value) {
