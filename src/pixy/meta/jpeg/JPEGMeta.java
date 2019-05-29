@@ -1697,113 +1697,84 @@ public class JPEGMeta {
 							length = IOUtils.readUnsignedShortMM(is);
 							IOUtils.skipFully(is, length - 2);
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;						
 					case APP0:
 						if(metadataTypes.contains(MetadataType.JPG_JFIF)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[JFIF_ID.length()];
-							IOUtils.readFully(is, temp);	
-							// JFIF segment
-							if (Arrays.equals(temp, JFIF_ID.getBytes())) {
-								IOUtils.skipFully(is, length - JFIF_ID.length() - 2);
-							} else {
+						    byte[] temp = new byte[length - 2];
+						    IOUtils.readFully(is, temp);
+							// Not JFIF segment
+							if (temp.length < JFIF_ID.length() || ! JFIF_ID.equals(new String(temp, 0, JFIF_ID.length()))) {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - JFIF_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					case APP1:
 						// We are only interested in EXIF and XMP
 						if(metadataTypes.contains(MetadataType.EXIF) || metadataTypes.contains(MetadataType.XMP)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[XMP_EXT_ID.length()];
+							byte[] temp = new byte[length - 2];
 							IOUtils.readFully(is, temp);
-							// XMP segment.
-							if(Arrays.equals(temp, XMP_EXT_ID.getBytes()) && metadataTypes.contains(MetadataType.XMP)) {
-								IOUtils.skipFully(is, length - XMP_EXT_ID.length() - 2);
-							} else if(new String(temp, 0, XMP_ID.length()).equals(XMP_ID) && metadataTypes.contains(MetadataType.XMP)) {
-								IOUtils.skipFully(is,  length - XMP_EXT_ID.length() - 2);
-							} else if(new String(temp, 0, NON_STANDARD_XMP_ID.length()).equals(NON_STANDARD_XMP_ID) && metadataTypes.contains(MetadataType.XMP)) {
-								IOUtils.skipFully(is,  length - XMP_EXT_ID.length() - 2);
-							} else if(new String(temp, 0, EXIF_ID.length()).equals(EXIF_ID)
-									&& metadataTypes.contains(MetadataType.EXIF)) { // EXIF
-								IOUtils.skipFully(is, length - XMP_EXT_ID.length() - 2);
+							// XMP or EXIF segment
+							if((metadataTypes.contains(MetadataType.XMP) && temp.length >= XMP_EXT_ID.length() && new String(temp, 0, XMP_EXT_ID.length()).equals(XMP_EXT_ID))
+								|| (metadataTypes.contains(MetadataType.XMP) && temp.length >= XMP_ID.length() && new String(temp, 0, XMP_ID.length()).equals(XMP_ID))
+								|| (metadataTypes.contains(MetadataType.XMP) && temp.length >= NON_STANDARD_XMP_ID.length() && new String(temp, 0, NON_STANDARD_XMP_ID.length()).equals(NON_STANDARD_XMP_ID))
+								|| (metadataTypes.contains(MetadataType.EXIF) && temp.length >= EXIF_ID.length() && new String(temp, 0, EXIF_ID.length()).equals(EXIF_ID))) { // EXIF
+								// We don't need to do anything
 							} else { // We don't want to remove any of them
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - XMP_EXT_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					case APP2:
 						if(metadataTypes.contains(MetadataType.ICC_PROFILE)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[ICC_PROFILE_ID.length()];
+							byte[] temp = new byte[length - 2];
 							IOUtils.readFully(is, temp);	
-							// ICC_Profile segment
-							if (Arrays.equals(temp, ICC_PROFILE_ID.getBytes())) {
-								IOUtils.skipFully(is, length - ICC_PROFILE_ID.length() - 2);
-							} else {
+							// Not ICC_Profile segment
+							if (temp.length < ICC_PROFILE_ID.length() || ! ICC_PROFILE_ID.equals(new String(temp, 0, ICC_PROFILE_ID.length()))) {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - ICC_PROFILE_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					case APP12:
 						if(metadataTypes.contains(MetadataType.JPG_DUCKY)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[DUCKY_ID.length()];
+							byte[] temp = new byte[length - 2];
 							IOUtils.readFully(is, temp);	
-							// Ducky segment
-							if (Arrays.equals(temp, DUCKY_ID.getBytes())) {
-								IOUtils.skipFully(is, length - DUCKY_ID.length() - 2);
-							} else {
+							// Not Ducky segment
+							if (temp.length < DUCKY_ID.length() || ! DUCKY_ID.equals(new String(temp, 0, DUCKY_ID.length()))) {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - DUCKY_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					case APP13:
 						if(metadataTypes.contains(MetadataType.PHOTOSHOP_IRB) || metadataTypes.contains(MetadataType.IPTC)
 							|| metadataTypes.contains(MetadataType.XMP) || metadataTypes.contains(MetadataType.EXIF)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[PHOTOSHOP_IRB_ID.length()];
+							byte[] temp = new byte[length - 2];
 							IOUtils.readFully(is, temp);	
 							// PHOTOSHOP IRB segment
-							if (Arrays.equals(temp, PHOTOSHOP_IRB_ID.getBytes())) {
-								temp = new byte[length - PHOTOSHOP_IRB_ID.length() - 2];
-								IOUtils.readFully(is, temp);
-								IRB irb = new IRB(temp);
+							if (temp.length >= PHOTOSHOP_IRB_ID.length() && new String(temp, 0, PHOTOSHOP_IRB_ID.length()).equals(PHOTOSHOP_IRB_ID)) {
+								IRB irb = new IRB(ArrayUtils.subArray(temp, PHOTOSHOP_IRB_ID.length(), temp.length - PHOTOSHOP_IRB_ID.length()));
 								// Shallow copy the map.
 								Map<Short, _8BIM> bimMap = new HashMap<Short, _8BIM>(irb.get8BIM());								
 								if(!metadataTypes.contains(MetadataType.PHOTOSHOP_IRB)) {
@@ -1826,36 +1797,26 @@ public class JPEGMeta {
 							} else {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - PHOTOSHOP_IRB_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					case APP14:
 						if(metadataTypes.contains(MetadataType.JPG_ADOBE)) {
 							length = IOUtils.readUnsignedShortMM(is);
-							byte[] temp = new byte[ADOBE_ID.length()];
+							byte[] temp = new byte[length - 2];
 							IOUtils.readFully(is, temp);	
-							// Adobe segment
-							if (Arrays.equals(temp, ADOBE_ID.getBytes())) {
-								IOUtils.skipFully(is, length - ADOBE_ID.length() - 2);
-							} else {
+							// Not Adobe segment
+							if (temp.length < ADOBE_ID.length() || ! ADOBE_ID.equals(new String(temp, 0, ADOBE_ID.length()))) {
 								IOUtils.writeShortMM(os, marker);
 								IOUtils.writeShortMM(os, (short) length);
-								IOUtils.write(os, temp); // Write the already read bytes
-								temp = new byte[length - ADOBE_ID.length() - 2];
-								IOUtils.readFully(is, temp);
 								IOUtils.write(os, temp);
 							}
 							marker = IOUtils.readShortMM(is);
-							break;
-						}
-						marker = copySegment(marker, is, os);
+						} else
+							marker = copySegment(marker, is, os);
 						break;
 					default:
 						marker = copySegment(marker, is, os);
