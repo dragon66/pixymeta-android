@@ -265,7 +265,7 @@ public class JPEGMeta {
 	public static void extractDepthMap(InputStream is, String pathToDepthMap) throws IOException {
 		Map<MetadataType, Metadata> meta = readMetadata(is);
 		XMP xmp = (XMP)meta.get(MetadataType.XMP);
-		if(xmp != null && xmp.hasExtendedXmp()) {
+		if(xmp != null) {
 			Document xmpDocument = xmp.getMergedDocument();
 			String depthMapMime = XMLUtils.getAttribute(xmpDocument, "rdf:Description", "GDepth:Mime");
 			String depthData = "GDepth:Data";
