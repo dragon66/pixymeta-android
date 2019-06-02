@@ -9,7 +9,7 @@
  *
  * Change History - most recent changes go on top of previous changes
  *
- * JPEGMeta.java
+ * JPGMeta.java
  *
  * Who   Date       Description
  * ====  =======    ===================================================
@@ -104,7 +104,7 @@ import pixy.util.MetadataUtils;
  * @author Wen Yu, yuwen_66@yahoo.com
  * @version 1.0 01/25/2013
  */
-public class JPEGMeta {
+public class JPGMeta {
 	// Constants
 	public static final String XMP_ID = "http://ns.adobe.com/xap/1.0/\0";
 	// This is a non_standard XMP identifier which sometimes found in images from GettyImages
@@ -125,7 +125,7 @@ public class JPEGMeta {
 	public static final EnumSet<Marker> APPnMarkers = EnumSet.range(Marker.APP0, Marker.APP15);
 	
 	// Obtain a logger instance
-	private static final Logger LOGGER = LoggerFactory.getLogger(JPEGMeta.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPGMeta.class);
 	
 	private static short copySegment(short marker, InputStream is, OutputStream os) throws IOException {
 		int length = IOUtils.readUnsignedShortMM(is);
@@ -1924,5 +1924,5 @@ public class JPEGMeta {
 	}
 	
 	// Prevent from instantiation
-	private JPEGMeta() {}
+	private JPGMeta() {}
 }

@@ -46,7 +46,7 @@ import pixy.meta.bmp.BMPMeta;
 import pixy.meta.exif.Exif;
 import pixy.meta.gif.GIFMeta;
 import pixy.meta.iptc.IPTCDataSet;
-import pixy.meta.jpeg.JPEGMeta;
+import pixy.meta.jpeg.JPGMeta;
 import pixy.meta.png.PNGMeta;
 import pixy.meta.tiff.TIFFMeta;
 import pixy.meta.xmp.XMP;
@@ -86,7 +86,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate thumbnail extracting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.extractThumbnails(peekHeadInputStream, pathToThumbnail);
+				JPGMeta.extractThumbnails(peekHeadInputStream, pathToThumbnail);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -124,7 +124,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate IPTC inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertComments(peekHeadInputStream, os, comments);
+				JPGMeta.insertComments(peekHeadInputStream, os, comments);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -175,7 +175,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate EXIF inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertExif(peekHeadInputStream, os, exif, update);
+				JPGMeta.insertExif(peekHeadInputStream, os, exif, update);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -205,7 +205,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate ICCP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertICCProfile(peekHeadInputStream, out, icc_profile);
+				JPGMeta.insertICCProfile(peekHeadInputStream, out, icc_profile);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -238,7 +238,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate IPTC inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIPTC(peekHeadInputStream, out, iptcs, update);
+				JPGMeta.insertIPTC(peekHeadInputStream, out, iptcs, update);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -272,7 +272,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate IRB inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIRB(peekHeadInputStream, os, bims, update);
+				JPGMeta.insertIRB(peekHeadInputStream, os, bims, update);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -302,7 +302,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate IRB thumbnail inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertIRBThumbnail(peekHeadInputStream, out, thumbnail);
+				JPGMeta.insertIRBThumbnail(peekHeadInputStream, out, thumbnail);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -332,7 +332,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate XMP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertXMP(peekHeadInputStream, out, xmp); // No ExtendedXMP
+				JPGMeta.insertXMP(peekHeadInputStream, out, xmp); // No ExtendedXMP
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -366,7 +366,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate XMP inserting to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.insertXMP(peekHeadInputStream, out, xmp, null); // No ExtendedXMP
+				JPGMeta.insertXMP(peekHeadInputStream, out, xmp, null); // No ExtendedXMP
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -417,7 +417,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate metadata reading to corresponding image tweakers.
 		switch(imageType) {
 			case JPG:
-				metadataMap = JPEGMeta.readMetadata(peekHeadInputStream);
+				metadataMap = JPGMeta.readMetadata(peekHeadInputStream);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
@@ -461,7 +461,7 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 		// Delegate meta data removing to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPEGMeta.removeMetadata(peekHeadInputStream, os, metadataTypes);
+				JPGMeta.removeMetadata(peekHeadInputStream, os, metadataTypes);
 				break;
 			case TIFF:
 				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);

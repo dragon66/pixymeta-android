@@ -30,7 +30,7 @@ import pixy.meta.jpeg.JpegExif;
 import pixy.meta.tiff.TiffExif;
 import pixy.meta.iptc.IPTCApplicationTag;
 import pixy.meta.iptc.IPTCDataSet;
-import pixy.meta.jpeg.JPEGMeta;
+import pixy.meta.jpeg.JPGMeta;
 import pixy.meta.jpeg.JpegXMP;
 import pixy.meta.xmp.XMP;
 import pixy.image.tiff.FieldType;
@@ -158,7 +158,7 @@ public class TestPixyMetaAndroid {
 		fout.close();
 		
 		fin = new FileInputStream("images/table.jpg");
-		JPEGMeta.extractDepthMap(fin, "table");
+		JPGMeta.extractDepthMap(fin, "table");
 		
 		fin.close();
 		
