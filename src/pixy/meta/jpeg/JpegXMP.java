@@ -13,7 +13,8 @@ import pixy.meta.xmp.XMP;
 import pixy.string.StringUtils;
 import pixy.string.XMLUtils;
 import pixy.util.ArrayUtils;
-import static pixy.meta.jpeg.JPGMeta.*;
+
+import static pixy.image.jpeg.JPGConsts.*;
 
 public class JpegXMP extends XMP {
 
