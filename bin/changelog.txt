@@ -1,6 +1,7 @@
 ***************************
-Last modified on 05/14/2019
+Last modified on 06/21/2019
 ***************************
+21Jun2019  Added code for JPGMeta to return the removed metadata as a map
 14May2019  Write IPTC to normal TIFF IPTC tag instead of PhotoShop IRB block
 13Feb2017  Fixed bug with JPEGTweaker.insertXMP
 16Aug2016  Added support for Unicode string data to IPTCDataSet
