@@ -1777,6 +1777,8 @@ public class JPGMeta {
 	public static Map<MetadataType, Metadata> removeMetadata(Set<MetadataType> metadataTypes, InputStream is, OutputStream os) throws IOException {
 		// Create a map to hold all the metadata and thumbnails
 		Map<MetadataType, Metadata> metadataMap = new HashMap<MetadataType, Metadata>();
+		// In case IRB data are partially removed, we keep removed metadata here
+		Map<MetadataType, Metadata> extraMetadataMap = new HashMap<MetadataType, Metadata>();
 	
 		Comments comments = null;
 		
@@ -1905,8 +1907,7 @@ public class JPGMeta {
 						} else
 							marker = copySegment(marker, is, os);
 						break;
-					case APP13: // Currently unless the whole IRB is removed, it won't be added to metadataMap.
-						// TODO: add removed metadata inside IRB to metadataMap
+					case APP13:
 						if(metadataTypes.contains(MetadataType.PHOTOSHOP_IRB) || metadataTypes.contains(MetadataType.IPTC)
 							|| metadataTypes.contains(MetadataType.XMP) || metadataTypes.contains(MetadataType.EXIF)) {
 							length = IOUtils.readUnsignedShortMM(is);
@@ -1920,15 +1921,19 @@ public class JPGMeta {
 								if(!metadataTypes.contains(MetadataType.PHOTOSHOP_IRB)) {
 									if(metadataTypes.contains(MetadataType.IPTC)) {
 										// We only remove IPTC_NAA and keep the other IRB data untouched.
-										bimMap.remove(ImageResourceID.IPTC_NAA.getValue());
+										_8BIM bim = bimMap.remove(ImageResourceID.IPTC_NAA.getValue());
+										if(bim != null) extraMetadataMap.put(MetadataType.IPTC, new IPTC(bim.getData()));
 									} 
 									if(metadataTypes.contains(MetadataType.XMP)) {
 										// We only remove XMP and keep the other IRB data untouched.
-										bimMap.remove(ImageResourceID.XMP_METADATA.getValue());
+										_8BIM bim = bimMap.remove(ImageResourceID.XMP_METADATA.getValue());
+										if(bim != null) extraMetadataMap.put(MetadataType.XMP, new JpegXMP(bim.getData()));
 									} 
 									if(metadataTypes.contains(MetadataType.EXIF)) {
 										// We only remove EXIF and keep the other IRB data untouched.
-										bimMap.remove(ImageResourceID.EXIF_DATA1.getValue());
+										_8BIM bim = bimMap.remove(ImageResourceID.EXIF_DATA1.getValue());
+										if(bim != null) extraMetadataMap.put(MetadataType.EXIF, new JpegExif(bim.getData()));
+										// I can't find more information on this one, so remove it just in case.
 										bimMap.remove(ImageResourceID.EXIF_DATA3.getValue());
 									}
 									// Write back the IRB
@@ -1969,6 +1974,25 @@ public class JPGMeta {
 		}
 		
 		extractMetadataFromAPPn(appnSegments, metadataMap);
+		
+		// If we are supposed to remove IPTC, check if we have removed it from IRB. If yes, add it
+		// to the removed map 
+		if(metadataTypes.contains(MetadataType.IPTC) && metadataMap.get(MetadataType.IPTC) == null) {
+			Metadata meta = extraMetadataMap.get(MetadataType.IPTC);
+			if(meta != null) metadataMap.put(MetadataType.IPTC, meta);
+		}
+		// If we are supposed to remove XMP, check if we have removed it from IRB. If yes, add it
+		// to the removed map 
+		if(metadataTypes.contains(MetadataType.XMP) && metadataMap.get(MetadataType.XMP) == null) {
+			Metadata meta = extraMetadataMap.get(MetadataType.XMP);
+			if(meta != null) metadataMap.put(MetadataType.XMP, meta);
+		}
+		// If we are supposed to remove EXIF, check if we have removed it from IRB. If yes, add it
+		// to the removed map 
+		if(metadataTypes.contains(MetadataType.EXIF) && metadataMap.get(MetadataType.EXIF) == null) {
+			Metadata meta = extraMetadataMap.get(MetadataType.EXIF);
+			if(meta != null) metadataMap.put(MetadataType.EXIF, meta);
+		}
 		
 		if(comments != null)
 			metadataMap.put(MetadataType.COMMENT, comments);
