@@ -1415,10 +1415,29 @@ public class TIFFMeta {
 		return metadataMap;
 	}
 	
+	/**
+	 * Remove meta data from TIFF image
+	 * 
+	 * @param rin RandomAccessInputStream for the input image
+	 * @param rout RandomAccessOutputStream for the output image
+	 * @param pageNumber working page from which to remove metadata
+	 * @param metadataTypes a variable length array of MetadataType to be removed
+	 * @throws IOException
+	 * @return A map of the removed metadata
+	 */
 	public static Map<MetadataType, Metadata> removeMetadata(int pageNumber, RandomAccessInputStream rin, RandomAccessOutputStream rout, MetadataType ... metadataTypes) throws IOException {
 		return removeMetadata(new HashSet<MetadataType>(Arrays.asList(metadataTypes)), pageNumber, rin, rout);
 	}
 	
+	/**
+	 * Remove meta data from TIFF image
+	 * 
+	 * @param rin RandomAccessInputStream for the input image
+	 * @param rout RandomAccessOutputStream for the output image
+	 * @param metadataTypes a variable length array of MetadataType to be removed
+	 * @throws IOException
+	 * @return A map of the removed metadata
+	 */
 	public static Map<MetadataType, Metadata> removeMetadata(RandomAccessInputStream rin, RandomAccessOutputStream rout, MetadataType ... metadataTypes) throws IOException {
 		return removeMetadata(0, rin, rout, metadataTypes);
 	}
@@ -1430,6 +1449,7 @@ public class TIFFMeta {
 	 * @param rin RandomAccessInputStream for the input image
 	 * @param rout RandomAccessOutputStream for the output image
 	 * @throws IOException
+	 * @return A map of the removed metadata
 	 */
 	public static Map<MetadataType, Metadata> removeMetadata(Set<MetadataType> metadataTypes, int pageNumber, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
 		int offset = copyHeader(rin, rout);
@@ -1517,6 +1537,15 @@ public class TIFFMeta {
 		return metadataMap;
 	}
 	
+	/**
+	 * Remove meta data from TIFF image
+	 * 
+	 * @param metadataTypes a set of MetadataType to be removed
+	 * @param rin RandomAccessInputStream for the input image
+	 * @param rout RandomAccessOutputStream for the output image	 
+	 * @throws IOException
+	 * @return A map of the removed metadata
+	 */
 	public static Map<MetadataType, Metadata> removeMetadata(Set<MetadataType> metadataTypes, RandomAccessInputStream rin, RandomAccessOutputStream rout) throws IOException {
 		return removeMetadata(metadataTypes, 0, rin, rout);
 	}
