@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -454,19 +455,21 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 	 * @param os OutputStream for the output image
 	 * @throws IOException
 	 */
-	public static void removeMetadata(InputStream is, OutputStream os, MetadataType ...metadataTypes) throws IOException {
+	public static Map<MetadataType, Metadata> removeMetadata(InputStream is, OutputStream os, MetadataType ...metadataTypes) throws IOException {
 		// ImageIO.IMAGE_MAGIC_NUMBER_LEN bytes as image magic number
-		PeekHeadInputStream peekHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
-		ImageType imageType = MetadataUtils.guessImageType(peekHeadInputStream);		
+		PeekHeadInputStream peakHeadInputStream = new PeekHeadInputStream(is, IMAGE_MAGIC_NUMBER_LEN);
+		ImageType imageType = MetadataUtils.guessImageType(peakHeadInputStream);
+		// The map of removed metadata
+		Map<MetadataType, Metadata> metadataMap = Collections.emptyMap();
 		// Delegate meta data removing to corresponding image tweaker.
 		switch(imageType) {
 			case JPG:
-				JPGMeta.removeMetadata(peekHeadInputStream, os, metadataTypes);
+				metadataMap = JPGMeta.removeMetadata(peakHeadInputStream, os, metadataTypes);
 				break;
 			case TIFF:
-				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peekHeadInputStream);
+				RandomAccessInputStream randIS = new FileCacheRandomAccessInputStream(peakHeadInputStream);
 				RandomAccessOutputStream randOS = new FileCacheRandomAccessOutputStream(os);
-				TIFFMeta.removeMetadata(randIS, randOS, metadataTypes);
+				metadataMap = TIFFMeta.removeMetadata(randIS, randOS, metadataTypes);
 				randIS.shallowClose();
 				randOS.shallowClose();
 				break;
@@ -476,10 +479,13 @@ public abstract class Metadata implements MetadataReader, Iterable<MetadataEntry
 				LOGGER.info("{} image format does not support meta data", imageType);
 				break;
 			default:
-				peekHeadInputStream.close();
+				peakHeadInputStream.close();
 				throw new IllegalArgumentException("Metadata removing is not supported for " + imageType + " image");				
 		}
-		peekHeadInputStream.shallowClose();
+		
+		peakHeadInputStream.shallowClose();
+		
+		return metadataMap;
 	}
 	
 	public Metadata(MetadataType type) {
