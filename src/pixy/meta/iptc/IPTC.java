@@ -168,7 +168,7 @@ public class IPTC extends Metadata {
 		if(datasetMap != null){
 			// Print multiple entry IPTCDataSet
 			Set<Map.Entry<IPTCTag, List<IPTCDataSet>>> entries = datasetMap.entrySet();
-			Iterator<Entry<IPTCTag, List<IPTCDataSet>>> iter = entries.iterator();
+			final Iterator<Entry<IPTCTag, List<IPTCDataSet>>> iter = entries.iterator();
 			return new Iterator<MetadataEntry>() {
 				public MetadataEntry next() {
 					Entry<IPTCTag, List<IPTCDataSet>> entry = iter.next();
