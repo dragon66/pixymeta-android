@@ -39,8 +39,9 @@ public enum FieldType {
 	FLOAT("Float", (short)0x000b),
 	DOUBLE("Double", (short)0x000c),
 	IFD("IFD", (short)0x000d),
-	// This is actually not a TIFF field type, internally it is a BYTE field
+	// There two are not actually TIFF defined field type, internally they TIFF BYTE fields
 	WINDOWSXP("WindowsXP", (short)0x000e),
+	EXIF_MAKERNOTE("ExifMakernote", (short)0x000f),
 	
 	UNKNOWN("Unknown", (short)0x0000);
 	
@@ -120,6 +121,14 @@ public enum FieldType {
 					}    				   				
     			}
     			break;
+    		case EXIF_MAKERNOTE: // Not a real TIFF field type, just a convenient way to add maker note field
+    			if(typeClass == byte[].class) {
+    				byte[] byteData = (byte[])data;
+    				if(byteData.length > 0) {
+    					retValue = new MakerNoteField(tag.getValue(), byteData);
+    				} 				   				
+    			}
+    			break;	
     		default:
     	}
     	

@@ -90,7 +90,7 @@ public enum ExifTag implements Tag {
 		}
 	},	
 	SUBJECT_AREA("SubjectArea", (short)0x9214),	
-	MAKER_NODE("MakerNote", (short)0x927c),
+	MAKER_NOTE("MakerNote", (short)0x927c),
 	USER_COMMENT("UserComment", (short)0x9286),
 	
 	SUB_SEC_TIME("SubSecTime", (short)0x9290),

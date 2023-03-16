@@ -76,6 +76,7 @@ import pixy.image.tiff.FloatField;
 import pixy.image.tiff.IFD;
 import pixy.image.tiff.IFDField;
 import pixy.image.tiff.LongField;
+import pixy.image.tiff.MakerNoteField;
 import pixy.image.tiff.RationalField;
 import pixy.image.tiff.SRationalField;
 import pixy.image.tiff.ShortField;
@@ -1159,8 +1160,12 @@ public class TIFFMeta {
 					TiffField<byte[]> byteField = null;
 					if(ftype == FieldType.BYTE)
 						byteField = new ByteField(tag, data);
-					else
-						byteField = new UndefinedField(tag, data);
+					else {
+						if(ftag == ExifTag.MAKER_NOTE)
+							byteField = new MakerNoteField(tag, data);
+						else
+							byteField = new UndefinedField(tag, data);
+					}
 					tiffIFD.addField(byteField);
 					offset += 4;					
 					break;
