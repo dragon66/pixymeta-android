@@ -1109,8 +1109,8 @@ public class TIFFMeta {
 	}
 	
 	// Read IFD without header
-	public static int readIFD(RandomAccessInputStream rin, List<IFD> list, int offset, Class<? extends Tag> tagClass) throws IOException {
-		return readIFD(rin, list, offset, tagClass);
+	public static int readIFD(RandomAccessInputStream rin, List<IFD> list, Class<? extends Tag> tagClass) throws IOException {
+		return readIFD(null, null, tagClass, rin, list, 0);
 	}
 	
 	private static int readIFD(IFD parent, Tag parentTag, Class<? extends Tag> tagClass, RandomAccessInputStream rin, List<IFD> list, int offset) throws IOException {	
