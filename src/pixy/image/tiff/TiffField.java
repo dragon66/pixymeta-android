@@ -36,9 +36,15 @@ public abstract class TiffField<T> implements Comparable<TiffField<?>>{
 	private final FieldType fieldType;
 	private final int length;
 	protected T data;
+	protected IFD parent;
 	protected static final int MAX_STRING_REPR_LEN = 10; // Default length for string representation
 		
 	protected int dataOffset;
+	
+	public TiffField(IFD parent, short tag, FieldType fieldType, int length) {
+		this(tag, fieldType, length);
+		this.parent = parent;
+	}
 	
 	public TiffField(short tag, FieldType fieldType, int length) {
 		this.tag = tag;
@@ -52,6 +58,10 @@ public abstract class TiffField<T> implements Comparable<TiffField<?>>{
 	
 	public T getData() {
 		return data;
+	}
+	
+	public IFD getParent() {
+		return new IFD(parent);
 	}
 	
 	/** Return an integer array representing TIFF long field */
