@@ -55,6 +55,7 @@ public final class UndefinedField extends TiffField<byte[]> {
 			os.write(data);
 			toOffset += data.length;
 		}
+		
 		return toOffset;
 	}
 }
