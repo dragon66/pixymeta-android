@@ -121,14 +121,8 @@ public enum FieldType {
 					}    				   				
     			}
     			break;
-    		case EXIF_MAKERNOTE: // Not a real TIFF field type, just a convenient way to add maker note field
-    			if(typeClass == byte[].class) {
-    				byte[] byteData = (byte[])data;
-    				if(byteData.length > 0) {
-    					retValue = new MakerNoteField(tag.getValue(), byteData);
-    				} 				   				
-    			}
-    			break;	
+    		case EXIF_MAKERNOTE:
+    			throw new UnsupportedOperationException("Creating maker note is not supported.");
     		default:
     	}
     	
