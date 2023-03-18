@@ -1167,7 +1167,7 @@ public class TIFFMeta {
 						byteField = new ByteField(tag, data);
 					else {
 						if(ftag == ExifTag.MAKER_NOTE)
-							byteField = new MakerNoteField(tag, data);
+							byteField = new MakerNoteField(tiffIFD, data);
 						else
 							byteField = new UndefinedField(tag, data);
 					}

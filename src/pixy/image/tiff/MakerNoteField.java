@@ -3,12 +3,17 @@ package pixy.image.tiff;
 import java.io.IOException;
 
 import pixy.io.RandomAccessOutputStream;
+import pixy.meta.exif.ExifTag;
 import pixy.string.StringUtils;
 
 public class MakerNoteField extends TiffField<byte[]> {
 
-	public MakerNoteField(short tag, byte[] data) {
-		super(tag, FieldType.EXIF_MAKERNOTE, data.length);
+	public MakerNoteField(byte[] data) {
+		this(null, data);
+	}
+	
+	public MakerNoteField(IFD parent, byte[] data) {
+		super(parent, ExifTag.MAKER_NOTE.getValue(), FieldType.EXIF_MAKERNOTE, data.length);
 		this.data = data;
 	}
 	
