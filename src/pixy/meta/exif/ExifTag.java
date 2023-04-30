@@ -50,6 +50,10 @@ public enum ExifTag implements Tag {
 	ISO_SPEED_RATINGS("ISOSpeedRatings", (short)0x8827),
 	OECF("OECF", (short)0x8828),
 	
+	SENSITIVITY_TYPE("Sensitivity Type", (short)0x8830),
+	STANDARD_OUTPUT_SENSITIVITY("Standard Output Sensitivity", (short)0x8831),	
+	RECOMMENDED_EXPOSURE_INDEX("Recommended Exposure Index", (short)0x8832),	
+	
 	EXIF_VERSION("ExifVersion", (short)0x9000) {
 		public String getFieldAsString(Object value) {
 			return new String((byte[])value).trim();
@@ -57,6 +61,10 @@ public enum ExifTag implements Tag {
 	},
 	DATE_TIME_ORIGINAL("DateTimeOriginal", (short)0x9003),
 	DATE_TIME_DIGITIZED("DateTimeDigitized", (short)0x9004),
+	
+	OFFSET_TIME("Offset Time", (short)0x9010),
+	OFFSET_TIME_ORIGINAL("Offset Time Original", (short)0x9011),
+	OFFSET_TIME_DIGITIZED("Offset Time Digitized", (short)0x9012),
 	
 	COMPONENT_CONFIGURATION("ComponentConfiguration", (short)0x9101),
 	COMPRESSED_BITS_PER_PIXEL("CompressedBitsPerPixel", (short)0x9102),

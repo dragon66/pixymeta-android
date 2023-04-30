@@ -198,7 +198,7 @@ public enum TiffTag implements Tag {
 			if(intValue >= 1 && intValue <= 8)
 				return values[intValue - 1];
 			
-			return "Warning: unknown planar configuration value: " + intValue;
+			return "Warning: unknown orientation value: " + intValue;
 		}
 	},
 	
@@ -813,6 +813,8 @@ public enum TiffTag implements Tag {
 			return FieldType.LONG;
 		}
 	},
+	
+	DATE_TIME_ORIGINAL("DateTime Original", (short)0x9003, Attribute.UNKNOWN),
 	
 	/* Photoshop-specific TIFF tag. Starts with a null-terminated character
 	 * string of "Adobe Photoshop Document Data Block"
