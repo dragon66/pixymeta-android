@@ -57,6 +57,8 @@ import pixy.image.png.TextReader;
 import pixy.image.png.UnknownChunk;
 import pixy.io.IOUtils;
 import pixy.string.XMLUtils;
+import pixy.string.StringUtils;
+import pixy.meta.adobe.IRB;
 /**
  * PNG image tweaking tool
  *
@@ -251,6 +253,20 @@ public class PNGMeta {
 			for (Map.Entry<String, String> entry : keyValMap.entrySet()) {
 				if(entry.getKey().equals("XML:com.adobe.xmp"))
 					metadataMap.put(MetadataType.XMP, new PngXMP(entry.getValue()));
+				else if (entry.getKey().equals("Raw profile IPTC")) {
+					// Experimental implementation due to limited information
+					String[] iptc = entry.getValue().trim().split("\n");
+                                        if(iptc.length >= 3) {
+						try {
+							String name = iptc[0].trim();
+							int length = Integer.parseInt(iptc[1].trim());
+							byte[] data = StringUtils.hexStringToByteArray(iptc[2]);
+							metadataMap.put(MetadataType.PHOTOSHOP_IRB, new IRB(data));
+						} catch (Exception e) {
+							LOGGER.error("Error while converting IPTC from zTXT {}", e.getMessage());
+						}
+					}
+				}
 			}
 		}
 			
